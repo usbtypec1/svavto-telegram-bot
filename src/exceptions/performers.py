@@ -1,0 +1,2 @@
+class PerformerNotFoundError(Exception):
+    pass

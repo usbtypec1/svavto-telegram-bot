@@ -1,0 +1,2 @@
+class ServerApiError(Exception):
+    pass
