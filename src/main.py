@@ -8,6 +8,7 @@ from fast_depends import inject, Depends
 
 import handlers
 from config import load_config_from_env_vars, Config
+from services import NotificationService
 
 
 def include_handlers(dispatcher: Dispatcher) -> None:
@@ -29,6 +30,10 @@ async def main(
     )
     storage = MemoryStorage()
     dispatcher = Dispatcher(storage=storage)
+    dispatcher['admin_user_ids'] = config.admin_user_ids
+
+    notification_service = NotificationService(bot)
+    dispatcher['notification_service'] = notification_service
 
     include_handlers(dispatcher)
 

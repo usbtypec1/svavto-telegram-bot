@@ -1,8 +1,10 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from callback_data.performers import PerformerRegisterCallbackData
+from models import Performer
 from views.base import TextView
 
-__all__ = ('PerformerRegisterConfirmView',)
+__all__ = ('PerformerRegisterConfirmView', 'PerformerRegisterNotificationView')
 
 
 class PerformerRegisterConfirmView(TextView):
@@ -38,5 +40,39 @@ class PerformerRegisterConfirmView(TextView):
                         callback_data='register-confirm'
                     ),
                 ],
+            ],
+        )
+
+
+class PerformerRegisterNotificationView(TextView):
+
+    def __init__(self, performer: Performer):
+        self.__performer = performer
+
+    def get_text(self) -> str:
+        return (
+            'Новый пользователь хочет зарегистрироваться\n'
+            f'ФИО: {self.__performer.full_name}\n'
+            'Номер телефона в каршеринге:'
+            f' {self.__performer.car_sharing_phone_number}\n'
+            'Номер телефона в компании Консоль:'
+            f' {self.__performer.console_phone_number}\n'
+        )
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        accept_button = InlineKeyboardButton(
+            text='Подтвердить',
+            callback_data=PerformerRegisterCallbackData(
+                telegram_id=self.__performer.telegram_id,
+            ).pack(),
+        )
+        reject_button = InlineKeyboardButton(
+            text='Отклонить',
+            callback_data='register-reject',
+        )
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [reject_button],
+                [accept_button],
             ],
         )
