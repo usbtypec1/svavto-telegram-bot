@@ -7,7 +7,7 @@ from aiogram.types import (
     ReplyKeyboardRemove, Message,
 )
 
-__all__ = ('ReplyMarkup', 'TextView', 'answer_view')
+__all__ = ('ReplyMarkup', 'TextView', 'answer_view', 'edit_message_by_view')
 
 ReplyMarkup: TypeAlias = (
         InlineKeyboardMarkup
@@ -30,6 +30,13 @@ class TextView:
 
 async def answer_view(message: Message, view: TextView) -> Message:
     return await message.answer(
+        text=view.get_text(),
+        reply_markup=view.get_reply_markup(),
+    )
+
+
+async def edit_message_by_view(message: Message, view: TextView) -> Message:
+    return await message.edit_text(
         text=view.get_text(),
         reply_markup=view.get_reply_markup(),
     )

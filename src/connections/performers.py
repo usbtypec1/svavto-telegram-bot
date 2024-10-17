@@ -8,7 +8,7 @@ __all__ = ('PerformerConnection',)
 class PerformerConnection(ApiConnection):
 
     async def get_by_id(self, user_id: int) -> httpx.Response:
-        url = f'/performers/{user_id}/'
+        url = f'/staff/{user_id}/'
         return await self._http_client.get(url)
 
     async def create(
@@ -18,7 +18,7 @@ class PerformerConnection(ApiConnection):
             car_sharing_phone_number: str,
             console_phone_number: str,
     ) -> httpx.Response:
-        url = '/performers/'
+        url = '/staff/'
         request_data = {
             'telegram_id': telegram_id,
             'full_name': full_name,
@@ -28,7 +28,7 @@ class PerformerConnection(ApiConnection):
         return await self._http_client.post(url, json=request_data)
 
     async def get_all(self) -> httpx.Response:
-        url = '/performers/'
+        url = '/staff/'
         return await self._http_client.get(url)
 
     async def update_by_telegram_id(
@@ -37,6 +37,6 @@ class PerformerConnection(ApiConnection):
             telegram_id: int,
             is_banned: bool,
     ) -> httpx.Response:
-        url = f'/performers/{telegram_id}/'
+        url = f'/staff/{telegram_id}/'
         request_data = {'is_banned': is_banned}
         return await self._http_client.put(url, json=request_data)
