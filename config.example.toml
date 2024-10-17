@@ -1,0 +1,6 @@
+[telegram_bot]
+token = "your token"
+
+[app]
+admin_user_ids = [12345]
+api_base_url = "http://127.0.0.1:8000"
