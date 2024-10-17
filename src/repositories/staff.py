@@ -1,5 +1,5 @@
 from connections import StaffConnection
-from models import Performer
+from models import Staff
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
@@ -10,19 +10,19 @@ class StaffRepository:
     def __init__(self, connection: StaffConnection):
         self.__connection = connection
 
-    async def get_user_by_id(self, user_id: int) -> Performer:
+    async def get_user_by_id(self, user_id: int) -> Staff:
         response = await self.__connection.get_by_id(user_id)
         response_data = response.json()
         handle_errors(response)
-        return Performer.model_validate(response_data)
+        return Staff.model_validate(response_data)
 
-    async def get_all(self) -> list[Performer]:
+    async def get_all(self) -> list[Staff]:
         response = await self.__connection.get_all()
         response_data = response.json()
         handle_errors(response)
-        return [Performer.model_validate(item) for item in response_data]
+        return [Staff.model_validate(item) for item in response_data]
 
-    async def create(self, performer: Performer) -> Performer:
+    async def create(self, performer: Staff) -> Staff:
         response = await self.__connection.create(
             telegram_id=performer.telegram_id,
             full_name=performer.full_name,
@@ -31,7 +31,7 @@ class StaffRepository:
         )
         response_data = response.json()
         handle_errors(response)
-        return Performer.model_validate(response_data)
+        return Staff.model_validate(response_data)
 
     async def update_by_telegram_id(
             self,

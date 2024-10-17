@@ -1,15 +1,10 @@
-from multiprocessing.managers import State
-
 from aiogram import Router, F
-
-from aiogram.filters import StateFilter, CommandStart
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ForceReply
 
 from states import StaffRegisterStates
-
 from views.base import answer_view
-
 from views.register import StaffRegisterConfirmView
 
 __all__ = ('router',)

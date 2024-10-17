@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 
-from models import Performer
+from models import Staff
 from repositories import StaffRepository
 
 from views.register import StaffRegisterNotificationView
@@ -29,7 +29,7 @@ class NotificationService:
             self,
             *,
             admin_user_ids: Iterable[int],
-            performer: Performer,
+            performer: Staff,
     ) -> None:
         view = StaffRegisterNotificationView(performer)
         text = view.get_text()

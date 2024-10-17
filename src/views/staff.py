@@ -5,7 +5,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import StaffDetailCallbackData, StaffUpdateCallbackData
 from enums import StaffUpdateAction
-from models import Performer
+from models import Staff
 from views.base import TextView
 
 __all__ = ('StaffListView', 'StaffDetailView')
@@ -13,7 +13,7 @@ __all__ = ('StaffListView', 'StaffDetailView')
 
 class StaffListView(TextView):
 
-    def __init__(self, staff_list: Iterable[Performer]):
+    def __init__(self, staff_list: Iterable[Staff]):
         self.__staff_list = tuple(staff_list)
 
     def get_text(self) -> str:
@@ -39,7 +39,7 @@ class StaffListView(TextView):
 
 class StaffDetailView(TextView):
 
-    def __init__(self, staff: Performer):
+    def __init__(self, staff: Staff):
         self.__staff = staff
 
     def get_text(self) -> str:
