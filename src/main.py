@@ -7,7 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from fast_depends import inject, Depends
 
 import handlers
-from config import load_config_from_env_vars, Config
+from config import load_config_from_file, Config
 from services import NotificationService
 
 
@@ -21,7 +21,7 @@ def include_handlers(dispatcher: Dispatcher) -> None:
 
 @inject
 async def main(
-        config: Config = Depends(load_config_from_env_vars),
+        config: Config = Depends(load_config_from_file),
 ) -> None:
     bot = Bot(
         token=config.telegram_bot_token,
@@ -42,4 +42,5 @@ async def main(
 
 
 if __name__ == '__main__':
+    # noinspection PyArgumentList
     asyncio.run(main())
