@@ -1,13 +1,13 @@
 import httpx
 from fast_depends import Depends
 
-from config import Config, load_config_from_env_vars
+from config import Config, load_config_from_file
 
 __all__ = ('get_http_client',)
 
 
 async def get_http_client(
-        config: Config = Depends(load_config_from_env_vars),
+        config: Config = Depends(load_config_from_file),
 ) -> httpx.AsyncClient:
     async with httpx.AsyncClient(
             base_url=str(config.api_base_url),
