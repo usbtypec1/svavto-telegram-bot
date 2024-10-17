@@ -13,7 +13,7 @@ __all__ = (
 )
 
 code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
-    ServerApiErrorCode.PERFORMER_NOT_FOUND: StaffNotFoundError,
+    ServerApiErrorCode.STAFF_NOT_FOUND: StaffNotFoundError,
 }
 
 

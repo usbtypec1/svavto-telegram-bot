@@ -4,4 +4,4 @@ __all__ = ('ServerApiErrorCode',)
 
 
 class ServerApiErrorCode(StrEnum):
-    PERFORMER_NOT_FOUND = auto()
+    STAFF_NOT_FOUND = auto()
