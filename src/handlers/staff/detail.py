@@ -15,8 +15,9 @@ __all__ = ('router',)
 router = Router(name=__name__)
 
 
-@router.message(
+@router.callback_query(
     admins_filter,
+    StaffDetailCallbackData.filter(),
     StateFilter('*'),
 )
 @inject
@@ -28,6 +29,6 @@ async def on_show_staff_detail(
             use_cache=False,
         ),
 ) -> None:
-    staff = await staff_repository.get_user_by_id(callback_data.telegram_id)
+    staff = await staff_repository.get_by_id(callback_data.telegram_id)
     view = StaffDetailView(staff)
     await edit_message_by_view(message, view)

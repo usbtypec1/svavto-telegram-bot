@@ -8,6 +8,7 @@ from dependencies.repositories import get_staff_repository
 from exceptions import StaffNotFoundError
 from filters import admins_filter
 from repositories import StaffRepository
+from views.admins import AdminMenuView
 from views.base import answer_view
 from views.menu import MainMenuView, RegisterView
 
@@ -40,6 +41,19 @@ async def on_show_menu(
             use_cache=False,
         ),
 ) -> None:
-    staff = await staff_repository.get_user_by_id(message.from_user.id)
+    staff = await staff_repository.get_by_id(message.from_user.id)
     view = MainMenuView()
+    await answer_view(message, view)
+
+
+@router.message(
+    CommandStart(),
+    admins_filter,
+    StateFilter('*'),
+)
+@inject
+async def on_show_admin_menu(
+        message: Message,
+) -> None:
+    view = AdminMenuView()
     await answer_view(message, view)

@@ -1,6 +1,6 @@
 from mailbox import Message
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import StateFilter
 from aiogram.types import CallbackQuery
 
@@ -29,6 +29,7 @@ async def on_shift_work_type_choice(
 
 
 @router.message(
+    F.text == 'Начать смену',
     StateFilter('*'),
 )
 async def on_show_shift_work_types_list(
