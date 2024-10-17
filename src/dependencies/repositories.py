@@ -1,20 +1,20 @@
 from fast_depends import Depends
 
-from connections import PerformerConnection, CarWashConnection
+from connections import StaffConnection, CarWashConnection
 from dependencies.connections import (
-    get_performer_connection,
+    get_staff_connection,
     get_car_wash_connection,
 )
 from repositories import CarWashRepository
-from repositories.performers import PerformerRepository
+from repositories.staff import StaffRepository
 
-__all__ = ('get_performer_repository',)
+__all__ = ('get_staff_repository', 'get_car_wash_repository')
 
 
-def get_performer_repository(
-        connection: PerformerConnection = Depends(get_performer_connection),
-) -> PerformerRepository:
-    return PerformerRepository(connection)
+def get_staff_repository(
+        connection: StaffConnection = Depends(get_staff_connection),
+) -> StaffRepository:
+    return StaffRepository(connection)
 
 
 def get_car_wash_repository(

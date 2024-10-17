@@ -2,10 +2,10 @@ import httpx
 
 from connections.base import ApiConnection
 
-__all__ = ('PerformerConnection',)
+__all__ = ('StaffConnection',)
 
 
-class PerformerConnection(ApiConnection):
+class StaffConnection(ApiConnection):
 
     async def get_by_id(self, user_id: int) -> httpx.Response:
         url = f'/staff/{user_id}/'

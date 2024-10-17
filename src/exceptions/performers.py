@@ -1,2 +1,2 @@
-class PerformerNotFoundError(Exception):
+class StaffNotFoundError(Exception):
     pass

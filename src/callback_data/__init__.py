@@ -1,3 +1,3 @@
 from .car_washes import *
-from .performers import *
+from .staff import *
 from .shifts import *

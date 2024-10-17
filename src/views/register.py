@@ -1,13 +1,13 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from callback_data.performers import PerformerRegisterCallbackData
+from callback_data.staff import PerformerRegisterCallbackData
 from models import Performer
 from views.base import TextView
 
-__all__ = ('PerformerRegisterConfirmView', 'PerformerRegisterNotificationView')
+__all__ = ('StaffRegisterConfirmView', 'StaffRegisterNotificationView')
 
 
-class PerformerRegisterConfirmView(TextView):
+class StaffRegisterConfirmView(TextView):
 
     def __init__(
             self,
@@ -44,7 +44,7 @@ class PerformerRegisterConfirmView(TextView):
         )
 
 
-class PerformerRegisterNotificationView(TextView):
+class StaffRegisterNotificationView(TextView):
 
     def __init__(self, performer: Performer):
         self.__performer = performer

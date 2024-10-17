@@ -4,9 +4,9 @@ from aiogram.types import CallbackQuery
 from fast_depends import inject, Depends
 
 from callback_data import StaffUpdateCallbackData
-from dependencies.repositories import get_performer_repository
+from dependencies.repositories import get_staff_repository
 from enums import StaffUpdateAction
-from repositories import PerformerRepository
+from repositories import StaffRepository
 from views.base import edit_message_by_view
 from views.staff import StaffDetailView
 
@@ -25,8 +25,8 @@ router = Router(name=__name__)
 async def on_ban_or_unban_staff(
         callback_query: CallbackQuery,
         callback_data: StaffUpdateCallbackData,
-        staff_repository: PerformerRepository = Depends(
-            dependency=get_performer_repository,
+        staff_repository: StaffRepository = Depends(
+            dependency=get_staff_repository,
             use_cache=False,
         ),
 ) -> None:

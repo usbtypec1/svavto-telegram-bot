@@ -1,22 +1,22 @@
 import httpx
 from fast_depends import Depends
 
-from connections import PerformerConnection, CarWashConnection
+from connections import StaffConnection, CarWashConnection
 from dependencies.http_clients import get_http_client
 
 __all__ = (
-    'get_performer_connection',
+    'get_staff_connection',
     'get_car_wash_connection',
 )
 
 
-def get_performer_connection(
+def get_staff_connection(
         http_client: httpx.AsyncClient = Depends(
             dependency=get_http_client,
             use_cache=False,
         ),
-) -> PerformerConnection:
-    return PerformerConnection(http_client)
+) -> StaffConnection:
+    return StaffConnection(http_client)
 
 
 def get_car_wash_connection(

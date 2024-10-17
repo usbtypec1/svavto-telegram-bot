@@ -4,16 +4,16 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 
 from models import Performer
-from repositories import PerformerRepository
+from repositories import StaffRepository
 
-from views.register import PerformerRegisterNotificationView
+from views.register import StaffRegisterNotificationView
 
 __all__ = ('UserService', 'NotificationService')
 
 
 class UserService:
 
-    def __init__(self, user_repository: PerformerRepository):
+    def __init__(self, user_repository: StaffRepository):
         self.__user_repository = user_repository
 
     async def get_user_by_id(self, user_id: int):
@@ -31,7 +31,7 @@ class NotificationService:
             admin_user_ids: Iterable[int],
             performer: Performer,
     ) -> None:
-        view = PerformerRegisterNotificationView(performer)
+        view = StaffRegisterNotificationView(performer)
         text = view.get_text()
         reply_markup = view.get_reply_markup()
         for admin_user_id in admin_user_ids:

@@ -4,9 +4,9 @@ from aiogram.types import Message
 from fast_depends import Depends, inject
 
 from callback_data import StaffDetailCallbackData
-from dependencies.repositories import get_performer_repository
+from dependencies.repositories import get_staff_repository
 from filters import admins_filter
-from repositories import PerformerRepository
+from repositories import StaffRepository
 from views.base import edit_message_by_view
 from views.staff import StaffDetailView
 
@@ -23,8 +23,8 @@ router = Router(name=__name__)
 async def on_show_staff_detail(
         message: Message,
         callback_data: StaffDetailCallbackData,
-        staff_repository: PerformerRepository = Depends(
-            dependency=get_performer_repository,
+        staff_repository: StaffRepository = Depends(
+            dependency=get_staff_repository,
             use_cache=False,
         ),
 ) -> None:

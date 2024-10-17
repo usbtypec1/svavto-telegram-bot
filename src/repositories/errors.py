@@ -4,7 +4,7 @@ from typing import Never
 import httpx
 
 from enums import ServerApiErrorCode
-from exceptions import PerformerNotFoundError, ServerApiError
+from exceptions import StaffNotFoundError, ServerApiError
 
 __all__ = (
     'handle_errors',
@@ -13,7 +13,7 @@ __all__ = (
 )
 
 code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
-    ServerApiErrorCode.PERFORMER_NOT_FOUND: PerformerNotFoundError,
+    ServerApiErrorCode.PERFORMER_NOT_FOUND: StaffNotFoundError,
 }
 
 

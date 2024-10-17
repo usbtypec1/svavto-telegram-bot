@@ -1,13 +1,13 @@
-from connections import PerformerConnection
+from connections import StaffConnection
 from models import Performer
 from repositories.errors import handle_errors
 
-__all__ = ('PerformerRepository',)
+__all__ = ('StaffRepository',)
 
 
-class PerformerRepository:
+class StaffRepository:
 
-    def __init__(self, connection: PerformerConnection):
+    def __init__(self, connection: StaffConnection):
         self.__connection = connection
 
     async def get_user_by_id(self, user_id: int) -> Performer:
