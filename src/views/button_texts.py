@@ -14,3 +14,7 @@ class ButtonText(StrEnum):
     STAFF_PERFORMANCE = '📊 Кто сколько'
     UNDERFILLING = '💧 Недоливы'
     MAILING = '📩 Рассылка'
+    SHIFT_START = '🚀 Начать смену'
+    SHIFT_START_EXTRA = '🚀 Начать доп.смену'
+    SHIFT_SCHEDULE = '📅 График работы'
+    REPORT_FOR_PERIOD = '📊 Отчет за период'

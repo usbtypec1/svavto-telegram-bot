@@ -1,12 +1,13 @@
 from aiogram import Router, F
 from aiogram.filters import StateFilter
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from fast_depends import Depends, inject
 
+from callback_data.prefixes import CallbackDataPrefix
 from dependencies.repositories import get_staff_repository
 from filters import admins_filter
 from repositories import StaffRepository
-from views.base import answer_view
+from views.base import answer_view, edit_message_by_view
 from views.button_texts import ButtonText
 from views.staff import StaffListView
 
@@ -20,9 +21,14 @@ router = Router(name=__name__)
     admins_filter,
     StateFilter('*'),
 )
+@router.callback_query(
+    F.data == CallbackDataPrefix.STAFF_LIST,
+    admins_filter,
+    StateFilter('*'),
+)
 @inject
 async def on_show_staff_list(
-        message: Message,
+        message_or_callback_query: Message | CallbackQuery,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
             use_cache=False,
@@ -30,4 +36,7 @@ async def on_show_staff_list(
 ) -> None:
     staff_list = await staff_repository.get_all()
     view = StaffListView(staff_list)
-    await answer_view(message, view)
+    if isinstance(message_or_callback_query, Message):
+        await answer_view(message_or_callback_query, view)
+    else:
+        await edit_message_by_view(message_or_callback_query.message, view)

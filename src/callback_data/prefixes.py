@@ -14,3 +14,6 @@ class CallbackDataPrefix(StrEnum):
     CAR_WASH_DELETE_CONFIRM = auto()
     STAFF_DETAIL = auto()
     STAFF_UPDATE = auto()
+    STAFF_LIST = auto()
+    STAFF_REGISTER_REJECT = auto()
+    STAFF_REGISTER_ACCEPT = auto()

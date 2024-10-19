@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from callback_data.staff import PerformerRegisterCallbackData
-from models import Staff
+from callback_data.prefixes import CallbackDataPrefix
+from models import StaffToCreate
 from views.base import TextView
 
 __all__ = ('StaffRegisterConfirmView', 'StaffRegisterNotificationView')
@@ -46,33 +46,31 @@ class StaffRegisterConfirmView(TextView):
 
 class StaffRegisterNotificationView(TextView):
 
-    def __init__(self, performer: Staff):
-        self.__performer = performer
+    def __init__(self, staff: StaffToCreate):
+        self.__staff = staff
 
     def get_text(self) -> str:
         return (
             'Новый пользователь хочет зарегистрироваться\n'
-            f'ФИО: {self.__performer.full_name}\n'
-            'Номер телефона в каршеринге:'
-            f' {self.__performer.car_sharing_phone_number}\n'
-            'Номер телефона в компании Консоль:'
-            f' {self.__performer.console_phone_number}\n'
+            f'<b>🆔 ID:</b> {self.__staff.id}\n'
+            f'<b>👤 ФИО:</b> {self.__staff.full_name}\n'
+            '<b>📲 Номер телефона в каршеринге:</b>'
+            f' {self.__staff.car_sharing_phone_number}\n'
+            '<b>📲 Номер телефона в компании Консоль:</b>'
+            f' {self.__staff.console_phone_number}'
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         accept_button = InlineKeyboardButton(
-            text='Подтвердить',
-            callback_data=PerformerRegisterCallbackData(
-                telegram_id=self.__performer.telegram_id,
-            ).pack(),
+            text='✅ Зарегистрировать',
+            callback_data=CallbackDataPrefix.STAFF_REGISTER_ACCEPT,
         )
         reject_button = InlineKeyboardButton(
-            text='Отклонить',
-            callback_data='register-reject',
+            text='❌ Отклонить',
+            callback_data=CallbackDataPrefix.STAFF_REGISTER_REJECT,
         )
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [reject_button],
-                [accept_button],
+                [reject_button, accept_button],
             ],
         )

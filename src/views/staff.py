@@ -2,8 +2,10 @@ from collections.abc import Iterable
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiohttp.helpers import basicauth_from_netrc
 
 from callback_data import StaffDetailCallbackData, StaffUpdateCallbackData
+from callback_data.prefixes import CallbackDataPrefix
 from enums import StaffUpdateAction
 from models import Staff
 from views.base import TextView
@@ -26,7 +28,7 @@ class StaffListView(TextView):
 
         for staff in self.__staff_list:
             callback_data = StaffDetailCallbackData(
-                telegram_id=staff.telegram_id,
+                telegram_id=staff.id,
             )
             button = InlineKeyboardButton(
                 text=staff.full_name,
@@ -43,13 +45,19 @@ class StaffDetailView(TextView):
         self.__staff = staff
 
     def get_text(self) -> str:
+        if self.__staff.is_banned:
+            banned_status_line = '<b>❌ Заблокирован</b>\n'
+        else:
+            banned_status_line = ''
+
         return (
-            f'📱 <b>ID:</b> {self.__staff.telegram_id}\n'
+            f'📱 <b>ID:</b> {self.__staff.id}\n'
             f'👤 <b>ФИО:</b> {self.__staff.full_name}\n'
             '📞 <b>Номер телефона в каршеринге:</b>'
             f' {self.__staff.car_sharing_phone_number}\n'
             '📞 <b>Номер телефона в Консоли:</b>'
             f' {self.__staff.console_phone_number}\n'
+            f'{banned_status_line}'
             f'📅 <b>Дата регистрации:</b>'
             f' {self.__staff.created_at:%d.%m.%Y %H:%M:%S}'
         )
@@ -61,7 +69,7 @@ class StaffDetailView(TextView):
             ban_button = InlineKeyboardButton(
                 text='🔑 Разблокировать',
                 callback_data=StaffUpdateCallbackData(
-                    telegram_id=self.__staff.telegram_id,
+                    telegram_id=self.__staff.id,
                     action=StaffUpdateAction.UNBAN,
                 ).pack(),
             )
@@ -70,10 +78,17 @@ class StaffDetailView(TextView):
             unban_button = InlineKeyboardButton(
                 text='❌ Заблокировать',
                 callback_data=StaffUpdateCallbackData(
-                    telegram_id=self.__staff.telegram_id,
+                    telegram_id=self.__staff.id,
                     action=StaffUpdateAction.BAN,
                 ).pack(),
             )
             keyboard.row(unban_button)
+
+        keyboard.row(
+            InlineKeyboardButton(
+                text='🔙 Назад',
+                callback_data=CallbackDataPrefix.STAFF_LIST,
+            ),
+        )
 
         return keyboard.as_markup()

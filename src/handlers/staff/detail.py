@@ -1,6 +1,6 @@
 from aiogram import Router
 from aiogram.filters import StateFilter
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from fast_depends import Depends, inject
 
 from callback_data import StaffDetailCallbackData
@@ -22,7 +22,7 @@ router = Router(name=__name__)
 )
 @inject
 async def on_show_staff_detail(
-        message: Message,
+        callback_query: CallbackQuery,
         callback_data: StaffDetailCallbackData,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
@@ -31,4 +31,4 @@ async def on_show_staff_detail(
 ) -> None:
     staff = await staff_repository.get_by_id(callback_data.telegram_id)
     view = StaffDetailView(staff)
-    await edit_message_by_view(message, view)
+    await edit_message_by_view(callback_query.message, view)

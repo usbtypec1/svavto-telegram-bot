@@ -1,8 +1,11 @@
 import httpx
 
 from connections.base import ApiConnection
+from logger import create_logger
 
 __all__ = ('StaffConnection',)
+
+logger = create_logger('connections')
 
 
 class StaffConnection(ApiConnection):
@@ -20,12 +23,20 @@ class StaffConnection(ApiConnection):
     ) -> httpx.Response:
         url = '/staff/'
         request_data = {
-            'telegram_id': telegram_id,
+            'id': telegram_id,
             'full_name': full_name,
             'car_sharing_phone_number': car_sharing_phone_number,
             'console_phone_number': console_phone_number,
         }
-        return await self._http_client.post(url, json=request_data)
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            'Retrieved staff create response',
+            extra={
+                'status_code': response.status_code,
+                'body': response.text,
+            },
+        )
+        return response
 
     async def get_all(self) -> httpx.Response:
         url = '/staff/'
