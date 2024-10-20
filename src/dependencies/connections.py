@@ -1,12 +1,13 @@
 import httpx
 from fast_depends import Depends
 
-from connections import StaffConnection, CarWashConnection
+from connections import StaffConnection, CarWashConnection, ShiftConnection
 from dependencies.http_clients import get_http_client
 
 __all__ = (
     'get_staff_connection',
     'get_car_wash_connection',
+    'get_shift_connection',
 )
 
 
@@ -26,3 +27,12 @@ def get_car_wash_connection(
         ),
 ) -> CarWashConnection:
     return CarWashConnection(http_client)
+
+
+def get_shift_connection(
+        http_client: httpx.AsyncClient = Depends(
+            dependency=get_http_client,
+            use_cache=False,
+        ),
+) -> ShiftConnection:
+    return ShiftConnection(http_client)
