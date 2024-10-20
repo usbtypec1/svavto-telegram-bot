@@ -4,10 +4,18 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     ReplyKeyboardMarkup,
     ForceReply,
-    ReplyKeyboardRemove, Message,
+    ReplyKeyboardRemove,
+    Message,
+    CallbackQuery,
 )
 
-__all__ = ('ReplyMarkup', 'TextView', 'answer_view', 'edit_message_by_view')
+__all__ = (
+    'ReplyMarkup',
+    'TextView',
+    'answer_view',
+    'edit_message_by_view',
+    'answer_or_edit_message_by_view',
+)
 
 ReplyMarkup: TypeAlias = (
         InlineKeyboardMarkup
@@ -40,3 +48,12 @@ async def edit_message_by_view(message: Message, view: TextView) -> Message:
         text=view.get_text(),
         reply_markup=view.get_reply_markup(),
     )
+
+
+async def answer_or_edit_message_by_view(
+        message_or_callback_query: Message | CallbackQuery,
+        view: TextView,
+) -> Message:
+    if isinstance(message_or_callback_query, Message):
+        return await answer_view(message_or_callback_query, view)
+    return await edit_message_by_view(message_or_callback_query.message, view)
