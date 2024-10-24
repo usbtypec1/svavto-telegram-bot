@@ -1,14 +1,30 @@
 from fast_depends import Depends
 
-from connections import StaffConnection, CarWashConnection, ShiftConnection
+from connections import (
+    StaffConnection,
+    CarWashConnection,
+    ShiftConnection,
+    EconomicsConnection,
+)
 from dependencies.connections import (
     get_staff_connection,
     get_car_wash_connection,
     get_shift_connection,
+    get_economics_connection,
 )
-from repositories import CarWashRepository, ShiftRepository, StaffRepository
+from repositories import (
+    CarWashRepository,
+    ShiftRepository,
+    StaffRepository,
+    EconomicsRepository,
+)
 
-__all__ = ('get_staff_repository', 'get_car_wash_repository')
+__all__ = (
+    'get_staff_repository',
+    'get_car_wash_repository',
+    'get_economics_repository',
+    'get_shift_repository',
+)
 
 
 def get_staff_repository(
@@ -27,3 +43,9 @@ def get_shift_repository(
         connection: ShiftConnection = Depends(get_shift_connection),
 ) -> ShiftRepository:
     return ShiftRepository(connection)
+
+
+def get_economics_repository(
+        connection: EconomicsConnection = Depends(get_economics_connection),
+) -> EconomicsRepository:
+    return EconomicsRepository(connection)

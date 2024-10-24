@@ -7,7 +7,7 @@ from callback_data import CarWashActionCallbackData, CarWashDetailCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from enums import CarWashAction
 from models import CarWash
-from views.base import TextView, ReplyMarkup
+from views.base import TextView
 
 __all__ = (
     'CarWashListView',

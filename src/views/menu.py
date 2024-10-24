@@ -8,7 +8,7 @@ from aiogram.types import (
 from views.base import TextView
 from views.button_texts import ButtonText
 
-__all__ = ('MainMenuView', 'RegisterView')
+__all__ = ('MainMenuView', 'RegisterView', 'StaffShiftCarWashMenuView')
 
 
 class MainMenuView(TextView):
@@ -41,4 +41,26 @@ class RegisterView(TextView):
                 )
             ]
         ]
+    )
+
+
+class StaffShiftCarWashMenuView(TextView):
+    text = 'Меню смены'
+    reply_markup = ReplyKeyboardMarkup(
+        is_persistent=True,
+        keyboard=[
+            [
+                KeyboardButton(text=ButtonText.SHIFT_ADD_CAR),
+            ],
+            [
+                KeyboardButton(text=ButtonText.SHIFT_ADDITIONAL_SERVICES),
+                KeyboardButton(text=ButtonText.SHIFT_ADDED_CARS),
+            ],
+            [
+                KeyboardButton(text=ButtonText.SHIFT_CHANGE_CAR_WASH),
+            ],
+            [
+                KeyboardButton(text=ButtonText.SHIFT_END),
+            ],
+        ],
     )

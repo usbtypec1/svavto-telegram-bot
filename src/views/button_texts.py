@@ -19,3 +19,7 @@ class ButtonText(StrEnum):
     SHIFT_SCHEDULE = '📅 График работы'
     REPORT_FOR_PERIOD = '📊 Отчет за период'
     SHIFT_ADD_CAR = '🚗 Добавить автомобиль'
+    SHIFT_ADDITIONAL_SERVICES = '🔧 Отметить доп.услуги'
+    SHIFT_ADDED_CARS = '🚗 Добавленные автомобили'
+    SHIFT_CHANGE_CAR_WASH = '🫧 Поменять мойку'
+    SHIFT_END = '🛑 Завершить смену'

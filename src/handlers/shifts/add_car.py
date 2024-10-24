@@ -10,11 +10,15 @@ from filters import admins_filter
 from states import ShiftAddCarStates
 from views.base import answer_or_edit_message_by_view, edit_message_by_view
 from views.button_texts import ButtonText
-from views.shifts import CarNumberInputView, CarClassInputView, \
-    WashTypeInputView, WindshieldWasherRefilledInputView, \
-    WindshieldWasherRefilledValueInputView, AdditionalServicesIncludedInputView, \
-    windshield_washer_refilled_values, \
-    AddCarWithoutAdditionalServicesConfirmView
+from views.shifts import (
+    CarNumberInputView,
+    CarClassInputView,
+    WashTypeInputView,
+    WindshieldWasherRefilledInputView,
+    WindshieldWasherRefilledValueInputView,
+    AdditionalServicesIncludedInputView,
+    AddCarWithoutAdditionalServicesConfirmView,
+)
 
 __all__ = ('router',)
 

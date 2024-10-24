@@ -194,3 +194,21 @@ class AddCarWithoutAdditionalServicesConfirmView(TextView):
             ' Добавить доп услуги или завершить автомобиль'
             ' можно будет позже в главном меню'
         )
+
+
+class ShiftStartRequestView(TextView):
+    text = 'Подтвердите выход на смену'
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='Подтвердить',
+                    callback_data=CallbackDataPrefix.SHIFT_OWN,
+                ),
+                InlineKeyboardButton(
+                    text='Отклонить',
+                    callback_data=CallbackDataPrefix.SHIFT_OWN,
+                ),
+            ],
+        ],
+    )
