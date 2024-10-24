@@ -31,3 +31,27 @@ class EconomicsConnection(ApiConnection):
             extra={'status_code': response.status_code},
         )
         return response
+
+    async def create_surcharge(
+            self,
+            *,
+            staff_id: int,
+            reason: str,
+            amount: int,
+    ) -> httpx.Response:
+        url = '/economics/surcharges/'
+        request_data = {
+            'staff_id': staff_id,
+            'reason': reason,
+            'amount': amount,
+        }
+        logger.debug(
+            'Creating surcharge',
+            extra={'request_data': request_data},
+        )
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            'Created surcharge',
+            extra={'status_code': response.status_code},
+        )
+        return response

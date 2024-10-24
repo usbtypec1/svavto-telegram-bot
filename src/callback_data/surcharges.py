@@ -2,11 +2,11 @@ from aiogram.filters.callback_data import CallbackData
 
 from callback_data.prefixes import CallbackDataPrefix
 
-__all__ = ('PenaltyCreateChooseStaffCallbackData',)
+__all__ = ('SurchargeCreateChooseStaffCallbackData',)
 
 
-class PenaltyCreateChooseStaffCallbackData(
+class SurchargeCreateChooseStaffCallbackData(
     CallbackData,
-    prefix=CallbackDataPrefix.PENALTY_CREATE_CHOOSE_STAFF,
+    prefix=CallbackDataPrefix.SURCHARGE_CREATE_CHOOSE_STAFF,
 ):
     staff_id: int
