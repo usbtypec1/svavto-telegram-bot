@@ -33,3 +33,6 @@ class CallbackDataPrefix(StrEnum):
     PENALTY_CREATE_CHOOSE_REASON = auto()
     PENALTY_CREATE_ACCEPT = auto()
     PENALTY_CREATE_REJECT = auto()
+    SURCHARGE_CREATE_CHOOSE_STAFF = auto()
+    SURCHARGE_CREATE_ACCEPT = auto()
+    SURCHARGE_CREATE_REJECT = auto()
