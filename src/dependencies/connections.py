@@ -6,6 +6,7 @@ from connections import (
     CarWashConnection,
     ShiftConnection,
     EconomicsConnection,
+    MailingConnection,
 )
 from dependencies.http_clients import get_http_client
 
@@ -14,6 +15,7 @@ __all__ = (
     'get_car_wash_connection',
     'get_shift_connection',
     'get_economics_connection',
+    'get_mailing_connection',
 )
 
 
@@ -51,3 +53,12 @@ def get_economics_connection(
         ),
 ) -> EconomicsConnection:
     return EconomicsConnection(http_client)
+
+
+def get_mailing_connection(
+        http_client: httpx.AsyncClient = Depends(
+            dependency=get_http_client,
+            use_cache=False,
+        ),
+) -> MailingConnection:
+    return MailingConnection(http_client)

@@ -22,6 +22,7 @@ def include_handlers(dispatcher: Dispatcher) -> None:
         handlers.schedules.router,
         handlers.penalties.router,
         handlers.surcharges.router,
+        handlers.mailing.router,
     )
 
 
@@ -38,6 +39,7 @@ async def main(
     )
     storage = MemoryStorage()
     dispatcher = Dispatcher(storage=storage)
+    dispatcher['config'] = config
     dispatcher['admin_user_ids'] = config.admin_user_ids
 
     notification_service = NotificationService(bot)

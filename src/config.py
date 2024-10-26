@@ -18,6 +18,7 @@ class Config:
     telegram_bot_token: str
     api_base_url: HttpUrl
     admin_user_ids: set[int]
+    web_app_base_url: HttpUrl
 
 
 def load_config_from_file(
@@ -29,4 +30,5 @@ def load_config_from_file(
         telegram_bot_token=config['telegram_bot']['token'],
         api_base_url=config['app']['api_base_url'],
         admin_user_ids=set(config['app']['admin_user_ids']),
+        web_app_base_url=config['web_app']['base_url'],
     )

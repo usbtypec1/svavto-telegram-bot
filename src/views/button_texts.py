@@ -23,3 +23,5 @@ class ButtonText(StrEnum):
     SHIFT_ADDED_CARS = '🚗 Добавленные автомобили'
     SHIFT_CHANGE_CAR_WASH = '🫧 Поменять мойку'
     SHIFT_END = '🛑 Завершить смену'
+    ATTACH_REPLY_MARKUP = '⌨ Привязать кнопки'
+    SKIP = '➡ Пропустить'

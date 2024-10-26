@@ -36,3 +36,6 @@ class CallbackDataPrefix(StrEnum):
     SURCHARGE_CREATE_CHOOSE_STAFF = auto()
     SURCHARGE_CREATE_ACCEPT = auto()
     SURCHARGE_CREATE_REJECT = auto()
+    MAILING = auto()
+    MAILING_CREATE_ACCEPT = auto()
+    MAILING_CREATE_REJECT = auto()

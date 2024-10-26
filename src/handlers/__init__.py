@@ -7,4 +7,5 @@ from . import (
     schedules,
     penalties,
     surcharges,
+    mailing,
 )
