@@ -4,6 +4,7 @@ import httpx
 
 from connections.base import ApiConnection
 from logger import create_logger
+from models import Button
 
 __all__ = ('MailingConnection',)
 
@@ -16,10 +17,12 @@ class MailingConnection(ApiConnection):
             self,
             *,
             text: str,
-            reply_markup: None = None,
+            reply_markup: Iterable[Iterable[Button]] | None = None,
     ) -> httpx.Response:
         url = '/mailing/all/'
-        request_data = {'text': text, 'reply_markup': reply_markup}
+        request_data = {'text': text}
+        if reply_markup is not None:
+            request_data['reply_markup'] = reply_markup
         logger.debug(
             'Creating mailing to all users',
             extra={'request_data': request_data},
@@ -36,14 +39,15 @@ class MailingConnection(ApiConnection):
             *,
             text: str,
             chat_ids: Iterable[int],
-            reply_markup: None = None,
+            reply_markup: Iterable[Iterable[Button]] | None = None,
     ) -> httpx.Response:
         url = '/mailing/staff/'
         request_data = {
             'text': text,
             'chat_ids': chat_ids,
-            'reply_markup': reply_markup,
         }
+        if reply_markup is not None:
+            request_data['reply_markup'] = reply_markup
         logger.debug(
             'Creating mailing to specific staff',
             extra={'request_data': request_data},
@@ -59,15 +63,16 @@ class MailingConnection(ApiConnection):
             self,
             *,
             text: str,
-            last_active: int,
-            reply_markup: None = None,
+            last_days: int,
+            reply_markup: Iterable[Iterable[Button]] | None = None,
     ) -> httpx.Response:
         url = '/mailing/last-active/'
         request_data = {
             'text': text,
-            'last_active': last_active,
-            'reply_markup': reply_markup,
+            'last_days': last_days,
         }
+        if reply_markup is not None:
+            request_data['reply_markup'] = reply_markup
         logger.debug(
             'Creating mailing to last active staff',
             extra={'request_data': request_data},

@@ -1,14 +1,13 @@
 from collections.abc import Iterable
 from typing import TypeAlias
 
-from aiogram.types import InlineKeyboardButton
-
 from connections import MailingConnection
+from models import Button
 from repositories.errors import handle_errors
 
 __all__ = ('MailingRepository',)
 
-ButtonsRows: TypeAlias = Iterable[Iterable[InlineKeyboardButton]]
+ButtonsRows: TypeAlias = Iterable[Iterable[Button]]
 
 
 class MailingRepository:
@@ -47,11 +46,11 @@ class MailingRepository:
             *,
             text: str,
             reply_markup: ButtonsRows | None,
-            last_active: int,
+            last_days: int,
     ) -> None:
         response = await self.__connection.send_to_last_active_staff(
             text=text,
             reply_markup=reply_markup,
-            last_active=last_active,
+            last_days=last_days,
         )
         handle_errors(response)

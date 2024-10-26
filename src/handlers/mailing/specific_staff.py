@@ -3,7 +3,7 @@ from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramConflictError
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup
 from fast_depends import Depends, inject
 
 from callback_data import MailingTypeChooseCallbackData
@@ -12,10 +12,11 @@ from config import Config
 from dependencies.repositories import get_mailing_repository
 from enums import MailingType
 from filters import admins_filter
+from models import Button
 from repositories.mailing import MailingRepository
 from services.telegram_events import (
     parse_web_app_data_buttons,
-    parse_chat_ids_json,
+    parse_chat_ids_json, reply_markup_to_buttons,
 )
 from states import MailingToSpecificStaffStates
 from views.admins import AdminMenuView
@@ -67,7 +68,7 @@ async def on_confirm_mailing(
     state_data: dict = await state.get_data()
     await state.clear()
     text: str = state_data['text']
-    reply_markup: str | None = state_data['reply_markup']
+    reply_markup: list[list[Button]] | None = state_data['reply_markup']
     chat_ids: list[int] = state_data['chat_ids']
     await mailing_repository.send_to_specific_staff(
         text=text,
@@ -121,7 +122,7 @@ async def on_input_reply_markup(
     except TelegramConflictError:
         await message.answer('Неправильный формат текста или кнопок')
         return
-    await state.update_data(reply_markup=message.web_app_data.data)
+    await state.update_data(reply_markup=reply_markup_to_buttons(markup))
     await state.set_state(MailingToSpecificStaffStates.confirm)
     view = MailingConfirmView()
     await answer_view(message, view)
