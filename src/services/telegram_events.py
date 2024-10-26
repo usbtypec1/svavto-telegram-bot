@@ -4,7 +4,11 @@ from aiogram.types import ErrorEvent, InlineKeyboardMarkup
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-__all__ = ('answer_appropriate_event', 'parse_web_app_data_buttons')
+__all__ = (
+    'answer_appropriate_event',
+    'parse_web_app_data_buttons',
+    'parse_chat_ids_json',
+)
 
 
 async def answer_appropriate_event(event: ErrorEvent, text: str) -> None:
@@ -26,3 +30,7 @@ def parse_web_app_data_buttons(web_app_data: str) -> InlineKeyboardMarkup:
             url=button['url'],
         )
     return keyboard.as_markup()
+
+
+def parse_chat_ids_json(data: str) -> list[int]:
+    return json.loads(data)

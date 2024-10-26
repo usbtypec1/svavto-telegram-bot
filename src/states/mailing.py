@@ -17,8 +17,10 @@ class MailingToSpecificStaffStates(StatesGroup):
     text = State()
     reply_markup = State()
     chat_ids = State()
+    confirm = State()
 
 
 class MailingToLastActiveStaffStates(StatesGroup):
     text = State()
     reply_markup = State()
+    confirm = State()

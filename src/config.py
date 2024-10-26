@@ -16,9 +16,9 @@ CONFIG_FILE_PATH: Final[pathlib.Path] = pathlib.Path(
 @dataclass(frozen=True, slots=True)
 class Config:
     telegram_bot_token: str
-    api_base_url: HttpUrl
+    api_base_url: str
     admin_user_ids: set[int]
-    web_app_base_url: HttpUrl
+    web_app_base_url: str
 
 
 def load_config_from_file(
@@ -30,5 +30,5 @@ def load_config_from_file(
         telegram_bot_token=config['telegram_bot']['token'],
         api_base_url=config['app']['api_base_url'],
         admin_user_ids=set(config['app']['admin_user_ids']),
-        web_app_base_url=config['web_app']['base_url'],
+        web_app_base_url=config['web_app']['base_url'].rstrip('/'),
     )

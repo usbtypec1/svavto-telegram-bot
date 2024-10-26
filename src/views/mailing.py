@@ -18,6 +18,7 @@ __all__ = (
     'MailingTextInputView',
     'MailingReplyMarkupWebAppView',
     'MailingConfirmView',
+    'MailingStaffWebAppView',
 )
 
 
@@ -72,12 +73,31 @@ class MailingReplyMarkupWebAppView(TextView):
             ),
         )
         skip_button = KeyboardButton(text=ButtonText.SKIP)
-
         return ReplyKeyboardMarkup(
+            resize_keyboard=True,
             keyboard=[
                 [web_app_button],
                 [skip_button],
             ],
+        )
+
+
+class MailingStaffWebAppView(TextView):
+    text = 'Выберите сотрудников'
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        web_app_button = KeyboardButton(
+            text=ButtonText.MAILING_STAFF,
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/mailing/staff',
+            ),
+        )
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[[web_app_button]],
         )
 
 
