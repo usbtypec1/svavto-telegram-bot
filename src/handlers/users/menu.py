@@ -1,6 +1,6 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import StateFilter, CommandStart, ExceptionTypeFilter, \
-    invert_f
+    invert_f, or_f
 from aiogram.types import Message, ErrorEvent
 from fast_depends import Depends, inject
 
@@ -11,6 +11,7 @@ from filters import admins_filter
 from repositories import StaffRepository, ShiftRepository
 from views.admins import AdminMenuView
 from views.base import answer_view
+from views.button_texts import ButtonText
 from views.menu import MainMenuView, RegisterView, StaffShiftCarWashMenuView
 
 __all__ = ('router',)
@@ -32,7 +33,10 @@ async def on_performer_not_found_error(event: ErrorEvent) -> None:
 
 
 @router.message(
-    CommandStart(),
+    or_f(
+        CommandStart(),
+        F.text == ButtonText.MAIN_MENU,
+    ),
     invert_f(admins_filter),
     StateFilter('*'),
 )
@@ -64,7 +68,10 @@ async def on_show_menu(
 
 
 @router.message(
-    CommandStart(),
+    or_f(
+        CommandStart(),
+        F.text == ButtonText.MAIN_MENU,
+    ),
     admins_filter,
     StateFilter('*'),
 )

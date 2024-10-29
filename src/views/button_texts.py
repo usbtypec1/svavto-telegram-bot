@@ -27,3 +27,5 @@ class ButtonText(StrEnum):
     SKIP = '➡ Пропустить'
     MAILING_STAFF = '👥 Выбрать сотрудников'
     REGISTER = '🚀 Зарегистрироваться'
+    AVAILABLE_DATES = '📅 Месяцы отображения'
+    MAIN_MENU = '📲 Главное меню'

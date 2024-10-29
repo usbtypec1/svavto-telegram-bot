@@ -1,8 +1,10 @@
 from pydantic import TypeAdapter
 
+from pydantic import TypeAdapter
+
 from connections import StaffConnection
 from logger import create_logger
-from models import Staff, StaffToRegister
+from models import Staff, StaffToRegister, StaffAvailableDates
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
@@ -56,5 +58,17 @@ class StaffRepository:
         response = await self.__connection.update_by_telegram_id(
             telegram_id=telegram_id,
             is_banned=is_banned,
+        )
+        handle_errors(response)
+
+    async def update_available_dates(
+            self,
+            *,
+            staff_available_dates: StaffAvailableDates,
+    ) -> None:
+        data = staff_available_dates.model_dump()
+        response = await self.__connection.update_available_dates(
+            staff_id=data['staff_id'],
+            months_and_years=data['dates'],
         )
         handle_errors(response)

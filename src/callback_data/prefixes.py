@@ -40,3 +40,4 @@ class CallbackDataPrefix(StrEnum):
     MAILING = auto()
     MAILING_CREATE_ACCEPT = auto()
     MAILING_CREATE_REJECT = auto()
+    STAFF_SCHEDULE = auto()

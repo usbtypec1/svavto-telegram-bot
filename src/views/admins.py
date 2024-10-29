@@ -17,6 +17,7 @@ class AdminMenuView(TextView):
             ],
             [
                 KeyboardButton(text=ButtonText.SHIFTS_TODAY),
+                KeyboardButton(text=ButtonText.SHIFTS),
                 KeyboardButton(text=ButtonText.CAR_WASH_LIST),
             ],
             [
