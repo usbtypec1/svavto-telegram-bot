@@ -11,15 +11,13 @@ logger = create_logger('connections')
 class ShiftConnection(ApiConnection):
 
     async def get_active(self, staff_id: int) -> httpx.Response:
-        url = '/shifts/active/'
-        query_params = {'staff_id': staff_id}
+        url = f'/shifts/staff/{staff_id}/'
         logger.debug(
             f'Retrieving active shift for staff {staff_id}',
-            extra={'query_params': query_params},
         )
-        response = await self._http_client.get(url, params=query_params)
+        response = await self._http_client.get(url)
         logger.debug(
             f'Received active shift for staff {staff_id}',
-            extra={'response': response},
+            extra={'status_code': response.status_code},
         )
         return response

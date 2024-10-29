@@ -5,7 +5,7 @@ import httpx
 
 from enums import ServerApiErrorCode
 from exceptions import StaffNotFoundError, ServerApiError, \
-    StaffAlreadyExistsError
+    StaffAlreadyExistsError, StaffHasNoActiveShiftError
 
 __all__ = (
     'handle_errors',
@@ -16,6 +16,7 @@ __all__ = (
 code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_NOT_FOUND: StaffNotFoundError,
     ServerApiErrorCode.STAFF_ALREADY_EXISTS: StaffAlreadyExistsError,
+    ServerApiErrorCode.STAFF_HAS_NO_ACTIVE_SHIFT: StaffHasNoActiveShiftError,
 }
 
 

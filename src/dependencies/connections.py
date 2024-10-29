@@ -7,6 +7,7 @@ from connections import (
     ShiftConnection,
     EconomicsConnection,
     MailingConnection,
+    CarToWashConnection,
 )
 from dependencies.http_clients import get_http_client
 
@@ -16,7 +17,17 @@ __all__ = (
     'get_shift_connection',
     'get_economics_connection',
     'get_mailing_connection',
+    'get_car_to_wash_connection',
 )
+
+
+def get_car_to_wash_connection(
+        http_client: httpx.AsyncClient = Depends(
+            dependency=get_http_client,
+            use_cache=False,
+        ),
+) -> CarToWashConnection:
+    return CarToWashConnection(http_client)
 
 
 def get_staff_connection(

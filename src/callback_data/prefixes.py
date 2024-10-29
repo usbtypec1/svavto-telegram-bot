@@ -19,6 +19,7 @@ class CallbackDataPrefix(StrEnum):
     STAFF_REGISTER_ACCEPT = auto()
     SHIFT_OWN = auto()
     SHIFT_CREATE = auto()
+    STAFF_MENU = auto()
     CAR_CLASS = auto()
     SHIFT_WORK_TYPE = auto()
     CAR_NUMBER = auto()

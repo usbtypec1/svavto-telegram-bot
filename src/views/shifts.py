@@ -1,4 +1,5 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, \
+    ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import (
@@ -21,6 +22,8 @@ __all__ = (
     'WindshieldWasherRefilledValueInputView',
     'AdditionalServicesIncludedInputView',
     'AddCarWithoutAdditionalServicesConfirmView',
+    'ShiftApplyWebAppView',
+    'ShiftStartRequestView'
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -212,3 +215,22 @@ class ShiftStartRequestView(TextView):
             ],
         ],
     )
+
+
+class ShiftApplyWebAppView(TextView):
+    text = 'Выберите даты для выхода на смены'
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        web_app_button = KeyboardButton(
+            text='📆 Выбрать даты',
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_url}/shifts/apply',
+            ),
+        )
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[[web_app_button]],
+        )

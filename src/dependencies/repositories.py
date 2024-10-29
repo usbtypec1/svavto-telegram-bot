@@ -5,14 +5,14 @@ from connections import (
     CarWashConnection,
     ShiftConnection,
     EconomicsConnection,
-    MailingConnection,
+    MailingConnection, CarToWashConnection,
 )
 from dependencies.connections import (
     get_staff_connection,
     get_car_wash_connection,
     get_shift_connection,
     get_economics_connection,
-    get_mailing_connection,
+    get_mailing_connection, get_car_to_wash_connection,
 )
 from repositories import (
     CarWashRepository,
@@ -20,6 +20,7 @@ from repositories import (
     StaffRepository,
     EconomicsRepository,
     MailingRepository,
+    CarToWashRepository,
 )
 
 __all__ = (
@@ -28,7 +29,14 @@ __all__ = (
     'get_economics_repository',
     'get_shift_repository',
     'get_mailing_repository',
+    'get_car_to_wash_repository',
 )
+
+
+def get_car_to_wash_repository(
+        connection: CarToWashConnection = Depends(get_car_to_wash_connection),
+) -> CarToWashRepository:
+    return CarToWashRepository(connection)
 
 
 def get_staff_repository(

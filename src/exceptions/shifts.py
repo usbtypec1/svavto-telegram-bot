@@ -1,0 +1,2 @@
+class StaffHasNoActiveShiftError(Exception):
+    pass

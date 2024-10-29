@@ -4,13 +4,13 @@ from aiogram.filters import StateFilter, CommandStart, ExceptionTypeFilter, \
 from aiogram.types import Message, ErrorEvent
 from fast_depends import Depends, inject
 
-from dependencies.repositories import get_staff_repository
-from exceptions import StaffNotFoundError
+from dependencies.repositories import get_staff_repository, get_shift_repository
+from exceptions import StaffNotFoundError, StaffHasNoActiveShiftError
 from filters import admins_filter
-from repositories import StaffRepository
+from repositories import StaffRepository, ShiftRepository
 from views.admins import AdminMenuView
 from views.base import answer_view
-from views.menu import MainMenuView, RegisterView
+from views.menu import MainMenuView, RegisterView, StaffShiftCarWashMenuView
 
 __all__ = ('router',)
 
@@ -40,9 +40,18 @@ async def on_show_menu(
             get_staff_repository,
             use_cache=False,
         ),
+        shift_repository: ShiftRepository = Depends(
+            get_shift_repository,
+            use_cache=False,
+        ),
 ) -> None:
     staff = await staff_repository.get_by_id(message.from_user.id)
-    view = MainMenuView()
+    try:
+        await shift_repository.get_active(message.from_user.id)
+    except StaffHasNoActiveShiftError:
+        view = StaffShiftCarWashMenuView()
+    else:
+        view = MainMenuView()
     await answer_view(message, view)
 
 
