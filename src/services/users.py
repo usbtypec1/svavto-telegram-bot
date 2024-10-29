@@ -3,20 +3,11 @@ from collections.abc import Iterable
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 
-from models import StaffToCreate
+from models import StaffToRegister
 from repositories import StaffRepository
 from views.register import StaffRegisterNotificationView
 
-__all__ = ('UserService', 'NotificationService')
-
-
-class UserService:
-
-    def __init__(self, user_repository: StaffRepository):
-        self.__user_repository = user_repository
-
-    async def get_user_by_id(self, user_id: int):
-        pass
+__all__ = ('NotificationService',)
 
 
 class NotificationService:
@@ -28,9 +19,10 @@ class NotificationService:
             self,
             *,
             admin_user_ids: Iterable[int],
-            staff: StaffToCreate,
+            staff: StaffToRegister,
+            staff_id: int,
     ) -> None:
-        view = StaffRegisterNotificationView(staff)
+        view = StaffRegisterNotificationView(staff, staff_id)
         text = view.get_text()
         reply_markup = view.get_reply_markup()
         for admin_user_id in admin_user_ids:

@@ -1,9 +1,9 @@
 from pydantic import TypeAdapter
 
 from connections import StaffConnection
-from models import Staff, StaffToCreate
-from repositories.errors import handle_errors
 from logger import create_logger
+from models import Staff, StaffToRegister
+from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
 
@@ -32,9 +32,9 @@ class StaffRepository:
         type_adapter = TypeAdapter(list[Staff])
         return type_adapter.validate_python(response_data['staff'])
 
-    async def create(self, staff: StaffToCreate) -> Staff:
+    async def create(self, staff: StaffToRegister, staff_id: int) -> Staff:
         response = await self.__connection.create(
-            telegram_id=staff.id,
+            telegram_id=staff_id,
             full_name=staff.full_name,
             car_sharing_phone_number=staff.car_sharing_phone_number,
             console_phone_number=staff.console_phone_number,
