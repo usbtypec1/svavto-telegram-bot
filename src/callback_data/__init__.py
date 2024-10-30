@@ -1,4 +1,5 @@
 from .car_washes import *
+from .cars import *
 from .mailing import *
 from .penalties import *
 from .shifts import *

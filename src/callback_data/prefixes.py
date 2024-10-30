@@ -41,3 +41,4 @@ class CallbackDataPrefix(StrEnum):
     MAILING_CREATE_ACCEPT = auto()
     MAILING_CREATE_REJECT = auto()
     STAFF_SCHEDULE = auto()
+    CAR_DETAIL_FOR_ADDITIONAL_SERVICES = auto()

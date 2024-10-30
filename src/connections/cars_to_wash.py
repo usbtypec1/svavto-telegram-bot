@@ -40,3 +40,15 @@ class CarToWashConnection(ApiConnection):
             extra={'status_code': response.status_code},
         )
         return response
+
+    async def update_additional_services(
+            self,
+            *,
+            car_id: int,
+            additional_services: list[dict],
+    ) -> httpx.Response:
+        url = f'/shifts/cars/{car_id}/'
+        request_data = {
+            'additional_services': additional_services,
+        }
+        return await self._http_client.patch(url, json=request_data)

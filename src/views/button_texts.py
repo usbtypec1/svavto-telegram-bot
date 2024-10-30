@@ -29,3 +29,5 @@ class ButtonText(StrEnum):
     REGISTER = '🚀 Зарегистрироваться'
     AVAILABLE_DATES = '📅 Месяцы отображения'
     MAIN_MENU = '📲 Главное меню'
+    SCHEDULE_SELF = '📆 Мой график'
+    CAR_ADDITIONAL_SERVICES = '🔧 Отметить доп.услуги авто'

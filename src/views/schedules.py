@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callback_data import StaffScheduleDetailCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from models import Staff
-from views.base import TextView
+from views.base import TextView, ReplyMarkup
 from views.button_texts import ButtonText
 
 __all__ = (
@@ -19,20 +19,31 @@ __all__ = (
 
 class StaffScheduleMenu(TextView):
     text = 'График работы'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='📆 Мой график',
-                    callback_data=CallbackDataPrefix.SHIFT_OWN,
-                ),
-                InlineKeyboardButton(
-                    text='✏️ Записаться на смены',
-                    callback_data=CallbackDataPrefix.SHIFT_CREATE,
-                ),
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        url = f'{self.__web_app_base_url}/shifts/apply'
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[
+                [
+                    KeyboardButton(
+                        text=ButtonText.SCHEDULE_SELF,
+                    ),
+                    KeyboardButton(
+                        text='✏️ Записаться на смены',
+                        web_app=WebAppInfo(url=url),
+                    ),
+                ],
+                [
+                    KeyboardButton(
+                        text=ButtonText.MAIN_MENU,
+                    ),
+                ],
             ]
-        ]
-    )
+        )
 
 
 class StaffListForScheduleView(TextView):

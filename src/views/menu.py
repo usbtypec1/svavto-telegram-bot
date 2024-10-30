@@ -2,8 +2,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    KeyboardButton,
-)
+    KeyboardButton, WebAppInfo, )
 
 from views.base import TextView
 from views.button_texts import ButtonText
@@ -46,21 +45,32 @@ class RegisterView(TextView):
 
 class StaffShiftCarWashMenuView(TextView):
     text = 'Меню смены'
-    reply_markup = ReplyKeyboardMarkup(
-        is_persistent=True,
-        keyboard=[
-            [
-                KeyboardButton(text=ButtonText.SHIFT_ADD_CAR),
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        shift_add_car_button = KeyboardButton(
+            text=ButtonText.SHIFT_ADD_CAR,
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/shifts/add-car',
+            )
+        )
+        return ReplyKeyboardMarkup(
+            is_persistent=True,
+            keyboard=[
+                [
+                    shift_add_car_button,
+                ],
+                [
+                    KeyboardButton(text=ButtonText.SHIFT_ADDITIONAL_SERVICES),
+                    KeyboardButton(text=ButtonText.SHIFT_ADDED_CARS),
+                ],
+                [
+                    KeyboardButton(text=ButtonText.SHIFT_CHANGE_CAR_WASH),
+                ],
+                [
+                    KeyboardButton(text=ButtonText.SHIFT_END),
+                ],
             ],
-            [
-                KeyboardButton(text=ButtonText.SHIFT_ADDITIONAL_SERVICES),
-                KeyboardButton(text=ButtonText.SHIFT_ADDED_CARS),
-            ],
-            [
-                KeyboardButton(text=ButtonText.SHIFT_CHANGE_CAR_WASH),
-            ],
-            [
-                KeyboardButton(text=ButtonText.SHIFT_END),
-            ],
-        ],
-    )
+        )

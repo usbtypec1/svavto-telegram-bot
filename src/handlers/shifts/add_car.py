@@ -16,7 +16,7 @@ router = Router(name=__name__)
 
 
 @router.message(
-    F.web_app_data.button_text == 'test-add-car',
+    F.web_app_data.button_text == ButtonText.SHIFT_ADD_CAR,
     invert_f(admins_filter),
     StateFilter('*'),
 )
@@ -30,29 +30,3 @@ async def on_input_car(
 ) -> None:
     car_to_wash = CarToWash.model_validate(message.web_app_data.data)
     await car_to_wash_repository.create(car_to_wash)
-
-
-@router.message(
-    F.text == ButtonText.SHIFT_ADD_CAR,
-    invert_f(admins_filter),
-    StateFilter('*'),
-)
-async def on_start_shift_add_car_flow(
-        message: Message,
-) -> None:
-    await message.reply(
-        text='test',
-        reply_markup=ReplyKeyboardMarkup(
-            resize_keyboard=True,
-            keyboard=[
-                [
-                    KeyboardButton(
-                        text='test-add-car',
-                        web_app=WebAppInfo(
-                            url='https://avtomoykabot.store/app/shifts/add-car'
-                        )
-                    )
-                ]
-            ]
-        )
-    )

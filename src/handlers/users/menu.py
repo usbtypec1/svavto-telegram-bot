@@ -61,7 +61,7 @@ async def on_show_menu(
         try:
             await shift_repository.get_active(message.from_user.id)
         except StaffHasNoActiveShiftError:
-            view = StaffShiftCarWashMenuView()
+            view = StaffShiftCarWashMenuView(config.web_app_base_url)
         else:
             view = MainMenuView()
     await answer_view(message, view)
