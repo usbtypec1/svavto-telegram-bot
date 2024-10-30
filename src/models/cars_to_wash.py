@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from enums import CarClass, WashType
 
-__all__ = ('CarToWash', 'AdditionalService', 'Car')
+__all__ = ('CarToWash', 'AdditionalService', 'Car', 'CarAdditionalServices')
 
 
 class AdditionalService(BaseModel):
@@ -27,4 +27,9 @@ class Car(BaseModel):
     wash_type: WashType
     windshield_washer_refilled_bottle_percentage: int
     created_at: datetime
+    additional_services: list[AdditionalService]
+
+
+class CarAdditionalServices(BaseModel):
+    car_id: int
     additional_services: list[AdditionalService]
