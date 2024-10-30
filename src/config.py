@@ -3,8 +3,6 @@ import tomllib
 from dataclasses import dataclass
 from typing import Final
 
-from pydantic import HttpUrl
-
 __all__ = ('Config', 'load_config_from_file', 'SRC_DIR', 'CONFIG_FILE_PATH')
 
 SRC_DIR = pathlib.Path(__file__).parent
@@ -20,6 +18,7 @@ class Config:
     admin_user_ids: set[int]
     main_chat_id: int
     web_app_base_url: str
+    timezone: str
 
 
 def load_config_from_file(
@@ -32,5 +31,6 @@ def load_config_from_file(
         api_base_url=config['app']['api_base_url'],
         admin_user_ids=set(config['app']['admin_user_ids']),
         main_chat_id=config['app']['main_chat_id'],
+        timezone=config['app']['timezone'],
         web_app_base_url=config['web_app']['base_url'].rstrip('/'),
     )

@@ -25,8 +25,10 @@ class AdminMenuView(TextView):
                 KeyboardButton(text=ButtonText.SURCHARGE),
             ],
             [
-                KeyboardButton(text=ButtonText.STAFF_PERFORMANCE),
-                KeyboardButton(text=ButtonText.UNDERFILLING),
+                KeyboardButton(text=ButtonText.SHIFT_CARS_COUNT_BY_STAFF),
+                KeyboardButton(
+                    text=ButtonText.SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER,
+                ),
                 KeyboardButton(text=ButtonText.MAILING),
             ],
         ]

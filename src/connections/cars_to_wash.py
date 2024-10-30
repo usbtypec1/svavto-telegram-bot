@@ -1,3 +1,5 @@
+import datetime
+
 import httpx
 
 from connections.base import ApiConnection
@@ -52,3 +54,19 @@ class CarToWashConnection(ApiConnection):
             'additional_services': additional_services,
         }
         return await self._http_client.patch(url, json=request_data)
+
+    async def get_count_by_staff(
+            self,
+            date: datetime.date,
+    ) -> httpx.Response:
+        url = f'/shifts/cars/count-by-staff/'
+        query_params = {'date': f'{date:%Y-%m-%d}'}
+        return await self._http_client.get(url, params=query_params)
+
+    async def get_without_windshield_washer(
+            self,
+            date: datetime.date,
+    ) -> httpx.Response:
+        url = f'/shifts/cars/without-windshield-washer/'
+        query_params = {'date': f'{date:%Y-%m-%d}'}
+        return await self._http_client.get(url, params=query_params)
