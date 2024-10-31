@@ -1,4 +1,5 @@
 from connections import ShiftConnection
+from models import CarWash
 from repositories.errors import handle_errors
 
 __all__ = ('ShiftRepository',)
@@ -18,9 +19,11 @@ class ShiftRepository:
             *,
             staff_id: int,
             car_wash_id: int,
-    ) -> None:
+    ) -> CarWash:
         response = await self.__connection.update_current_shift_car_wash(
             staff_id=staff_id,
             car_wash_id=car_wash_id,
         )
         handle_errors(response)
+        response_data = response.json()
+        return CarWash.model_validate(response_data)

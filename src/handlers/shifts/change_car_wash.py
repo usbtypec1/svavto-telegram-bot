@@ -9,6 +9,7 @@ from dependencies.repositories import (
     get_car_wash_repository,
     get_shift_repository,
 )
+from exceptions import CarWashSameAsCurrentError
 from filters import admins_filter
 from repositories import CarWashRepository, ShiftRepository
 from views.base import answer_view
@@ -36,11 +37,21 @@ async def on_shift_car_wash_update(
             use_cache=False,
         ),
 ) -> None:
-    await shift_repository.update_current_shift_car_wash(
-        staff_id=callback_query.from_user.id,
-        car_wash_id=callback_data.car_wash_id,
+    try:
+        car_wash = await shift_repository.update_current_shift_car_wash(
+            staff_id=callback_query.from_user.id,
+            car_wash_id=callback_data.car_wash_id,
+        )
+    except CarWashSameAsCurrentError:
+        await callback_query.answer(
+            text='❌ Вы уже работаете на этой мойке',
+            show_alert=True,
+        )
+        return
+    await callback_query.answer(
+        text=f'✅ Вы успешно поменяли мойку на {car_wash.name}',
+        show_alert=True,
     )
-    await callback_query.answer('Вы успешно поменяли мойку', show_alert=True)
     view = StaffShiftCarWashMenuView(web_app_base_url=config.web_app_base_url)
     await answer_view(callback_query.message, view)
 
