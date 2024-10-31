@@ -8,6 +8,7 @@ from . import (
     errors,
     statistics,
     change_car_wash,
+    finish,
 )
 
 __all__ = ('router',)
@@ -20,3 +21,4 @@ router.include_router(cars_to_wash.router)
 router.include_router(errors.router)
 router.include_router(statistics.router)
 router.include_router(change_car_wash.router)
+router.include_router(finish.router)

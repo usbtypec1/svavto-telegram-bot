@@ -43,3 +43,5 @@ class CallbackDataPrefix(StrEnum):
     STAFF_SCHEDULE = auto()
     CAR_DETAIL_FOR_ADDITIONAL_SERVICES = auto()
     SHIFT_CAR_WASH_UPDATE = auto()
+    SHIFT_FINISH_ACCEPT = auto()
+    SHIFT_FINISH_REJECT = auto()

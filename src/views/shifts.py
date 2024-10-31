@@ -1,21 +1,24 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, \
-    ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.types import (
+    InlineKeyboardButton, InlineKeyboardMarkup,
+    KeyboardButton, ReplyKeyboardMarkup, WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import (
-    ShiftWorkTypeChoiceCallbackData,
     CarClassChoiceCallbackData,
-    WashTypeChoiceCallbackData,
+    ShiftWorkTypeChoiceCallbackData, WashTypeChoiceCallbackData,
     WindshieldWasherRefilledValueCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
 from callback_data.shifts import ShiftCarWashUpdateCallbackData
-from enums import ShiftWorkType, CarClass, WashType
-from models import ShiftCarsCountByStaff, ShiftCarsWithoutWindshieldWasher, \
-    CarWash
-from views.base import TextView, ReplyMarkup
+from enums import CarClass, ShiftWorkType, WashType
+from models import (
+    CarWash, ShiftCarsCountByStaff,
+    ShiftCarsWithoutWindshieldWasher,
+)
+from views.base import TextView
 
 __all__ = (
     'ShiftWorkTypeChoiceView',
@@ -32,6 +35,7 @@ __all__ = (
     'ShiftCarsCountByStaffView',
     'ShiftCarsWithoutWindshieldWasherView',
     'ShiftCarWashUpdateView',
+    'ShiftFinishConfirmView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -302,3 +306,21 @@ class ShiftCarWashUpdateView(TextView):
             )
 
         return keyboard.as_markup()
+
+
+class ShiftFinishConfirmView(TextView):
+    text = 'Подтверждаете завершение смены?'
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='✅ Да',
+                    callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
+                ),
+                InlineKeyboardButton(
+                    text='❌ Нет',
+                    callback_data=CallbackDataPrefix.SHIFT_FINISH_REJECT,
+                ),
+            ],
+        ],
+    )
