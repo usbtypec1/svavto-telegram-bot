@@ -21,3 +21,23 @@ class ShiftConnection(ApiConnection):
             extra={'status_code': response.status_code},
         )
         return response
+
+    async def update_current_shift_car_wash(
+            self,
+            *,
+            staff_id: int,
+            car_wash_id: int,
+    ) -> httpx.Response:
+        url = f'/shifts/current/{staff_id}/car-washes/'
+        logger.debug(
+            f'Updating current shift car wash to {car_wash_id}',
+        )
+        response = await self._http_client.patch(
+            url,
+            json={'car_wash_id': car_wash_id},
+        )
+        logger.debug(
+            f'Updated current shift car wash to {car_wash_id}',
+            extra={'status_code': response.status_code},
+        )
+        return response

@@ -1,10 +1,10 @@
 from exceptions import StaffRegisterTextParseError
-from models import StaffToCreate
+from models import StaffToRegisterWithId
 
 __all__ = ('parse_staff_register_text',)
 
 
-def parse_staff_register_text(text: str) -> StaffToCreate:
+def parse_staff_register_text(text: str) -> StaffToRegisterWithId:
     try:
         (
             _,
@@ -36,7 +36,7 @@ def parse_staff_register_text(text: str) -> StaffToCreate:
         .removeprefix('📲 Номер телефона в компании Консоль:')
         .strip()
     )
-    return StaffToCreate(
+    return StaffToRegisterWithId(
         id=telegram_id,
         full_name=full_name,
         car_sharing_phone_number=car_sharing_phone_number,

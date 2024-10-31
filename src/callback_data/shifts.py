@@ -10,6 +10,7 @@ __all__ = (
     'WindshieldWasherRefilledValueCallbackData',
     'ShiftStartRequestAcceptCallbackData',
     'ShiftStartRequestRejectCallbackData',
+    'ShiftCarWashUpdateCallbackData',
 )
 
 
@@ -53,3 +54,10 @@ class ShiftStartRequestAcceptCallbackData(
     prefix=CallbackDataPrefix.SHIFT_START_REQUEST_ACCEPT,
 ):
     shift_id: int
+
+
+class ShiftCarWashUpdateCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_CAR_WASH_UPDATE,
+):
+    car_wash_id: int

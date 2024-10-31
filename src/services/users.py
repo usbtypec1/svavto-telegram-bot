@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 
-from models import StaffToRegister
+from models import StaffToRegister, Staff
 from repositories import StaffRepository
 from views.register import StaffRegisterNotificationView
 

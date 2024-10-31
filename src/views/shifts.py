@@ -1,3 +1,5 @@
+from collections.abc import Iterable
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, \
     ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -9,9 +11,11 @@ from callback_data import (
     WindshieldWasherRefilledValueCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
+from callback_data.shifts import ShiftCarWashUpdateCallbackData
 from enums import ShiftWorkType, CarClass, WashType
-from models import ShiftCarsCountByStaff, ShiftCarsWithoutWindshieldWasher
-from views.base import TextView
+from models import ShiftCarsCountByStaff, ShiftCarsWithoutWindshieldWasher, \
+    CarWash
+from views.base import TextView, ReplyMarkup
 
 __all__ = (
     'ShiftWorkTypeChoiceView',
@@ -27,6 +31,7 @@ __all__ = (
     'ShiftStartRequestView',
     'ShiftCarsCountByStaffView',
     'ShiftCarsWithoutWindshieldWasherView',
+    'ShiftCarWashUpdateView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -276,3 +281,24 @@ class ShiftCarsWithoutWindshieldWasherView(TextView):
             lines.append(car_number)
 
         return '\n'.join(lines)
+
+
+class ShiftCarWashUpdateView(TextView):
+    text = 'Выберите мойку'
+
+    def __init__(self, car_washes: Iterable[CarWash]):
+        self.__car_washes = tuple(car_washes)
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        keyboard = InlineKeyboardBuilder()
+        keyboard.max_width = 1
+
+        for car_wash in self.__car_washes:
+            keyboard.button(
+                text=car_wash.name,
+                callback_data=ShiftCarWashUpdateCallbackData(
+                    car_wash_id=car_wash.id,
+                ),
+            )
+
+        return keyboard.as_markup()

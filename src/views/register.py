@@ -5,10 +5,12 @@ from callback_data.prefixes import CallbackDataPrefix
 from models import StaffToRegister
 from views.base import TextView
 from views.button_texts import ButtonText
+from views.menu import MainMenuView
 
 __all__ = (
     'StaffRegisterNotificationView',
     'StaffRegisterView',
+    'StaffRegisterAcceptedView',
 )
 
 
@@ -60,3 +62,12 @@ class StaffRegisterNotificationView(TextView):
                 [reject_button, accept_button],
             ],
         )
+
+
+class StaffRegisterAcceptedView(TextView):
+    text = '✅ Ваша заявка на регистрацию принята'
+    reply_markup = MainMenuView.reply_markup
+
+
+class StaffRegisterRejectedView(TextView):
+    text = '❌ Ваша заявка на регистрацию отклонена'
