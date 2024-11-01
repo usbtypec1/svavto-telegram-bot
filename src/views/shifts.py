@@ -2,9 +2,10 @@ from collections.abc import Iterable
 
 from aiogram.types import (
     InlineKeyboardButton, InlineKeyboardMarkup,
-    KeyboardButton, ReplyKeyboardMarkup, WebAppInfo,
+    InputMediaPhoto, KeyboardButton, ReplyKeyboardMarkup, WebAppInfo,
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.media_group import MediaType
 
 from callback_data import (
     CarClassChoiceCallbackData,
@@ -18,7 +19,7 @@ from models import (
     CarWash, ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher,
 )
-from views.base import TextView
+from views.base import MediaGroupView, ReplyMarkup, TextView
 
 __all__ = (
     'ShiftWorkTypeChoiceView',
@@ -36,6 +37,9 @@ __all__ = (
     'ShiftCarsWithoutWindshieldWasherView',
     'ShiftCarWashUpdateView',
     'ShiftFinishConfirmView',
+    'ShiftFinishPhotoConfirmView',
+    'ShiftFinishConfirmAllView',
+    'ShiftFinishPhotosView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -315,12 +319,77 @@ class ShiftFinishConfirmView(TextView):
             [
                 InlineKeyboardButton(
                     text='✅ Да',
-                    callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
+                    callback_data=CallbackDataPrefix
+                    .SHIFT_FINISH_FLOW_START_ACCEPT,
                 ),
                 InlineKeyboardButton(
                     text='❌ Нет',
-                    callback_data=CallbackDataPrefix.SHIFT_FINISH_REJECT,
+                    callback_data=CallbackDataPrefix
+                    .SHIFT_FINISH_FLOW_START_REJECT,
                 ),
+            ],
+        ],
+    )
+
+
+class ShiftFinishPhotoConfirmView(TextView):
+    text = (
+        '✅ Фотография принята\n'
+        'Чтобы заменить фото, отправьте сюда новое'
+    )
+
+    def __init__(self, confirm_button_callback_data: str):
+        self.__confirm_button_callback_data = confirm_button_callback_data
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text='✅ Подтвердить фото',
+                        callback_data=self.__confirm_button_callback_data,
+                    )
+                ]
+            ]
+        )
+
+
+class ShiftFinishPhotosView(MediaGroupView):
+    caption = 'Проверьте правильность отправляемых данных'
+
+    def __init__(
+            self,
+            *,
+            statement_photo_file_id: str,
+            service_app_photo_file_id: str,
+    ):
+        self.__statement_photo_file_id = statement_photo_file_id
+        self.__service_app_photo_file_id = service_app_photo_file_id
+
+    def get_medias(self) -> list[MediaType]:
+        return [
+            InputMediaPhoto(
+                media=self.__statement_photo_file_id,
+            ),
+            InputMediaPhoto(
+                media=self.__service_app_photo_file_id,
+            ),
+        ]
+
+
+class ShiftFinishConfirmAllView(TextView):
+    text = 'Подтверждаете завершение смены?'
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='✅ Подтвердить',
+                    callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
+                ),
+                InlineKeyboardButton(
+                    text='❌ Отменить',
+                    callback_data=CallbackDataPrefix.SHIFT_FINISH_REJECT,
+                )
             ],
         ],
     )

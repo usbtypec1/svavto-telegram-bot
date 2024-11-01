@@ -1,6 +1,6 @@
 import json
 
-from aiogram.types import ErrorEvent, InlineKeyboardMarkup
+from aiogram.types import ErrorEvent, InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from models import Button
@@ -9,6 +9,8 @@ __all__ = (
     'answer_appropriate_event',
     'parse_web_app_data_buttons',
     'parse_chat_ids_json',
+    'format_accept_text',
+    'format_reject_text',
 )
 
 
@@ -45,3 +47,11 @@ def reply_markup_to_buttons(
 
 def parse_chat_ids_json(data: str) -> list[int]:
     return json.loads(data)
+
+
+def format_accept_text(message: Message) -> str:
+    return f'{message.text}\n\n<i>✅ Подтверждено</i>'
+
+
+def format_reject_text(message: Message) -> str:
+    return f'{message.text}\n\n<i>❌ Отменено</i>'
