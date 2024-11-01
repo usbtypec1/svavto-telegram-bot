@@ -14,7 +14,7 @@ from filters import admins_filter
 from repositories import CarWashRepository, ShiftRepository
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.menu import StaffShiftCarWashMenuView
+from views.menu import ShiftMenuView
 from views.shifts import ShiftCarWashUpdateView
 
 __all__ = ('router',)
@@ -52,7 +52,7 @@ async def on_shift_car_wash_update(
         text=f'✅ Вы успешно поменяли мойку на {car_wash.name}',
         show_alert=True,
     )
-    view = StaffShiftCarWashMenuView(web_app_base_url=config.web_app_base_url)
+    view = ShiftMenuView(web_app_base_url=config.web_app_base_url)
     await answer_view(callback_query.message, view)
 
 

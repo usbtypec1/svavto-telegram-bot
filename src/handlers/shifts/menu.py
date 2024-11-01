@@ -5,7 +5,7 @@ from aiogram.types import Message
 from config import Config
 from filters import admins_filter
 from views.base import answer_view
-from views.menu import StaffShiftCarWashMenuView
+from views.menu import ShiftMenuView
 
 __all__ = ('router',)
 
@@ -21,5 +21,5 @@ async def on_show_staff_shift_car_wash_menu(
         message: Message,
         config: Config,
 ) -> None:
-    view = StaffShiftCarWashMenuView(config.web_app_base_url)
+    view = ShiftMenuView(config.web_app_base_url)
     await answer_view(message, view)

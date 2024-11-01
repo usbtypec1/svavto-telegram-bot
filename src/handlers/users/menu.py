@@ -12,7 +12,7 @@ from repositories import StaffRepository, ShiftRepository
 from views.admins import AdminMenuView
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.menu import MainMenuView, RegisterView, StaffShiftCarWashMenuView
+from views.menu import MainMenuView, RegisterView, ShiftMenuView
 
 __all__ = ('router',)
 
@@ -61,9 +61,9 @@ async def on_show_menu(
         try:
             await shift_repository.get_active(message.from_user.id)
         except StaffHasNoActiveShiftError:
-            view = StaffShiftCarWashMenuView(config.web_app_base_url)
-        else:
             view = MainMenuView()
+        else:
+            view = ShiftMenuView(config.web_app_base_url)
     await answer_view(message, view)
 
 

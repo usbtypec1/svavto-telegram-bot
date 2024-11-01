@@ -7,7 +7,7 @@ from aiogram.types import (
 from views.base import TextView
 from views.button_texts import ButtonText
 
-__all__ = ('MainMenuView', 'RegisterView', 'StaffShiftCarWashMenuView')
+__all__ = ('MainMenuView', 'RegisterView', 'ShiftMenuView')
 
 
 class MainMenuView(TextView):
@@ -43,7 +43,7 @@ class RegisterView(TextView):
     )
 
 
-class StaffShiftCarWashMenuView(TextView):
+class ShiftMenuView(TextView):
     text = 'Меню смены'
 
     def __init__(self, web_app_base_url: str):

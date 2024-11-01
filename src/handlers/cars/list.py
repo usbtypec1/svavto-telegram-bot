@@ -18,7 +18,7 @@ from views.cars import CarsListForAdditionalServicesView, \
 
 __all__ = ('router',)
 
-from views.menu import StaffShiftCarWashMenuView
+from views.menu import ShiftMenuView
 
 router = Router(name=__name__)
 
@@ -44,7 +44,7 @@ async def on_car_additional_services_edit(
         car_additional_services,
     )
     await message.answer('Доп.услуги машины обновлены')
-    view = StaffShiftCarWashMenuView(web_app_base_url=config.web_app_base_url)
+    view = ShiftMenuView(web_app_base_url=config.web_app_base_url)
     await answer_view(message, view)
 
 

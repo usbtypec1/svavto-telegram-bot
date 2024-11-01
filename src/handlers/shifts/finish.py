@@ -14,7 +14,7 @@ from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
 from views.base import answer_media_group_view, answer_view
 from views.button_texts import ButtonText
-from views.menu import StaffShiftCarWashMenuView
+from views.menu import ShiftMenuView
 from views.shifts import (
     ShiftFinishConfirmAllView,
     ShiftFinishConfirmView,
@@ -215,7 +215,7 @@ async def on_shift_finish_reject(
         ),
 ) -> None:
     await shift_repository.get_active(callback_query.from_user.id)
-    view = StaffShiftCarWashMenuView(config.web_app_base_url)
+    view = ShiftMenuView(config.web_app_base_url)
     await answer_view(callback_query.message, view)
     await callback_query.answer(
         text='❗️ Вы отменили завершение смены',
