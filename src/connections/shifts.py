@@ -78,7 +78,8 @@ class ShiftConnection(ApiConnection):
         logger.debug(
             f'Finishing shift for staff {staff_id}',
         )
-        response = await self._http_client.post(url)
+        request_data = {'staff_id': staff_id}
+        response = await self._http_client.post(url, json=request_data)
         logger.debug(
             f'Finished shift for staff {staff_id}',
             extra={'status_code': response.status_code},
