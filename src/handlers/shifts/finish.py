@@ -9,6 +9,7 @@ from config import Config
 from dependencies.repositories import get_shift_repository
 from filters import admins_filter
 from repositories import ShiftRepository
+from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
 from views.base import answer_media_group_view, answer_view
@@ -18,7 +19,7 @@ from views.shifts import (
     ShiftFinishConfirmAllView,
     ShiftFinishConfirmView,
     ShiftFinishPhotoConfirmView,
-    ShiftFinishPhotosView,
+    ShiftFinishPhotosView, StaffShiftFinishedNotificationView,
 )
 
 __all__ = ('router',)
@@ -54,18 +55,30 @@ async def on_shift_finish_reject(
 async def on_shift_finish_accept(
         callback_query: CallbackQuery,
         state: FSMContext,
+        main_chat_notification_service: SpecificChatsNotificationService,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
-    # TODO write API method to finish current shift
     state_data: dict = await state.get_data()
 
     statement_photo_file_id: str = state_data['statement_photo_file_id']
     service_app_photo_file_id: str = state_data['service_app_photo_file_id']
 
     await state.clear()
+    shift_finish_result = await shift_repository.finish(
+        staff_id=callback_query.from_user.id,
+    )
+
+    view = StaffShiftFinishedNotificationView(
+        shift_finish_result,
+        photo_file_ids=(
+            statement_photo_file_id,
+            service_app_photo_file_id,
+        ),
+    )
+    await main_chat_notification_service.send_media_group(view.as_media_group())
 
 
 @router.callback_query(

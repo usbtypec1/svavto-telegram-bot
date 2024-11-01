@@ -10,6 +10,7 @@ import handlers
 from config import load_config_from_file, Config
 from logger import setup_logging
 from services import NotificationService
+from services.notifications import SpecificChatsNotificationService
 
 
 def include_handlers(dispatcher: Dispatcher) -> None:
@@ -38,10 +39,24 @@ async def main(
             parse_mode=ParseMode.HTML,
         ),
     )
+
+    admins_notification_service = SpecificChatsNotificationService(
+        bot=bot,
+        chat_ids=config.admin_user_ids,
+    )
+    main_chat_notification_service = SpecificChatsNotificationService(
+        bot=bot,
+        chat_ids=(config.main_chat_id,),
+    )
+
     storage = MemoryStorage()
     dispatcher = Dispatcher(storage=storage)
     dispatcher['config'] = config
     dispatcher['admin_user_ids'] = config.admin_user_ids
+    dispatcher['admins_notification_service'] = admins_notification_service
+    dispatcher['main_chat_notification_service'] = (
+        main_chat_notification_service
+    )
 
     notification_service = NotificationService(bot)
     dispatcher['notification_service'] = notification_service

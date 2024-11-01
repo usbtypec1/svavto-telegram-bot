@@ -17,7 +17,7 @@ from callback_data.shifts import ShiftCarWashUpdateCallbackData
 from enums import CarClass, ShiftWorkType, WashType
 from models import (
     CarWash, ShiftCarsCountByStaff,
-    ShiftCarsWithoutWindshieldWasher,
+    ShiftCarsWithoutWindshieldWasher, ShiftFinishResult,
 )
 from views.base import MediaGroupView, ReplyMarkup, TextView
 
@@ -40,6 +40,7 @@ __all__ = (
     'ShiftFinishPhotoConfirmView',
     'ShiftFinishConfirmAllView',
     'ShiftFinishPhotosView',
+    'StaffShiftFinishedNotificationView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -393,3 +394,35 @@ class ShiftFinishConfirmAllView(TextView):
             ],
         ],
     )
+
+
+class StaffShiftFinishedNotificationView(MediaGroupView):
+
+    def __init__(
+            self,
+            shift_finish_result: ShiftFinishResult,
+            photo_file_ids: Iterable[str],
+    ):
+        self.__shift_finish_result = shift_finish_result
+        self.__photo_file_ids = tuple(photo_file_ids)
+
+    def get_medias(self) -> list[MediaType] | None:
+        return [
+            InputMediaPhoto(media=photo_file_id)
+            for photo_file_id in self.__photo_file_ids
+        ]
+
+    def get_caption(self) -> str:
+        lines: list[str] = [
+            f'❗️ Сотрудник {self.__shift_finish_result.staff_full_name}'
+            f' завершил смену\n',
+        ]
+
+        if self.__shift_finish_result.car_numbers:
+            lines.append('🚗 Список добавленных машин:')
+        else:
+            lines.append('Нет добавленных машин')
+        for car_number in self.__shift_finish_result.car_numbers:
+            lines.append(car_number)
+
+        return '\n'.join(lines)
