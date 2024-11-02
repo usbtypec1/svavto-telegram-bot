@@ -78,6 +78,7 @@ async def on_show_menu(
 @inject
 async def on_show_admin_menu(
         message: Message,
+        config: Config,
 ) -> None:
-    view = AdminMenuView()
+    view = AdminMenuView(config.web_app_base_url)
     await answer_view(message, view)

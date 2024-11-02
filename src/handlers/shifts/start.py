@@ -1,19 +1,118 @@
-from mailbox import Message
+import datetime
+from zoneinfo import ZoneInfo
 
-from aiogram import Router, F
+from aiogram import Bot, F, Router
+from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import StateFilter, invert_f
-from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
+from fast_depends import Depends, inject
+from pydantic import TypeAdapter
 
-from callback_data import ShiftWorkTypeChoiceCallbackData
+from callback_data import (
+    ShiftStartCallbackData,
+    ShiftStartCarWashCallbackData, ShiftWorkTypeChoiceCallbackData,
+)
+from config import Config
+from dependencies.repositories import (
+    get_car_wash_repository,
+    get_shift_repository,
+)
 from enums import ShiftWorkType
+from exceptions import ShiftAlreadyConfirmedError, ShiftByDateNotFoundError
 from filters import admins_filter
-from views.base import answer_view
+from models import ShiftConfirmation
+from repositories import CarWashRepository, ShiftRepository
+from states import ShiftStartStates
+from views.base import answer_view, edit_message_by_view, send_view
 from views.button_texts import ButtonText
-from views.shifts import ShiftWorkTypeChoiceView
+from views.menu import ShiftMenuView
+from views.shifts import (
+    ShiftStartCarWashChooseView,
+    ShiftStartConfirmView,
+    ShiftWorkTypeChoiceView,
+)
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.callback_query(
+    ShiftStartCarWashCallbackData.filter(),
+    invert_f(admins_filter),
+    StateFilter('*'),
+)
+@inject
+async def on_start_shift_car_wash(
+        callback_query: CallbackQuery,
+        callback_data: ShiftStartCarWashCallbackData,
+        state: FSMContext,
+        config: Config,
+        shift_repository: ShiftRepository = Depends(
+            dependency=get_shift_repository,
+            use_cache=False,
+        ),
+) -> None:
+    state_data: dict = await state.get_data()
+    await state.clear()
+    shift_id: int = state_data['shift_id']
+    await shift_repository.start(
+        shift_id=shift_id,
+        car_wash_id=callback_data.car_wash_id,
+    )
+    await callback_query.message.edit_text(
+        text='✅ Вы начали смену водителя перегонщика на мойку',
+    )
+    view = ShiftMenuView(config.web_app_base_url)
+    await answer_view(callback_query.message, view)
+
+
+@router.callback_query(
+    ShiftStartCallbackData.filter(),
+    invert_f(admins_filter),
+    StateFilter('*'),
+)
+@inject
+async def on_start_shift(
+        callback_query: CallbackQuery,
+        callback_data: ShiftStartCallbackData,
+        state: FSMContext,
+        car_wash_repository: CarWashRepository = Depends(
+            dependency=get_car_wash_repository,
+            use_cache=False,
+        ),
+) -> None:
+    await state.set_state(ShiftStartStates.car_wash)
+    await state.update_data(shift_id=callback_data.shift_id)
+    car_washes = await car_wash_repository.get_all()
+    view = ShiftStartCarWashChooseView(car_washes)
+    await edit_message_by_view(callback_query.message, view)
+
+
+@router.message(
+    F.web_app_data.button_text == ButtonText.SHIFTS_TODAY,
+    admins_filter,
+    StateFilter('*'),
+)
+async def on_send_confirmation_to_staff(
+        message: Message,
+        bot: Bot,
+) -> None:
+    type_adapter = TypeAdapter(list[ShiftConfirmation])
+    shift_confirmations: list[ShiftConfirmation] = type_adapter.validate_json(
+        message.web_app_data.data,
+    )
+
+    for shift_confirmation in shift_confirmations:
+        view = ShiftStartConfirmView(
+            shift_id=shift_confirmation.shift_id,
+            staff_full_name=shift_confirmation.staff_full_name,
+        )
+        try:
+            await send_view(bot, view, message.chat.id)
+        except TelegramAPIError:
+            pass
 
 
 @router.callback_query(
@@ -23,10 +122,33 @@ router = Router(name=__name__)
     invert_f(admins_filter),
     StateFilter('*'),
 )
+@inject
 async def on_move_to_wash_shift_work_type_choice(
         callback_query: CallbackQuery,
-        callback_data: ShiftWorkTypeChoiceCallbackData,
+        config: Config,
+        shift_repository: ShiftRepository = Depends(
+            dependency=get_shift_repository,
+            use_cache=False,
+        ),
 ) -> None:
+    date = datetime.datetime.now(ZoneInfo(config.timezone))
+    try:
+        await shift_repository.confirm(
+            date=date,
+            staff_id=callback_query.from_user.id,
+        )
+    except ShiftByDateNotFoundError:
+        await callback_query.answer(
+            text='У вас нет на сегодня смены',
+            show_alert=True
+        )
+        return
+    except ShiftAlreadyConfirmedError:
+        await callback_query.answer(
+            text='Вы уже отправили запрос на начало смены',
+            show_alert=True
+        )
+        return
     await callback_query.message.edit_text(
         'До 21:30 Вам придет уведомление в этот бот с запросом'
         ' <b>подтвердить или отклонить</b> выход на смену.'

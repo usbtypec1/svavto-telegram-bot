@@ -4,9 +4,15 @@ from typing import Never
 import httpx
 
 from enums import ServerApiErrorCode
-from exceptions import StaffNotFoundError, ServerApiError, \
-    StaffAlreadyExistsError, StaffHasNoActiveShiftError, CarWashNotFoundError, \
-    CarWashSameAsCurrentError
+from exceptions import (
+    ShiftAlreadyConfirmedError, ShiftAlreadyFinishedError,
+    ShiftByDateNotFoundError, ShiftNotConfirmedError,
+    StaffHasActiveShiftError,
+    StaffNotFoundError,
+    ServerApiError,
+    StaffAlreadyExistsError, StaffHasNoActiveShiftError, CarWashNotFoundError,
+    CarWashSameAsCurrentError,
+)
 
 __all__ = (
     'handle_errors',
@@ -20,6 +26,11 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_HAS_NO_ACTIVE_SHIFT: StaffHasNoActiveShiftError,
     ServerApiErrorCode.CAR_WASH_NOT_FOUND: CarWashNotFoundError,
     ServerApiErrorCode.CAR_WASH_SAME_AS_CURRENT: CarWashSameAsCurrentError,
+    ServerApiErrorCode.SHIFT_BY_DATE_NOT_FOUND: ShiftByDateNotFoundError,
+    ServerApiErrorCode.SHIFT_NOT_CONFIRMED: ShiftNotConfirmedError,
+    ServerApiErrorCode.STAFF_HAS_ACTIVE_SHIFT: StaffHasActiveShiftError,
+    ServerApiErrorCode.SHIFT_ALREADY_FINISHED: ShiftAlreadyFinishedError,
+    ServerApiErrorCode.SHIFT_ALREADY_CONFIRMED: ShiftAlreadyConfirmedError,
 }
 
 

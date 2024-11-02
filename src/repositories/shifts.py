@@ -33,13 +33,11 @@ class ShiftRepository:
     async def start(
             self,
             *,
-            staff_id: int,
-            date: datetime.date,
+            shift_id: int,
             car_wash_id: int,
     ) -> None:
         response = await self.__connection.start(
-            staff_id=staff_id,
-            date=date,
+            shift_id=shift_id,
             car_wash_id=car_wash_id,
         )
         handle_errors(response)
@@ -53,3 +51,15 @@ class ShiftRepository:
         handle_errors(response)
         response_data = response.json()
         return ShiftFinishResult.model_validate(response_data)
+
+    async def confirm(
+            self,
+            *,
+            staff_id: int,
+            date: datetime.date,
+    ) -> None:
+        response = await self.__connection.confirm(
+            staff_id=staff_id,
+            date=date,
+        )
+        handle_errors(response)

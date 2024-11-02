@@ -9,7 +9,9 @@ from aiogram.utils.media_group import MediaType
 
 from callback_data import (
     CarClassChoiceCallbackData,
-    ShiftWorkTypeChoiceCallbackData, WashTypeChoiceCallbackData,
+    ShiftRejectCallbackData, ShiftStartCallbackData,
+    ShiftStartCarWashCallbackData, ShiftWorkTypeChoiceCallbackData,
+    WashTypeChoiceCallbackData,
     WindshieldWasherRefilledValueCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
@@ -19,7 +21,7 @@ from models import (
     CarWash, ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher, ShiftFinishResult,
 )
-from views.base import MediaGroupView, TextView
+from views.base import MediaGroupView, ReplyMarkup, TextView
 from views.button_texts import ButtonText
 
 __all__ = (
@@ -44,6 +46,8 @@ __all__ = (
     'StaffShiftFinishedNotificationView',
     'StaffShiftFinishedView',
     'StaffFirstShiftFinishedView',
+    'ShiftStartConfirmView',
+    'ShiftStartCarWashChooseView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -453,3 +457,54 @@ class StaffShiftFinishedView(TextView):
         'Проверьте, что все отчеты заполнены верно!'
         ' Спасибо за работу и хорошего дня!'
     )
+
+
+class ShiftStartConfirmView(TextView):
+
+    def __init__(self, shift_id: int, staff_full_name: str):
+        self.__shift_id = shift_id
+        self.__staff_full_name = staff_full_name
+
+    def get_text(self) -> str:
+        return f'{self.__staff_full_name} подтвердите выход на смену'
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text='✅ Подтвердить',
+                        callback_data=ShiftStartCallbackData(
+                            shift_id=self.__shift_id,
+                        ).pack(),
+                    ),
+                    InlineKeyboardButton(
+                        text='❌ Отклонить',
+                        callback_data=ShiftRejectCallbackData(
+                            shift_id=self.__shift_id,
+                        ).pack(),
+                    ),
+                ]
+            ]
+        )
+
+
+class ShiftStartCarWashChooseView(TextView):
+    text = 'Выберите мойку'
+
+    def __init__(self, car_washes: Iterable[CarWash]):
+        self.__car_washes = tuple(car_washes)
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        keyboard = InlineKeyboardBuilder()
+        keyboard.max_width = 1
+
+        for car_wash in self.__car_washes:
+            keyboard.button(
+                text=car_wash.name,
+                callback_data=ShiftStartCarWashCallbackData(
+                    car_wash_id=car_wash.id,
+                )
+            )
+
+        return keyboard.as_markup()

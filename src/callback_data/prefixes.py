@@ -49,3 +49,6 @@ class CallbackDataPrefix(StrEnum):
     SHIFT_FINISH_SERVICE_APP_PHOTO_CONFIRM = auto()
     SHIFT_FINISH_ACCEPT = auto()
     SHIFT_FINISH_REJECT = auto()
+    SHIFT_START_ACCEPT = auto()
+    SHIFT_START_REJECT = auto()
+    SHIFT_START_CAR_WASH = auto()

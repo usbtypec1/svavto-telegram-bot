@@ -47,24 +47,22 @@ class ShiftConnection(ApiConnection):
     async def start(
             self,
             *,
-            staff_id: int,
-            date: datetime.date,
+            shift_id: int,
             car_wash_id: int,
     ) -> httpx.Response:
         url = '/shifts/start/'
         logger.debug(
-            f'Starting shift for staff {staff_id}',
+            f'Starting shift {shift_id}',
         )
         response = await self._http_client.post(
             url,
             json={
-                'staff_id': staff_id,
-                'date': f'{date:%Y-%m-%d}',
+                'shift_id': shift_id,
                 'car_wash_id': car_wash_id,
             },
         )
         logger.debug(
-            f'Started shift for staff {staff_id}',
+            f'Started shift {shift_id}',
             extra={'status_code': response.status_code},
         )
         return response
@@ -82,6 +80,27 @@ class ShiftConnection(ApiConnection):
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
             f'Finished shift for staff {staff_id}',
+            extra={'status_code': response.status_code},
+        )
+        return response
+
+    async def confirm(
+            self,
+            *,
+            staff_id: int,
+            date: datetime.date,
+    ) -> httpx.Response:
+        url = '/shifts/confirm/'
+        logger.debug(
+            f'Confirming shift for staff {staff_id}',
+        )
+        request_data = {
+            'staff_id': staff_id,
+            'date': f'{date:%Y-%m-%d}',
+        }
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            f'Confirmed shift for staff {staff_id}',
             extra={'status_code': response.status_code},
         )
         return response
