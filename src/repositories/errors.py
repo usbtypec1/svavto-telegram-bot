@@ -26,7 +26,9 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_HAS_NO_ACTIVE_SHIFT: StaffHasNoActiveShiftError,
     ServerApiErrorCode.CAR_WASH_NOT_FOUND: CarWashNotFoundError,
     ServerApiErrorCode.CAR_WASH_SAME_AS_CURRENT: CarWashSameAsCurrentError,
-    ServerApiErrorCode.SHIFT_BY_DATE_NOT_FOUND: ShiftByDateNotFoundError,
+    ServerApiErrorCode.SHIFT_FOR_SPECIFIC_DATE_NOT_FOUND: (
+        ShiftByDateNotFoundError
+    ),
     ServerApiErrorCode.SHIFT_NOT_CONFIRMED: ShiftNotConfirmedError,
     ServerApiErrorCode.STAFF_HAS_ACTIVE_SHIFT: StaffHasActiveShiftError,
     ServerApiErrorCode.SHIFT_ALREADY_FINISHED: ShiftAlreadyFinishedError,
