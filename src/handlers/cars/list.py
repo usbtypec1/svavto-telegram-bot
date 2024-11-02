@@ -1,9 +1,7 @@
-from aiogram import Router, F
-
+from aiogram import F, Router
 from aiogram.filters import StateFilter, invert_f
-from aiogram.types import Message, CallbackQuery
-from fast_depends import inject, Depends
-from pydantic import TypeAdapter
+from aiogram.types import CallbackQuery, Message
+from fast_depends import Depends, inject
 
 from callback_data import CarDetailForAdditionalServicesCallbackData
 from config import Config
@@ -13,8 +11,10 @@ from models import CarAdditionalServices
 from repositories import CarToWashRepository
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.cars import CarsListForAdditionalServicesView, \
-    CarAdditionalServicesUpdateView
+from views.cars import (
+    CarAdditionalServicesUpdateView,
+    CarsListForAdditionalServicesView,
+)
 
 __all__ = ('router',)
 

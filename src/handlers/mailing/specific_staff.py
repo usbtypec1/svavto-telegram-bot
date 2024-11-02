@@ -1,9 +1,9 @@
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramConflictError
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup
+from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
 
 from callback_data import MailingTypeChooseCallbackData
@@ -15,18 +15,15 @@ from filters import admins_filter
 from models import Button
 from repositories.mailing import MailingRepository
 from services.telegram_events import (
-    parse_web_app_data_buttons,
-    parse_chat_ids_json, reply_markup_to_buttons,
+    parse_chat_ids_json, parse_web_app_data_buttons, reply_markup_to_buttons,
 )
 from states import MailingToSpecificStaffStates
 from views.admins import AdminMenuView
 from views.base import answer_view
 from views.button_texts import ButtonText
 from views.mailing import (
+    MailingConfirmView, MailingReplyMarkupWebAppView, MailingStaffWebAppView,
     MailingTextInputView,
-    MailingReplyMarkupWebAppView,
-    MailingConfirmView,
-    MailingStaffWebAppView,
 )
 
 __all__ = ('router',)
@@ -42,12 +39,13 @@ router = Router(name=__name__)
 async def on_reject_mailing(
         callback_query: CallbackQuery,
         state: FSMContext,
+        config: Config,
 ) -> None:
     await state.clear()
     await callback_query.message.edit_text(
         f'{callback_query.message.text}\n\n<i>Отменено</i>',
     )
-    view = AdminMenuView()
+    view = AdminMenuView(config.web_app_base_url)
     await answer_view(callback_query.message, view)
 
 
@@ -60,6 +58,7 @@ async def on_reject_mailing(
 async def on_confirm_mailing(
         callback_query: CallbackQuery,
         state: FSMContext,
+        config: Config,
         mailing_repository: MailingRepository = Depends(
             dependency=get_mailing_repository,
             use_cache=False,
@@ -77,7 +76,7 @@ async def on_confirm_mailing(
     )
     await callback_query.answer('Рассылка создана', show_alert=True)
     await callback_query.message.delete_reply_markup()
-    view = AdminMenuView()
+    view = AdminMenuView(config.web_app_base_url)
     await answer_view(callback_query.message, view)
 
 

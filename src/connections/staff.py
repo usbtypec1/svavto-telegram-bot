@@ -7,8 +7,6 @@ from logger import create_logger
 
 __all__ = ('StaffConnection',)
 
-from models import MonthAndYear
-
 logger = create_logger('connections')
 
 

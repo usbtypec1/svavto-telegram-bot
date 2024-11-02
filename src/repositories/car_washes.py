@@ -1,5 +1,3 @@
-from http.client import error
-
 from pydantic import TypeAdapter
 
 from connections import CarWashConnection

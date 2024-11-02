@@ -2,7 +2,6 @@ from collections.abc import Iterable
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
-from aiogram.types import InlineKeyboardMarkup, InputMedia
 
 __all__ = (
     'NotificationService',

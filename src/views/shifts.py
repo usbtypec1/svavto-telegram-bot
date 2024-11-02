@@ -21,7 +21,7 @@ from models import (
     CarWash, ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher, ShiftFinishResult,
 )
-from views.base import MediaGroupView, ReplyMarkup, TextView
+from views.base import MediaGroupView, TextView
 from views.button_texts import ButtonText
 
 __all__ = (

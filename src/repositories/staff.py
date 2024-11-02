@@ -5,7 +5,8 @@ from pydantic import TypeAdapter
 from connections import StaffConnection
 from logger import create_logger
 from models import (
-    Staff, StaffToRegister, StaffAvailableDates,
+    Staff,
+    StaffAvailableDates,
     StaffToRegisterWithId,
 )
 from repositories.errors import handle_errors

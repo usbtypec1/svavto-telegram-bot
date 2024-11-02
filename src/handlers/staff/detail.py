@@ -1,6 +1,6 @@
 from aiogram import Router
 from aiogram.filters import StateFilter
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery
 from fast_depends import Depends, inject
 
 from callback_data import StaffDetailCallbackData

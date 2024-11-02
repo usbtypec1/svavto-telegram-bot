@@ -1,8 +1,7 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiohttp.helpers import basicauth_from_netrc
 
 from callback_data import StaffDetailCallbackData, StaffUpdateCallbackData
 from callback_data.prefixes import CallbackDataPrefix

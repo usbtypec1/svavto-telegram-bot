@@ -1,14 +1,13 @@
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.filters import StateFilter
-from aiogram.types import Message, CallbackQuery
-from fast_depends import inject, Depends
-from pydantic import TypeAdapter
+from aiogram.types import CallbackQuery, Message
+from fast_depends import Depends, inject
 
 from callback_data import StaffScheduleDetailCallbackData
 from config import Config
 from dependencies.repositories import get_staff_repository
 from filters import admins_filter
-from models import MonthAndYear, StaffAvailableDates
+from models import StaffAvailableDates
 from repositories import StaffRepository
 from views.admins import AdminMenuView
 from views.base import answer_view
@@ -66,6 +65,7 @@ async def on_show_staff_detail(
 @inject
 async def on_choose_staff_available_dates(
         message: Message,
+        config: Config,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
             use_cache=False,
@@ -78,5 +78,5 @@ async def on_choose_staff_available_dates(
         staff_available_dates=staff_available_dates,
     )
     await message.answer('Доступные месяцы обновлены')
-    view = AdminMenuView()
+    view = AdminMenuView(config.web_app_base_url)
     await answer_view(message, view)

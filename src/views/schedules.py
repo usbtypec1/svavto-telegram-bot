@@ -1,13 +1,16 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, \
-    ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.types import (
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+    WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import StaffScheduleDetailCallbackData
-from callback_data.prefixes import CallbackDataPrefix
 from models import Staff
-from views.base import TextView, ReplyMarkup
+from views.base import TextView
 from views.button_texts import ButtonText
 
 __all__ = (

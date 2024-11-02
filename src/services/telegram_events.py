@@ -11,6 +11,7 @@ __all__ = (
     'parse_chat_ids_json',
     'format_accept_text',
     'format_reject_text',
+    'reply_markup_to_buttons',
 )
 
 

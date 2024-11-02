@@ -17,6 +17,7 @@ class CarToWashRepository:
 
     async def create(self, car_to_wash: CarToWash):
         response = await self.__connection.create(car_to_wash)
+        handle_errors(response)
 
     async def get_all(self, staff_id: int) -> list[Car]:
         response = await self.__connection.get_all(staff_id)
