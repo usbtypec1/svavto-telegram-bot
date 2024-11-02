@@ -97,3 +97,17 @@ class ShiftRepository:
         handle_errors(response)
         response_data = response.json()
         return ShiftCreateResult.model_validate(response_data)
+
+    async def get_last_created_shift_dates(
+            self,
+            staff_id: int,
+    ) -> list[datetime.date]:
+        response = await self.__connection.get_last_created_shift_dates(
+            staff_id=staff_id,
+        )
+        handle_errors(response)
+        response_data = response.json()
+        return [
+            datetime.date.fromisoformat(date)
+            for date in response_data['shift_dates']
+        ]

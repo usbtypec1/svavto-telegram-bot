@@ -14,3 +14,4 @@ class ServerApiErrorCode(StrEnum):
     STAFF_HAS_ACTIVE_SHIFT = auto()
     SHIFT_ALREADY_FINISHED = auto()
     SHIFT_ALREADY_CONFIRMED = auto()
+    STAFF_HAS_NO_ANY_SHIFT = auto()

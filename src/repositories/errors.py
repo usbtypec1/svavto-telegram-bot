@@ -8,7 +8,7 @@ from exceptions import (
     ShiftAlreadyConfirmedError, ShiftAlreadyFinishedError,
     ShiftByDateNotFoundError, ShiftNotConfirmedError,
     StaffHasActiveShiftError,
-    StaffNotFoundError,
+    StaffHasNoAnyShiftError, StaffNotFoundError,
     ServerApiError,
     StaffAlreadyExistsError, StaffHasNoActiveShiftError, CarWashNotFoundError,
     CarWashSameAsCurrentError,
@@ -33,6 +33,7 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_HAS_ACTIVE_SHIFT: StaffHasActiveShiftError,
     ServerApiErrorCode.SHIFT_ALREADY_FINISHED: ShiftAlreadyFinishedError,
     ServerApiErrorCode.SHIFT_ALREADY_CONFIRMED: ShiftAlreadyConfirmedError,
+    ServerApiErrorCode.STAFF_HAS_NO_ANY_SHIFT: StaffHasNoAnyShiftError,
 }
 
 

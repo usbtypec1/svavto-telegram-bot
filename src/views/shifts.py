@@ -1,5 +1,6 @@
 import datetime
 from collections.abc import Iterable
+from turtledemo.penrose import start
 from typing import Final
 from zoneinfo import ZoneInfo
 
@@ -60,6 +61,8 @@ __all__ = (
     'ShiftApplyChooseMonthView',
     'ShiftApplyScheduleMonthCalendarWebAppView',
     'StaffShiftScheduleCreatedNotificationView',
+    'StaffHasNoAnyCreatedShiftView',
+    'StaffScheduleCreatedShiftView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -604,6 +607,9 @@ class ShiftApplyScheduleMonthCalendarWebAppView(TextView):
                         web_app=WebAppInfo(url=url)
                     ),
                 ],
+                [
+                    KeyboardButton(text=ButtonText.MAIN_MENU),
+                ],
             ],
         )
 
@@ -615,3 +621,31 @@ class StaffShiftScheduleCreatedNotificationView(TextView):
 
     def get_text(self) -> str:
         return f'Сотрудник {self.__staff_full_name} внес график работы'
+
+
+class StaffHasNoAnyCreatedShiftView(TextView):
+    text = '❗️ Вы еще не заполнили график'
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(text=ButtonText.SHIFT_APPLY),
+            ],
+            [
+                KeyboardButton(text=ButtonText.MAIN_MENU),
+            ],
+        ],
+    )
+
+
+class StaffScheduleCreatedShiftView(TextView):
+
+    def __init__(self, shift_dates: Iterable[datetime.date]):
+        self.__shift_dates = tuple(shift_dates)
+
+    def get_text(self) -> str:
+        lines: list[str] = ['<b>📆 Даты последнего заполненного графика</b>']
+
+        for i, shift_date in enumerate(self.__shift_dates, start=1):
+            lines.append(f'{i}. {shift_date:%d.%m.%Y}')
+
+        return '\n'.join(lines)

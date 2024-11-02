@@ -127,7 +127,7 @@ class ShiftConnection(ApiConnection):
             *,
             staff_id: int,
             dates: Iterable[datetime.date],
-    ):
+    ) -> httpx.Response:
         url = '/shifts/create/'
         logger.debug(f'Creating shifts for staff {staff_id}')
         request_data = {
@@ -137,6 +137,21 @@ class ShiftConnection(ApiConnection):
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
             f'Created shifts for staff {staff_id}',
+            extra={'status_code': response.status_code},
+        )
+        return response
+
+    async def get_last_created_shift_dates(
+            self,
+            staff_id: int,
+    ) -> httpx.Response:
+        url = f'/shifts/staff/{staff_id}/last-created/'
+        logger.debug(
+            f'Retrieving last created shift dates for staff {staff_id}',
+        )
+        response = await self._http_client.get(url)
+        logger.debug(
+            f'Retrieved last created shift dates for staff {staff_id}',
             extra={'status_code': response.status_code},
         )
         return response

@@ -20,3 +20,7 @@ class ShiftAlreadyFinishedError(Exception):
 
 class ShiftAlreadyConfirmedError(Exception):
     pass
+
+
+class StaffHasNoAnyShiftError(Exception):
+    pass
