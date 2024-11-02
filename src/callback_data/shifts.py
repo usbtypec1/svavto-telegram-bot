@@ -14,6 +14,7 @@ __all__ = (
     'ShiftRejectCallbackData',
     'ShiftStartCallbackData',
     'ShiftStartCarWashCallbackData',
+    'ShiftApplyCallbackData',
 )
 
 
@@ -85,3 +86,11 @@ class ShiftStartCarWashCallbackData(
     prefix=CallbackDataPrefix.SHIFT_START_CAR_WASH,
 ):
     car_wash_id: int
+
+
+class ShiftApplyCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_APPLY,
+):
+    month: int
+    year: int

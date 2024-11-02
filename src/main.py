@@ -4,10 +4,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
-from fast_depends import inject, Depends
+from fast_depends import Depends, inject
 
 import handlers
-from config import load_config_from_file, Config
+from config import Config, load_config_from_file
 from logger import setup_logging
 from services import NotificationService
 from services.notifications import SpecificChatsNotificationService

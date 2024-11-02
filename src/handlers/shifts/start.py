@@ -11,7 +11,8 @@ from pydantic import TypeAdapter
 
 from callback_data import (
     ShiftStartCallbackData,
-    ShiftStartCarWashCallbackData, ShiftWorkTypeChoiceCallbackData,
+    ShiftStartCarWashCallbackData,
+    ShiftWorkTypeChoiceCallbackData,
 )
 from config import Config
 from dependencies.repositories import (
@@ -131,7 +132,7 @@ async def on_move_to_wash_shift_work_type_choice(
             use_cache=False,
         ),
 ) -> None:
-    date = datetime.datetime.now(ZoneInfo(config.timezone))
+    date = datetime.datetime.now(config.timezone)
     try:
         await shift_repository.confirm(
             date=date,

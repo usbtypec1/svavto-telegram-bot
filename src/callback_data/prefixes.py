@@ -52,3 +52,4 @@ class CallbackDataPrefix(StrEnum):
     SHIFT_START_ACCEPT = auto()
     SHIFT_START_REJECT = auto()
     SHIFT_START_CAR_WASH = auto()
+    SHIFT_APPLY = auto()

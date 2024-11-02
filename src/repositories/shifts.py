@@ -1,7 +1,10 @@
 import datetime
+from cgitb import reset
+
+from pydantic import TypeAdapter
 
 from connections import ShiftConnection
-from models import CarWash, ShiftFinishResult
+from models import CarWash, Shift, ShiftCreateResult, ShiftFinishResult
 from repositories.errors import handle_errors
 
 __all__ = ('ShiftRepository',)
@@ -63,3 +66,34 @@ class ShiftRepository:
             date=date,
         )
         handle_errors(response)
+
+    async def get_shifts_by_staff_id(
+            self,
+            *,
+            staff_id: int,
+            month: int,
+            year: int,
+    ) -> list[Shift]:
+        response = await self.__connection.get_shifts_by_staff_id(
+            staff_id=staff_id,
+            month=month,
+            year=year,
+        )
+        handle_errors(response)
+        response_data = response.json()
+        type_adapter = TypeAdapter(list[Shift])
+        return type_adapter.validate_python(response_data['shifts'])
+
+    async def create(
+            self,
+            *,
+            staff_id: int,
+            dates: list[datetime.date],
+    ) -> ShiftCreateResult:
+        response = await self.__connection.create(
+            staff_id=staff_id,
+            dates=dates,
+        )
+        handle_errors(response)
+        response_data = response.json()
+        return ShiftCreateResult.model_validate(response_data)

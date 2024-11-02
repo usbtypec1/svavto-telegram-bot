@@ -34,7 +34,7 @@ async def on_show_shift_cars_count_by_staff(
             use_cache=False,
         ),
 ) -> None:
-    now = datetime.now(ZoneInfo(config.timezone))
+    now = datetime.now(config.timezone)
     shift_cars = await car_to_wash_repository.get_count_by_staff(now)
     view = ShiftCarsCountByStaffView(shift_cars)
     await answer_view(message, view)
@@ -54,7 +54,7 @@ async def on_show_shift_cars_without_windshield_washer(
             use_cache=False,
         ),
 ) -> None:
-    now = datetime.now(ZoneInfo(config.timezone))
+    now = datetime.now(config.timezone)
     shift_cars = await car_to_wash_repository.get_without_windshield_washer(now)
     view = ShiftCarsWithoutWindshieldWasherView(shift_cars)
     await answer_view(message, view)

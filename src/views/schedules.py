@@ -27,23 +27,15 @@ class StaffScheduleMenu(TextView):
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
-        url = f'{self.__web_app_base_url}/shifts/apply'
         return ReplyKeyboardMarkup(
             resize_keyboard=True,
             keyboard=[
                 [
-                    KeyboardButton(
-                        text=ButtonText.SCHEDULE_SELF,
-                    ),
-                    KeyboardButton(
-                        text='✏️ Записаться на смены',
-                        web_app=WebAppInfo(url=url),
-                    ),
+                    KeyboardButton(text=ButtonText.SCHEDULE_SELF),
+                    KeyboardButton(text=ButtonText.SHIFT_APPLY),
                 ],
                 [
-                    KeyboardButton(
-                        text=ButtonText.MAIN_MENU,
-                    ),
+                    KeyboardButton(text=ButtonText.MAIN_MENU),
                 ],
             ]
         )

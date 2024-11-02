@@ -1,4 +1,5 @@
 import datetime
+from collections.abc import Iterable
 
 import httpx
 
@@ -101,6 +102,41 @@ class ShiftConnection(ApiConnection):
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
             f'Confirmed shift for staff {staff_id}',
+            extra={'status_code': response.status_code},
+        )
+        return response
+
+    async def get_shifts_by_staff_id(
+            self,
+            staff_id: int,
+            month: int,
+            year: int,
+    ) -> httpx.Response:
+        url = f'/shifts/staff/{staff_id}/'
+        logger.debug(f'Retrieving shifts of staff {staff_id}')
+        query_params = {'month': month, 'year': year}
+        response = await self._http_client.get(url, params=query_params)
+        logger.debug(
+            f'Retrieved shifts of staff {staff_id}',
+            extra={'status_code': response.status_code}
+        )
+        return response
+
+    async def create(
+            self,
+            *,
+            staff_id: int,
+            dates: Iterable[datetime.date],
+    ):
+        url = '/shifts/create/'
+        logger.debug(f'Creating shifts for staff {staff_id}')
+        request_data = {
+            'staff_id': staff_id,
+            'dates': [f'{date:%Y-%m-%d}' for date in dates],
+        }
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            f'Created shifts for staff {staff_id}',
             extra={'status_code': response.status_code},
         )
         return response

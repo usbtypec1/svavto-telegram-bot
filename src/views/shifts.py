@@ -1,4 +1,7 @@
+import datetime
 from collections.abc import Iterable
+from typing import Final
+from zoneinfo import ZoneInfo
 
 from aiogram.types import (
     InlineKeyboardButton, InlineKeyboardMarkup,
@@ -9,8 +12,11 @@ from aiogram.utils.media_group import MediaType
 
 from callback_data import (
     CarClassChoiceCallbackData,
-    ShiftRejectCallbackData, ShiftStartCallbackData,
-    ShiftStartCarWashCallbackData, ShiftWorkTypeChoiceCallbackData,
+    ShiftApplyCallbackData,
+    ShiftRejectCallbackData,
+    ShiftStartCallbackData,
+    ShiftStartCarWashCallbackData,
+    ShiftWorkTypeChoiceCallbackData,
     WashTypeChoiceCallbackData,
     WindshieldWasherRefilledValueCallbackData,
 )
@@ -18,8 +24,11 @@ from callback_data.prefixes import CallbackDataPrefix
 from callback_data.shifts import ShiftCarWashUpdateCallbackData
 from enums import CarClass, ShiftWorkType, WashType
 from models import (
-    CarWash, ShiftCarsCountByStaff,
-    ShiftCarsWithoutWindshieldWasher, ShiftFinishResult,
+    CarWash,
+    MonthAndYear,
+    ShiftCarsCountByStaff,
+    ShiftCarsWithoutWindshieldWasher,
+    ShiftFinishResult,
 )
 from views.base import MediaGroupView, TextView
 from views.button_texts import ButtonText
@@ -48,6 +57,9 @@ __all__ = (
     'StaffFirstShiftFinishedView',
     'ShiftStartConfirmView',
     'ShiftStartCarWashChooseView',
+    'ShiftApplyChooseMonthView',
+    'ShiftApplyScheduleMonthCalendarWebAppView',
+    'StaffShiftScheduleCreatedNotificationView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -171,6 +183,21 @@ class WindshieldWasherRefilledInputView(TextView):
 
 windshield_washer_refilled_values: tuple[int, ...] = (
     10, 20, 30, 50, 70, 90, 100, 120,
+)
+
+month_names: Final[tuple[str, ...]] = (
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
 )
 
 
@@ -508,3 +535,83 @@ class ShiftStartCarWashChooseView(TextView):
             )
 
         return keyboard.as_markup()
+
+
+class ShiftApplyChooseMonthView(TextView):
+
+    def __init__(
+            self,
+            available_dates: Iterable[MonthAndYear],
+            timezone: ZoneInfo,
+    ):
+        self.__available_dates = tuple(available_dates)
+        self.__timezone = timezone
+
+    def get_text(self) -> str:
+        if self.__available_dates:
+            return 'Выберите месяц'
+        return 'Нет доступных месяцев для записи на смену'
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        keyboard = InlineKeyboardBuilder()
+        keyboard.max_width = 1
+
+        now = datetime.datetime.now(self.__timezone)
+
+        for available_date in self.__available_dates:
+            month_name = month_names[available_date.month - 1]
+
+            if available_date.year == now.year:
+                text = month_name
+            else:
+                text = f'{month_name} - {available_date.year} год'
+
+            keyboard.button(
+                text=text,
+                callback_data=ShiftApplyCallbackData(
+                    month=available_date.month,
+                    year=available_date.year,
+                ),
+            )
+
+        return keyboard.as_markup()
+
+
+class ShiftApplyScheduleMonthCalendarWebAppView(TextView):
+    text = 'Выберите даты рабочих смен'
+
+    def __init__(
+            self,
+            web_app_base_url: str,
+            month: int,
+            year: int,
+    ):
+        self.__web_app_base_url = web_app_base_url
+        self.__month = month
+        self.__year = year
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        url = (
+            f'{self.__web_app_base_url}/shifts/apply'
+            f'?year={self.__year}&month={self.__month}'
+        )
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[
+                [
+                    KeyboardButton(
+                        text=ButtonText.SHIFT_SCHEDULE_MONTH_CALENDAR,
+                        web_app=WebAppInfo(url=url)
+                    ),
+                ],
+            ],
+        )
+
+
+class StaffShiftScheduleCreatedNotificationView(TextView):
+
+    def __init__(self, staff_full_name: str):
+        self.__staff_full_name = staff_full_name
+
+    def get_text(self) -> str:
+        return f'Сотрудник {self.__staff_full_name} внес график работы'

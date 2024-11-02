@@ -2,7 +2,14 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-__all__ = ('Staff', 'StaffToRegister', 'StaffToRegisterWithId')
+from models import MonthAndYear
+
+__all__ = (
+    'Staff',
+    'StaffToRegister',
+    'StaffToRegisterWithId',
+    'StaffWithAvailableDates',
+)
 
 
 class StaffToRegister(BaseModel):
@@ -22,3 +29,7 @@ class Staff(BaseModel):
     console_phone_number: str
     is_banned: bool
     created_at: datetime
+
+
+class StaffWithAvailableDates(Staff):
+    available_dates: list[MonthAndYear]
