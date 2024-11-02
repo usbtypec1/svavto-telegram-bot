@@ -3,13 +3,10 @@ from typing import TypeAlias
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import (
-    InlineKeyboardMarkup,
-    ReplyKeyboardMarkup,
-    ForceReply,
-    ReplyKeyboardRemove,
-    Message,
-    CallbackQuery,
+    CallbackQuery, ForceReply, InlineKeyboardMarkup, Message,
+    ReplyKeyboardMarkup, ReplyKeyboardRemove,
 )
+from aiogram.utils.media_group import MediaGroupBuilder, MediaType
 
 __all__ = (
     'ReplyMarkup',
@@ -19,9 +16,8 @@ __all__ = (
     'answer_or_edit_message_by_view',
     'send_view',
     'answer_media_group_view',
+    'MediaGroupView',
 )
-
-from aiogram.utils.media_group import MediaGroupBuilder, MediaType
 
 ReplyMarkup: TypeAlias = (
         InlineKeyboardMarkup

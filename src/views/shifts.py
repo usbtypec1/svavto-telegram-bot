@@ -19,7 +19,8 @@ from models import (
     CarWash, ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher, ShiftFinishResult,
 )
-from views.base import MediaGroupView, ReplyMarkup, TextView
+from views.base import MediaGroupView, TextView
+from views.button_texts import ButtonText
 
 __all__ = (
     'ShiftWorkTypeChoiceView',
@@ -41,6 +42,8 @@ __all__ = (
     'ShiftFinishConfirmAllView',
     'ShiftFinishPhotosView',
     'StaffShiftFinishedNotificationView',
+    'StaffShiftFinishedView',
+    'StaffFirstShiftFinishedView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -426,3 +429,27 @@ class StaffShiftFinishedNotificationView(MediaGroupView):
             lines.append(car_number)
 
         return '\n'.join(lines)
+
+
+class StaffFirstShiftFinishedView(TextView):
+    text = (
+        'Спасибо за работу! Заполните, пожалуйста, график работы.'
+        ' Для этого нажмите на кнопку "График работы" или выберите'
+        ' "Сделаю это позже", если хотите заполнить график позже.'
+    )
+    reply_markup = ReplyKeyboardMarkup(
+        resize_keyboard=True,
+        keyboard=[
+            [
+                KeyboardButton(text=ButtonText.SHIFT_SCHEDULE),
+                KeyboardButton(text=ButtonText.LATER)
+            ],
+        ],
+    )
+
+
+class StaffShiftFinishedView(TextView):
+    text = (
+        'Проверьте, что все отчеты заполнены верно!'
+        ' Спасибо за работу и хорошего дня!'
+    )

@@ -14,17 +14,29 @@ from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
 from views.base import answer_media_group_view, answer_view
 from views.button_texts import ButtonText
-from views.menu import ShiftMenuView
+from views.menu import MainMenuView, ShiftMenuView
 from views.shifts import (
     ShiftFinishConfirmAllView,
     ShiftFinishConfirmView,
     ShiftFinishPhotoConfirmView,
-    ShiftFinishPhotosView, StaffShiftFinishedNotificationView,
+    ShiftFinishPhotosView, StaffFirstShiftFinishedView,
+    StaffShiftFinishedNotificationView, StaffShiftFinishedView,
 )
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.message(
+    F.text == ButtonText.LATER,
+    invert_f(admins_filter),
+    StateFilter('*'),
+)
+async def on_new_shift_later(message: Message) -> None:
+    await message.answer('Хорошо! Возвращаюсь к главному меню.')
+    view = MainMenuView()
+    await answer_view(message, view)
 
 
 @router.callback_query(
@@ -70,6 +82,15 @@ async def on_shift_finish_accept(
     shift_finish_result = await shift_repository.finish(
         staff_id=callback_query.from_user.id,
     )
+
+    if shift_finish_result.is_first_shift:
+        view = StaffFirstShiftFinishedView()
+    else:
+        view = StaffShiftFinishedView()
+    await callback_query.message.edit_text(
+        format_accept_text(callback_query.message),
+    )
+    await answer_view(callback_query.message, view)
 
     view = StaffShiftFinishedNotificationView(
         shift_finish_result,
