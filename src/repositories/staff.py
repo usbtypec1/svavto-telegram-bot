@@ -44,11 +44,6 @@ class StaffRepository:
             car_sharing_phone_number=staff.car_sharing_phone_number,
             console_phone_number=staff.console_phone_number,
         )
-        response_data = response.json()
-        logger.info(
-            'Decoded staff create response JSON data',
-            extra={'response_data': response_data},
-        )
         handle_errors(response)
 
     async def update_by_telegram_id(
