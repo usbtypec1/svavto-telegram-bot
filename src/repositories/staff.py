@@ -4,8 +4,10 @@ from pydantic import TypeAdapter
 
 from connections import StaffConnection
 from logger import create_logger
-from models import Staff, StaffToRegister, StaffAvailableDates, \
-    StaffToRegisterWithId
+from models import (
+    Staff, StaffToRegister, StaffAvailableDates,
+    StaffToRegisterWithId,
+)
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
@@ -35,7 +37,7 @@ class StaffRepository:
         type_adapter = TypeAdapter(list[Staff])
         return type_adapter.validate_python(response_data['staff'])
 
-    async def create(self, staff: StaffToRegisterWithId) -> Staff:
+    async def create(self, staff: StaffToRegisterWithId) -> None:
         response = await self.__connection.create(
             telegram_id=staff.id,
             full_name=staff.full_name,
@@ -48,7 +50,6 @@ class StaffRepository:
             extra={'response_data': response_data},
         )
         handle_errors(response)
-        return Staff.model_validate(response_data)
 
     async def update_by_telegram_id(
             self,
