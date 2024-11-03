@@ -8,7 +8,7 @@ from fast_depends import Depends, inject
 
 from callback_data import (
     ExtraShiftCreateAcceptCallbackData,
-    ExtraShiftCreateRejectCallbackData,
+    ExtraShiftCreateRejectCallbackData, ExtraShiftStartCallbackData,
 )
 from config import Config
 from dependencies.repositories import get_staff_repository
@@ -28,6 +28,37 @@ from views.shifts import (
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.callback_query(
+    ExtraShiftStartCallbackData.filter(),
+    invert_f(admins_filter),
+    StateFilter('*'),
+)
+async def on_extra_shift_start(
+        callback_query: CallbackQuery,
+        callback_data: ExtraShiftStartCallbackData,
+        config: Config,
+) -> None:
+    now_date = datetime.datetime.now(config.timezone).date()
+    shift_date = callback_data.date
+    if now_date > shift_date:
+        await callback_query.answer(
+            text='❌ Вы не можете начать запланированную в прошлом доп.смену',
+            show_alert=True,
+        )
+    elif now_date < callback_data.date:
+        await callback_query.answer(
+            text=(
+                f'❌ Вы сможете начать доп.смену только в {shift_date:%d.%m.%Y}'
+            ),
+            show_alert=True,
+        )
+    else:
+        await callback_query.answer('✅ Вы начали доп.смену', show_alert=True)
+        await callback_query.message.edit_text(
+            format_accept_text(callback_query.message),
+        )
 
 
 @router.callback_query(
@@ -113,7 +144,10 @@ async def on_extra_shift_calendar(
         shift_date=shift_date,
     )
     await admins_notification_service.send_view(view)
-    await message.answer('✅ Ваш запрос на доп.смену отправлен на проверку')
+    await message.answer(
+        '✅ Ваш запрос на доп.смену в'
+        f' {shift_date:%d.%m.%Y} отправлен на проверку'
+    )
     view = MainMenuView()
     await answer_view(message, view)
 
