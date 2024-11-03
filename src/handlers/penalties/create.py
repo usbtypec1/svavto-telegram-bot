@@ -7,12 +7,15 @@ from fast_depends import Depends, inject
 from callback_data import PenaltyCreateChooseStaffCallbackData, \
     PenaltyCreateChooseReasonCallbackData
 from callback_data.prefixes import CallbackDataPrefix
+from config import Config
 from dependencies.repositories import get_staff_repository, \
     get_economics_repository
 from enums import PenaltyReason
 from filters import admins_filter
 from repositories import StaffRepository, EconomicsRepository
+from services.telegram_events import format_reject_text
 from states import PenaltyCreateStates
+from views.admins import AdminMenuView
 from views.base import answer_view, edit_message_by_view
 from views.button_texts import ButtonText
 from views.penalties import (
@@ -35,11 +38,14 @@ router = Router(name=__name__)
 async def on_reject_penalty_creation(
         callback_query: CallbackQuery,
         state: FSMContext,
+        config: Config,
 ) -> None:
     await state.clear()
     await callback_query.message.edit_text(
-        f'{callback_query.message.text}\n\n<i>Отменено</i>',
+        format_reject_text(callback_query.message),
     )
+    view = AdminMenuView(config.web_app_base_url)
+    await answer_view(callback_query.message, view)
 
 
 @router.callback_query(
@@ -51,6 +57,7 @@ async def on_reject_penalty_creation(
 async def on_accept_penalty_creation(
         callback_query: CallbackQuery,
         state: FSMContext,
+        config: Config,
         economics_repository: EconomicsRepository = Depends(
             dependency=get_economics_repository,
             use_cache=False,
@@ -70,6 +77,8 @@ async def on_accept_penalty_creation(
     staff = await staff_repository.get_by_id(staff_id)
     view = PenaltyCreateSuccessView(penalty, staff)
     await edit_message_by_view(callback_query.message, view)
+    view = AdminMenuView(config.web_app_base_url)
+    await answer_view(callback_query.message, view)
 
 
 @router.message(
