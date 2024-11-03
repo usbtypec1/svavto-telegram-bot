@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram.filters.callback_data import CallbackData
 
 from callback_data.prefixes import CallbackDataPrefix
@@ -15,6 +17,9 @@ __all__ = (
     'ShiftStartCallbackData',
     'ShiftStartCarWashCallbackData',
     'ShiftApplyCallbackData',
+    'ExtraShiftCreateAcceptCallbackData',
+    'ExtraShiftCreateRejectCallbackData',
+    'ExtraShiftStartCallbackData',
 )
 
 
@@ -94,3 +99,26 @@ class ShiftApplyCallbackData(
 ):
     month: int
     year: int
+
+
+class ExtraShiftCreateAcceptCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_EXTRA_CREATE_ACCEPT,
+):
+    staff_id: int
+    date: datetime.date
+
+
+class ExtraShiftCreateRejectCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_EXTRA_CREATE_REJECT,
+):
+    staff_id: int
+    date: datetime.date
+
+
+class ExtraShiftStartCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_EXTRA_START,
+):
+    date: datetime.date

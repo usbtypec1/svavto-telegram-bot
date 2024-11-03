@@ -1,6 +1,5 @@
 import datetime
 from collections.abc import Iterable
-from turtledemo.penrose import start
 from typing import Final
 from zoneinfo import ZoneInfo
 
@@ -13,7 +12,8 @@ from aiogram.utils.media_group import MediaType
 
 from callback_data import (
     CarClassChoiceCallbackData,
-    ShiftApplyCallbackData,
+    ExtraShiftCreateAcceptCallbackData, ExtraShiftCreateRejectCallbackData,
+    ExtraShiftStartCallbackData, ShiftApplyCallbackData,
     ShiftRejectCallbackData,
     ShiftStartCallbackData,
     ShiftStartCarWashCallbackData,
@@ -31,7 +31,7 @@ from models import (
     ShiftCarsWithoutWindshieldWasher,
     ShiftFinishResult,
 )
-from views.base import MediaGroupView, TextView
+from views.base import MediaGroupView, ReplyMarkup, TextView
 from views.button_texts import ButtonText
 
 __all__ = (
@@ -63,6 +63,9 @@ __all__ = (
     'StaffShiftScheduleCreatedNotificationView',
     'StaffHasNoAnyCreatedShiftView',
     'StaffScheduleCreatedShiftView',
+    'ExtraShiftScheduleWebAppView',
+    'ExtraShiftScheduleNotificationView',
+    'ExtraShiftStartView',
 )
 
 shift_work_types_and_names: tuple[tuple[ShiftWorkType, str], ...] = (
@@ -649,3 +652,91 @@ class StaffScheduleCreatedShiftView(TextView):
             lines.append(f'{i}. {shift_date:%d.%m.%Y}')
 
         return '\n'.join(lines)
+
+
+class ExtraShiftScheduleWebAppView(TextView):
+    text = '📆 Выберите дату'
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        url = f'{self.__web_app_base_url}/shifts/extra'
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[
+                [
+                    KeyboardButton(
+                        text=ButtonText.EXTRA_SHIFT_CALENDAR,
+                        web_app=WebAppInfo(url=url),
+                    ),
+                ],
+                [
+                    KeyboardButton(text=ButtonText.MAIN_MENU),
+                ],
+            ],
+        )
+
+
+class ExtraShiftScheduleNotificationView(TextView):
+
+    def __init__(
+            self,
+            staff_id: int,
+            staff_full_name: str,
+            shift_date: datetime.date,
+    ):
+        self.__staff_id = staff_id
+        self.__staff_full_name = staff_full_name
+        self.__shift_date = shift_date
+
+    def get_text(self) -> str:
+        return (
+            f'Сотрудник {self.__staff_full_name} запросил доп.смену'
+            f' на дату {self.__shift_date:%d.%m.%Y}'
+        )
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        accept_button = InlineKeyboardButton(
+            text='✅ Подтвердить',
+            callback_data=ExtraShiftCreateAcceptCallbackData(
+                staff_id=self.__staff_id,
+                date=self.__shift_date,
+            ).pack(),
+        )
+        reject_button = InlineKeyboardButton(
+            text='❌ Отклонить',
+            callback_data=ExtraShiftCreateRejectCallbackData(
+                staff_id=self.__staff_id,
+                date=self.__shift_date,
+            ).pack(),
+        )
+        return InlineKeyboardMarkup(
+            inline_keyboard=[[accept_button, reject_button]],
+        )
+
+
+class ExtraShiftStartView(TextView):
+
+    def __init__(
+            self,
+            staff_full_name: str,
+            shift_date: datetime.date
+    ):
+        self.__staff_full_name = staff_full_name
+        self.__shift_date = shift_date
+
+    def get_text(self) -> str:
+        return (
+            f'✅ {self.__staff_full_name}, ваш запрос на доп.смену на дату'
+            f' {self.__shift_date:%d.%m.%Y} подтвержден'
+        )
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        button = InlineKeyboardButton(
+            text='🚀 Начать доп.смену',
+            callback_data=ExtraShiftStartCallbackData(
+                date=self.__shift_date,
+            ).pack(),
+        )
+        return InlineKeyboardMarkup(inline_keyboard=[[button]])

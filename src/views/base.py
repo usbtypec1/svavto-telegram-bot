@@ -96,11 +96,15 @@ async def send_view(
         bot: Bot,
         view: TextView,
         *chat_ids: int,
-) -> None:
+) -> list[Message | None]:
     text = view.get_text()
     reply_markup = view.get_reply_markup()
+    result = []
     for chat_id in chat_ids:
         try:
-            await bot.send_message(chat_id, text, reply_markup=reply_markup)
+            result.append(
+                await bot.send_message(chat_id, text, reply_markup=reply_markup)
+            )
         except TelegramAPIError:
-            pass
+            result.append(None)
+    return result
