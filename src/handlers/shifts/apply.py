@@ -34,6 +34,7 @@ router = Router(name=__name__)
 @inject
 async def on_shift_schedule_month_calendar_input(
         message: Message,
+        config: Config,
         admins_notification_service: SpecificChatsNotificationService,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
@@ -49,7 +50,7 @@ async def on_shift_schedule_month_calendar_input(
         dates=shift_dates,
     )
     await message.answer('✅ График успешно отправлен')
-    view = MainMenuView()
+    view = MainMenuView(config.web_app_base_url)
     await answer_view(message, view)
     view = StaffShiftScheduleCreatedNotificationView(
         staff_full_name=shift_create_result.staff_full_name,

@@ -130,6 +130,7 @@ async def on_extra_shift_create_reject(
 @inject
 async def on_extra_shift_calendar(
         message: Message,
+        config: Config,
         admins_notification_service: SpecificChatsNotificationService,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
@@ -148,7 +149,7 @@ async def on_extra_shift_calendar(
         '✅ Ваш запрос на доп.смену в'
         f' {shift_date:%d.%m.%Y} отправлен на проверку'
     )
-    view = MainMenuView()
+    view = MainMenuView(config.web_app_base_url)
     await answer_view(message, view)
 
 

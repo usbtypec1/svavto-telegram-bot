@@ -35,3 +35,4 @@ class ButtonText(StrEnum):
     SHIFT_APPLY = '✏️ Записаться на смены'
     SHIFT_SCHEDULE_MONTH_CALENDAR = '📅 Выбрать даты рабочих смен'
     EXTRA_SHIFT_CALENDAR = '📆 Выбрать дату на доп.смену'
+

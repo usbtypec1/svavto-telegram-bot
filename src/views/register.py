@@ -66,7 +66,6 @@ class StaffRegisterNotificationView(TextView):
 
 class StaffRegisterAcceptedView(TextView):
     text = '✅ Ваша заявка на регистрацию принята'
-    reply_markup = MainMenuView.reply_markup
 
 
 class StaffRegisterRejectedView(TextView):

@@ -1,8 +1,7 @@
 from aiogram.types import (
-    ReplyKeyboardMarkup,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    KeyboardButton, WebAppInfo, )
+    InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
+    ReplyKeyboardMarkup, WebAppInfo,
+)
 
 from views.base import TextView
 from views.button_texts import ButtonText
@@ -12,21 +11,30 @@ __all__ = ('MainMenuView', 'RegisterView', 'ShiftMenuView')
 
 class MainMenuView(TextView):
     text = 'Главное меню'
-    reply_markup = ReplyKeyboardMarkup(
-        resize_keyboard=True,
-        keyboard=[
-            [
-                KeyboardButton(text=ButtonText.SHIFT_START),
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        report_web_app_url = f'{self.__web_app_base_url}/reports'
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[
+                [
+                    KeyboardButton(text=ButtonText.SHIFT_START),
+                ],
+                [
+                    KeyboardButton(text=ButtonText.SHIFT_START_EXTRA),
+                    KeyboardButton(text=ButtonText.SHIFT_SCHEDULE),
+                ],
+                [
+                    KeyboardButton(
+                        text=ButtonText.REPORT_FOR_PERIOD,
+                        web_app=WebAppInfo(url=report_web_app_url),
+                    ),
+                ],
             ],
-            [
-                KeyboardButton(text=ButtonText.SHIFT_START_EXTRA),
-                KeyboardButton(text=ButtonText.SHIFT_SCHEDULE),
-            ],
-            [
-                KeyboardButton(text=ButtonText.REPORT_FOR_PERIOD),
-            ],
-        ],
-    )
+        )
 
 
 class RegisterView(TextView):

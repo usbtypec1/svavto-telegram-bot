@@ -33,9 +33,12 @@ router = Router(name=__name__)
     invert_f(admins_filter),
     StateFilter('*'),
 )
-async def on_new_shift_later(message: Message) -> None:
+async def on_new_shift_later(
+        message: Message,
+        config: Config,
+) -> None:
     await message.answer('Хорошо! Возвращаюсь к главному меню.')
-    view = MainMenuView()
+    view = MainMenuView(config.web_app_base_url)
     await answer_view(message, view)
 
 
