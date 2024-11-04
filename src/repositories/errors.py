@@ -7,7 +7,7 @@ from enums import ServerApiErrorCode
 from exceptions import (
     ShiftAlreadyConfirmedError, ShiftAlreadyFinishedError,
     ShiftByDateNotFoundError, ShiftNotConfirmedError,
-    StaffHasActiveShiftError,
+    ShiftNotFoundError, StaffHasActiveShiftError,
     StaffHasNoAnyShiftError, StaffNotFoundError,
     ServerApiError,
     StaffAlreadyExistsError, StaffHasNoActiveShiftError, CarWashNotFoundError,
@@ -34,6 +34,7 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.SHIFT_ALREADY_FINISHED: ShiftAlreadyFinishedError,
     ServerApiErrorCode.SHIFT_ALREADY_CONFIRMED: ShiftAlreadyConfirmedError,
     ServerApiErrorCode.STAFF_HAS_NO_ANY_SHIFT: StaffHasNoAnyShiftError,
+    ServerApiErrorCode.SHIFT_NOT_FOUND: ShiftNotFoundError,
 }
 
 

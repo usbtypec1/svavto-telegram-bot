@@ -42,7 +42,7 @@ router = Router(name=__name__)
 @router.callback_query(
     ShiftStartCarWashCallbackData.filter(),
     invert_f(admins_filter),
-    StateFilter('*'),
+    StateFilter(ShiftStartStates.car_wash),
 )
 @inject
 async def on_start_shift_car_wash(
@@ -111,9 +111,11 @@ async def on_send_confirmation_to_staff(
             staff_full_name=shift_confirmation.staff_full_name,
         )
         try:
-            await send_view(bot, view, message.chat.id)
+            await send_view(bot, view, shift_confirmation.staff_id)
         except TelegramAPIError:
             pass
+
+    await message.answer('✅ Запросы на начало смены отправлены')
 
 
 @router.callback_query(
