@@ -1,12 +1,12 @@
 from aiogram.types import (
     InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
-    ReplyKeyboardMarkup, WebAppInfo,
+    ReplyKeyboardMarkup, ReplyKeyboardRemove, WebAppInfo,
 )
 
 from views.base import TextView
 from views.button_texts import ButtonText
 
-__all__ = ('MainMenuView', 'RegisterView', 'ShiftMenuView')
+__all__ = ('MainMenuView', 'RegisterView', 'ShiftMenuView', 'StaffBannedView')
 
 
 class MainMenuView(TextView):
@@ -82,3 +82,8 @@ class ShiftMenuView(TextView):
                 ],
             ],
         )
+
+
+class StaffBannedView(TextView):
+    text = '❌ Вы заблокированы в боте'
+    reply_markup = ReplyKeyboardRemove()

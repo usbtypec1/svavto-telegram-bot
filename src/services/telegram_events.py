@@ -1,6 +1,6 @@
 import json
 
-from aiogram.types import ErrorEvent, InlineKeyboardMarkup, Message
+from aiogram.types import ErrorEvent, InlineKeyboardMarkup, Message, Update
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from models import Button
@@ -12,6 +12,8 @@ __all__ = (
     'format_accept_text',
     'format_reject_text',
     'reply_markup_to_buttons',
+    'get_user_id_from_update',
+    'answer_to_update',
 )
 
 
@@ -56,3 +58,20 @@ def format_accept_text(message: Message) -> str:
 
 def format_reject_text(message: Message) -> str:
     return f'{message.text}\n\n<i>❌ Отменено</i>'
+
+
+def get_user_id_from_update(update: Update) -> int:
+    if update.message is not None:
+        return update.message.from_user.id
+    if update.callback_query is not None:
+        return update.callback_query.from_user.id
+    raise ValueError(f'Invalid update type: {update}')
+
+
+async def answer_to_update(update: Update, text: str) -> None:
+    if update.message is not None:
+        await update.message.answer(text)
+    elif update.callback_query is not None:
+        await update.callback_query.answer(text=text, show_alert=True)
+    else:
+        raise ValueError(f'Invalid update type: {update}')
