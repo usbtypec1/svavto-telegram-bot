@@ -72,12 +72,14 @@ class MailingReplyMarkupWebAppView(TextView):
                 url=f'{self.__web_app_base_url}/mailing/reply-markup',
             ),
         )
+        main_menu_button = KeyboardButton(text=ButtonText.MAIN_MENU)
         skip_button = KeyboardButton(text=ButtonText.SKIP)
         return ReplyKeyboardMarkup(
             resize_keyboard=True,
             keyboard=[
                 [web_app_button],
                 [skip_button],
+                [main_menu_button],
             ],
         )
 

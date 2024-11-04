@@ -127,6 +127,7 @@ async def on_send_confirmation_to_staff(
 async def on_move_to_wash_shift_work_type_choice(
         callback_query: CallbackQuery,
         config: Config,
+        bot: Bot,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,

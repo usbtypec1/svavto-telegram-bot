@@ -26,6 +26,7 @@ def include_handlers(dispatcher: Dispatcher) -> None:
         handlers.surcharges.router,
         handlers.mailing.router,
         handlers.cars.router,
+        handlers.reports.router,
     )
 
 

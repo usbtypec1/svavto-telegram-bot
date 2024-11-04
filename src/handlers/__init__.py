@@ -9,4 +9,5 @@ from . import (
     surcharges,
     mailing,
     cars,
+    reports,
 )
