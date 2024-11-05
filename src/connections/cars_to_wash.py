@@ -20,7 +20,10 @@ class CarToWashConnection(ApiConnection):
             car_to_wash: CarToWashWebAppData,
     ) -> httpx.Response:
         url = '/shifts/cars/'
-        request_data = car_to_wash.model_dump() | {'staff_id': staff_id}
+        request_data = car_to_wash.model_dump() | {
+            'staff_id': staff_id,
+            'car_class': car_to_wash.class_type,
+        }
         logger.debug(
             'Adding car to wash',
             extra={'request_data': request_data}
