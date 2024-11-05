@@ -28,3 +28,7 @@ class StaffHasNoAnyShiftError(Exception):
 
 class ShiftNotFoundError(Exception):
     pass
+
+
+class CarAlreadyWashedOnShiftError(Exception):
+    pass

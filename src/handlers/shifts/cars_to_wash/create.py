@@ -4,6 +4,7 @@ from aiogram.types import Message
 from fast_depends import Depends, inject
 
 from dependencies.repositories import get_car_to_wash_repository
+from exceptions import CarAlreadyWashedOnShiftError
 from filters import admins_filter
 from models import CarToWashWebAppData
 from repositories import CarToWashRepository
@@ -30,8 +31,18 @@ async def on_input_car(
     car_to_wash_web_app_data = CarToWashWebAppData.model_validate_json(
         message.web_app_data.data,
     )
-    car_to_wash = await car_to_wash_repository.create(
-        staff_id=message.from_user.id,
-        car_to_wash=car_to_wash_web_app_data,
+    try:
+        car_to_wash = await car_to_wash_repository.create(
+            staff_id=message.from_user.id,
+            car_to_wash=car_to_wash_web_app_data,
+        )
+    except CarAlreadyWashedOnShiftError:
+        await message.answer(
+            f'❌ Авто с гос.номером {car_to_wash.number}'
+            ' уже было добавлено',
+
+        )
+        return
+    await message.answer(
+        f'✅ Авто с гос.номером {car_to_wash.number} добавлено',
     )
-    print(car_to_wash)

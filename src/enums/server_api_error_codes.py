@@ -16,3 +16,4 @@ class ServerApiErrorCode(StrEnum):
     SHIFT_ALREADY_CONFIRMED = auto()
     STAFF_HAS_NO_ANY_SHIFT = auto()
     SHIFT_NOT_FOUND = auto()
+    CAR_ALREADY_WASHED_ON_SHIFT = auto()
