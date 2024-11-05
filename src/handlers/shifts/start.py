@@ -84,9 +84,15 @@ async def on_start_shift(
             use_cache=False,
         ),
 ) -> None:
-    await state.set_state(ShiftStartStates.car_wash)
-    await state.update_data(shift_id=callback_data.shift_id)
     car_washes = await car_wash_repository.get_all()
+    if not car_washes:
+        await callback_query.answer(
+            text='❌ Нет доступных моек',
+            show_alert=True,
+        )
+        return
+    await state.update_data(shift_id=callback_data.shift_id)
+    await state.set_state(ShiftStartStates.car_wash)
     view = ShiftStartCarWashChooseView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
