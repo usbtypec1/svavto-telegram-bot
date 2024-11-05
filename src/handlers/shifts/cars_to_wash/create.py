@@ -5,7 +5,7 @@ from fast_depends import Depends, inject
 
 from dependencies.repositories import get_car_to_wash_repository
 from filters import admins_filter
-from models import CarToWash
+from models import CarToWashWebAppData
 from repositories import CarToWashRepository
 from views.button_texts import ButtonText
 
@@ -27,7 +27,7 @@ async def on_input_car(
             use_cache=False,
         ),
 ) -> None:
-    car_to_wash_sent_data = CarToWash.model_validate_json(
+    car_to_wash_sent_data = CarToWashWebAppData.model_validate_json(
         message.web_app_data.data,
     )
     car_to_wash = await car_to_wash_repository.create(car_to_wash_sent_data)

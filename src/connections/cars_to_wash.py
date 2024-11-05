@@ -4,7 +4,7 @@ import httpx
 
 from connections.base import ApiConnection
 from logger import create_logger
-from models import CarToWash
+from models import CarToWashWebAppData
 
 __all__ = ('CarToWashConnection',)
 
@@ -15,7 +15,7 @@ class CarToWashConnection(ApiConnection):
 
     async def create(
             self,
-            car_to_wash: CarToWash,
+            car_to_wash: CarToWashWebAppData,
     ) -> httpx.Response:
         url = '/shifts/cars/'
         request_data = car_to_wash.model_dump()

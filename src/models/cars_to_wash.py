@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from enums import CarClass, WashType
 
 __all__ = (
-    'CarToWash',
+    'CarToWashWebAppData',
     'AdditionalService',
     'Car',
     'CarAdditionalServices',
@@ -21,7 +21,7 @@ class AdditionalService(BaseModel):
     count: int
 
 
-class CarToWash(BaseModel):
+class CarToWashWebAppData(BaseModel):
     number: str
     class_type: CarClass
     wash_type: WashType

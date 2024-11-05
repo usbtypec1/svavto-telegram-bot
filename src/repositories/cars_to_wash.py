@@ -4,7 +4,7 @@ from pydantic import TypeAdapter
 
 from connections import CarToWashConnection
 from models import (
-    CarToWash, Car, CarAdditionalServices, CarToWashCreateResult,
+    CarToWashWebAppData, Car, CarAdditionalServices, CarToWashCreateResult,
     ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher,
 )
@@ -18,7 +18,7 @@ class CarToWashRepository:
     def __init__(self, connection: CarToWashConnection):
         self.__connection = connection
 
-    async def create(self, car_to_wash: CarToWash) -> CarToWashCreateResult:
+    async def create(self, car_to_wash: CarToWashWebAppData) -> CarToWashCreateResult:
         response = await self.__connection.create(car_to_wash)
         handle_errors(response)
         response_data = response.json()
