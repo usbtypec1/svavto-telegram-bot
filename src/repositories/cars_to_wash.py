@@ -18,8 +18,16 @@ class CarToWashRepository:
     def __init__(self, connection: CarToWashConnection):
         self.__connection = connection
 
-    async def create(self, car_to_wash: CarToWashWebAppData) -> CarToWashCreateResult:
-        response = await self.__connection.create(car_to_wash)
+    async def create(
+            self,
+            *,
+            staff_id: int,
+            car_to_wash: CarToWashWebAppData,
+    ) -> CarToWashCreateResult:
+        response = await self.__connection.create(
+            staff_id=staff_id,
+            car_to_wash=car_to_wash,
+        )
         handle_errors(response)
         response_data = response.json()
         return CarToWashCreateResult.model_validate(response_data)

@@ -15,10 +15,12 @@ class CarToWashConnection(ApiConnection):
 
     async def create(
             self,
+            *,
+            staff_id: int,
             car_to_wash: CarToWashWebAppData,
     ) -> httpx.Response:
         url = '/shifts/cars/'
-        request_data = car_to_wash.model_dump()
+        request_data = car_to_wash.model_dump() | {'staff_id': staff_id}
         logger.debug(
             'Adding car to wash',
             extra={'request_data': request_data}
