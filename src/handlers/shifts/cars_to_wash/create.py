@@ -27,5 +27,6 @@ async def on_input_car(
             use_cache=False,
         ),
 ) -> None:
-    car_to_wash = CarToWash.model_validate(message.web_app_data.data)
-    await car_to_wash_repository.create(car_to_wash)
+    car_to_wash_sent_data = CarToWash.model_validate(message.web_app_data.data)
+    car_to_wash = await car_to_wash_repository.create(car_to_wash_sent_data)
+    print(car_to_wash)

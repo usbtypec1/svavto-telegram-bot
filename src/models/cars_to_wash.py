@@ -12,6 +12,7 @@ __all__ = (
     'ShiftCarsCountByStaff',
     'CarStatisticsItem',
     'ShiftCarsWithoutWindshieldWasher',
+    'CarToWashCreateResult',
 )
 
 
@@ -57,3 +58,14 @@ class ShiftCarsCountByStaff(BaseModel):
 class ShiftCarsWithoutWindshieldWasher(BaseModel):
     date: datetime.date
     cars: list[str]
+
+
+class CarToWashCreateResult(BaseModel):
+    id: int
+    shift_id: int
+    number: str
+    class_type: CarClass
+    wash_type: WashType
+    windshield_washer_refilled_bottle_percentage: int
+    car_wash_id: int
+    additional_services: list[AdditionalService]

@@ -2,7 +2,6 @@ from aiogram import Router
 
 from . import (
     start,
-    add_car,
     menu,
     cars_to_wash,
     errors,
@@ -20,7 +19,6 @@ router = Router(name=__name__)
 router.include_routers(
     apply.router,
     start.router,
-    add_car.router,
     menu.router,
     cars_to_wash.router,
     errors.router,

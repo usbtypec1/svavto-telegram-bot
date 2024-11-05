@@ -3,8 +3,11 @@ import datetime
 from pydantic import TypeAdapter
 
 from connections import CarToWashConnection
-from models import CarToWash, Car, CarAdditionalServices, ShiftCarsCountByStaff, \
-    ShiftCarsWithoutWindshieldWasher
+from models import (
+    CarToWash, Car, CarAdditionalServices, CarToWashCreateResult,
+    ShiftCarsCountByStaff,
+    ShiftCarsWithoutWindshieldWasher,
+)
 from repositories.errors import handle_errors
 
 __all__ = ('CarToWashRepository',)
@@ -15,9 +18,11 @@ class CarToWashRepository:
     def __init__(self, connection: CarToWashConnection):
         self.__connection = connection
 
-    async def create(self, car_to_wash: CarToWash):
+    async def create(self, car_to_wash: CarToWash) -> CarToWashCreateResult:
         response = await self.__connection.create(car_to_wash)
         handle_errors(response)
+        response_data = response.json()
+        return CarToWashCreateResult.model_validate(response_data)
 
     async def get_all(self, staff_id: int) -> list[Car]:
         response = await self.__connection.get_all(staff_id)
