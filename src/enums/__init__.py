@@ -4,5 +4,6 @@ from .mailing_types import *
 from .penalty_reasons import *
 from .server_api_error_codes import *
 from .shift_work_types import *
+from .staff_order_by import *
 from .staff_update_actions import *
 from .wash_types import *

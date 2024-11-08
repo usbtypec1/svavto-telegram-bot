@@ -40,9 +40,10 @@ class StaffConnection(ApiConnection):
         )
         return response
 
-    async def get_all(self) -> httpx.Response:
+    async def get_all(self, *, order_by: str) -> httpx.Response:
         url = '/staff/'
-        return await self._http_client.get(url)
+        query_params = {'order_by': order_by}
+        return await self._http_client.get(url, params=query_params)
 
     async def update_by_telegram_id(
             self,

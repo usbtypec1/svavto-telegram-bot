@@ -6,6 +6,7 @@ from fast_depends import Depends, inject
 from callback_data import StaffScheduleDetailCallbackData
 from config import Config
 from dependencies.repositories import get_staff_repository
+from enums import StaffOrderBy
 from filters import admins_filter
 from models import StaffAvailableDates
 from repositories import StaffRepository
@@ -32,7 +33,9 @@ async def on_show_staff_list(
             use_cache=False,
         ),
 ) -> None:
-    staff_list = await staff_repository.get_all()
+    staff_list = await staff_repository.get_all(
+        order_by=StaffOrderBy.FULL_NAME_ASC,
+    )
     view = StaffListForScheduleView(staff_list)
     await answer_view(message, view)
 

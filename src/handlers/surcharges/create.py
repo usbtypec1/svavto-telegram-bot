@@ -11,6 +11,7 @@ from dependencies.repositories import (
     get_staff_repository,
     get_economics_repository,
 )
+from enums import StaffOrderBy
 from exceptions.surcharges import SurchargeAmountParseError
 from filters import admins_filter
 from repositories import StaffRepository, EconomicsRepository
@@ -162,7 +163,9 @@ async def on_start_surcharge_create_flow(
             use_cache=False,
         ),
 ) -> None:
-    staff_list = await staff_repository.get_all()
+    staff_list = await staff_repository.get_all(
+        order_by=StaffOrderBy.FULL_NAME_ASC,
+    )
     view = SurchargeCreateChooseStaffView(staff_list)
     await state.set_state(SurchargeCreateStates.staff)
     await answer_view(message, view)

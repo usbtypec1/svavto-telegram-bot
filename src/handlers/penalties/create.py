@@ -10,7 +10,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import get_staff_repository, \
     get_economics_repository
-from enums import PenaltyReason
+from enums import PenaltyReason, StaffOrderBy
 from filters import admins_filter
 from repositories import StaffRepository, EconomicsRepository
 from services.telegram_events import format_reject_text
@@ -167,7 +167,9 @@ async def on_start_penalty_create_flow(
             use_cache=False,
         ),
 ) -> None:
-    staff_list = await staff_repository.get_all()
+    staff_list = await staff_repository.get_all(
+        order_by=StaffOrderBy.FULL_NAME_ASC,
+    )
     view = PenaltyCreateChooseStaffView(staff_list)
     await state.set_state(PenaltyCreateStates.staff)
     await answer_view(message, view)

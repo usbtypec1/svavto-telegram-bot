@@ -1,8 +1,7 @@
 from pydantic import TypeAdapter
 
-from pydantic import TypeAdapter
-
 from connections import StaffConnection
+from enums import StaffOrderBy
 from logger import create_logger
 from models import (
     Staff,
@@ -31,8 +30,8 @@ class StaffRepository:
         handle_errors(response)
         return StaffWithAvailableDates.model_validate(response_data)
 
-    async def get_all(self) -> list[Staff]:
-        response = await self.__connection.get_all()
+    async def get_all(self, *, order_by: StaffOrderBy) -> list[Staff]:
+        response = await self.__connection.get_all(order_by=order_by)
         response_data = response.json()
         handle_errors(response)
         type_adapter = TypeAdapter(list[Staff])
