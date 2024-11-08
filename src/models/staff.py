@@ -29,6 +29,7 @@ class Staff(BaseModel):
     console_phone_number: str
     is_banned: bool
     created_at: datetime
+    last_activity_at: datetime
 
 
 class StaffWithAvailableDates(Staff):

@@ -1,10 +1,6 @@
 from aiogram.types import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    ForceReply,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-    WebAppInfo,
+    ForceReply, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
+    ReplyKeyboardMarkup, WebAppInfo,
 )
 
 from callback_data import MailingTypeChooseCallbackData
@@ -19,6 +15,9 @@ __all__ = (
     'MailingReplyMarkupWebAppView',
     'MailingConfirmView',
     'MailingStaffWebAppView',
+    'MailingPhotoAlreadyAcceptedView',
+    'MailingPhotoAcceptedView',
+    'MailingPhotoInputView',
 )
 
 
@@ -28,7 +27,7 @@ class MailingTypeChooseView(TextView):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text='Всем',
+                    text='👥 Всем',
                     callback_data=MailingTypeChooseCallbackData(
                         type=MailingType.ALL,
                     ).pack(),
@@ -36,7 +35,7 @@ class MailingTypeChooseView(TextView):
             ],
             [
                 InlineKeyboardButton(
-                    text='Конкретным пользователям',
+                    text='👤 Конкретным пользователям',
                     callback_data=MailingTypeChooseCallbackData(
                         type=MailingType.SPECIFIC_STAFF,
                     ).pack(),
@@ -44,7 +43,7 @@ class MailingTypeChooseView(TextView):
             ],
             [
                 InlineKeyboardButton(
-                    text='Активным за последние 30 дн.',
+                    text='📆 Активным за последние 30 дн.',
                     callback_data=MailingTypeChooseCallbackData(
                         type=MailingType.LAST_ACTIVE,
                     ).pack(),
@@ -56,7 +55,6 @@ class MailingTypeChooseView(TextView):
 
 class MailingTextInputView(TextView):
     text = 'Введите текст рассылки (вы можете использовать форматирование)'
-    reply_markup = ForceReply(input_field_placeholder='Текст рассылки')
 
 
 class MailingReplyMarkupWebAppView(TextView):
@@ -78,8 +76,7 @@ class MailingReplyMarkupWebAppView(TextView):
             resize_keyboard=True,
             keyboard=[
                 [web_app_button],
-                [skip_button],
-                [main_menu_button],
+                [main_menu_button, skip_button],
             ],
         )
 
@@ -115,6 +112,54 @@ class MailingConfirmView(TextView):
                 InlineKeyboardButton(
                     text='Отклонить',
                     callback_data=CallbackDataPrefix.MAILING_CREATE_REJECT,
+                )
+            ]
+        ]
+    )
+
+
+class MailingPhotoAcceptedView(TextView):
+    text = (
+        '✅ Фото прикреплено\n'
+        'Если хотите прикрепить ещё одну, отправьте новое фото'
+    )
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='✅ Завершить добавление фото',
+                    callback_data=CallbackDataPrefix.MAILING_PHOTO_ACCEPT_FINISH,
+                ),
+            ],
+        ],
+    )
+
+
+class MailingPhotoAlreadyAcceptedView(TextView):
+    text = (
+        '❗️ Фото уже прикреплено\n'
+        'Если хотите прикрепить ещё одну, отправьте новое фото'
+    )
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='✅ Завершить добавление фото',
+                    callback_data=CallbackDataPrefix.MAILING_PHOTO_ACCEPT_FINISH,
+                ),
+            ],
+        ],
+    )
+
+
+class MailingPhotoInputView(TextView):
+    text = '🖼️ Отправьте фото для рассылки'
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='🔜 Пропустить',
+                    callback_data=CallbackDataPrefix.MAILING_PHOTO_ACCEPT_FINISH,
                 )
             ]
         ]

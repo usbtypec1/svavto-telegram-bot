@@ -1,7 +1,11 @@
 import json
 
-from aiogram.types import ErrorEvent, InlineKeyboardMarkup, Message, Update
+from aiogram.types import (
+    ErrorEvent, InlineKeyboardButton,
+    InlineKeyboardMarkup, Message, Update,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from pydantic import TypeAdapter
 
 from models import Button
 
@@ -27,15 +31,11 @@ async def answer_appropriate_event(event: ErrorEvent, text: str) -> None:
 
 
 def parse_web_app_data_buttons(web_app_data: str) -> InlineKeyboardMarkup:
-    web_app_data = json.loads(web_app_data)
-    keyboard = InlineKeyboardBuilder()
-    keyboard.max_width = 1
-    for button in web_app_data['buttons']:
-        keyboard.button(
-            text=button['text'],
-            url=button['url'],
-        )
-    return keyboard.as_markup()
+    type_adapter = TypeAdapter(list[InlineKeyboardButton])
+    buttons = type_adapter.validate_json(web_app_data)
+    return InlineKeyboardMarkup(
+        inline_keyboard=[[button] for button in buttons],
+    )
 
 
 def reply_markup_to_buttons(

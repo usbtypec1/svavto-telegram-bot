@@ -4,23 +4,26 @@ __all__ = (
     'MailingToAllStates',
     'MailingToSpecificStaffStates',
     'MailingToLastActiveStaffStates',
+    'MailingStates',
 )
 
 
-class MailingToAllStates(StatesGroup):
+class MailingStates(StatesGroup):
+    type = State()
     text = State()
     reply_markup = State()
-    confirm = State()
-
-
-class MailingToSpecificStaffStates(StatesGroup):
-    text = State()
-    reply_markup = State()
+    photos = State()
     chat_ids = State()
     confirm = State()
 
 
-class MailingToLastActiveStaffStates(StatesGroup):
-    text = State()
-    reply_markup = State()
-    confirm = State()
+class MailingToAllStates(MailingStates):
+    pass
+
+
+class MailingToSpecificStaffStates(MailingStates):
+    chat_ids = State()
+
+
+class MailingToLastActiveStaffStates(MailingStates):
+    pass

@@ -10,8 +10,10 @@ import handlers
 from config import Config, load_config_from_file
 from logger import setup_logging
 from middlewares import banned_staff_middleware
-from services import NotificationService
-from services.notifications import SpecificChatsNotificationService
+from services.notifications import (
+    NotificationService,
+    SpecificChatsNotificationService,
+)
 
 
 def include_handlers(dispatcher: Dispatcher) -> None:

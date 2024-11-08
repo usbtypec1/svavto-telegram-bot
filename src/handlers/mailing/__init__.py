@@ -1,13 +1,15 @@
 from aiogram import Router
 
-from . import all_staff, last_active, menu, specific_staff
+from . import menu, text, photos, reply_markup, reject, confirm
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
 router.include_routers(
-    all_staff.router,
-    last_active.router,
     menu.router,
-    specific_staff.router,
+    text.router,
+    photos.router,
+    reply_markup.router,
+    reject.router,
+    confirm.router,
 )

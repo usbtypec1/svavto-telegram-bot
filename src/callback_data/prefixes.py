@@ -56,3 +56,4 @@ class CallbackDataPrefix(StrEnum):
     SHIFT_EXTRA_CREATE_ACCEPT = auto()
     SHIFT_EXTRA_CREATE_REJECT = auto()
     SHIFT_EXTRA_START = auto()
+    MAILING_PHOTO_ACCEPT_FINISH = auto()
