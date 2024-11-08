@@ -38,7 +38,7 @@ async def on_input_car(
         )
     except CarAlreadyWashedOnShiftError:
         await message.answer(
-            f'❌ Авто с гос.номером {car_to_wash.number}'
+            f'❌ Авто с гос.номером {car_to_wash_web_app_data.number}'
             ' уже было добавлено',
 
         )
