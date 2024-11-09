@@ -54,13 +54,3 @@ class StaffConnection(ApiConnection):
         url = f'/staff/{telegram_id}/'
         request_data = {'is_banned': is_banned}
         return await self._http_client.put(url, json=request_data)
-
-    async def update_available_dates(
-            self,
-            *,
-            staff_id: int,
-            months_and_years: Iterable[dict],
-    ) -> httpx.Response:
-        url = f'/staff/{staff_id}/available-dates/'
-        request_data = {'dates': months_and_years}
-        return await self._http_client.patch(url, json=request_data)

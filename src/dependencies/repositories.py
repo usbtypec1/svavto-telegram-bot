@@ -6,6 +6,7 @@ from connections import (
     ShiftConnection,
     EconomicsConnection,
     CarToWashConnection,
+    AvailableDateConnection,
 )
 from dependencies.connections import (
     get_staff_connection,
@@ -13,6 +14,7 @@ from dependencies.connections import (
     get_shift_connection,
     get_economics_connection,
     get_car_to_wash_connection,
+    get_available_date_connection,
 )
 from repositories import (
     CarWashRepository,
@@ -20,6 +22,7 @@ from repositories import (
     StaffRepository,
     EconomicsRepository,
     CarToWashRepository,
+    AvailableDateRepository,
 )
 
 __all__ = (
@@ -28,7 +31,16 @@ __all__ = (
     'get_economics_repository',
     'get_shift_repository',
     'get_car_to_wash_repository',
+    'get_available_date_repository',
 )
+
+
+def get_available_date_repository(
+        connection: AvailableDateConnection = Depends(
+            get_available_date_connection,
+        ),
+) -> AvailableDateRepository:
+    return AvailableDateRepository(connection)
 
 
 def get_car_to_wash_repository(

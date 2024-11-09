@@ -5,8 +5,8 @@ from enums import StaffOrderBy
 from logger import create_logger
 from models import (
     Staff,
-    StaffAvailableDates,
-    StaffToRegisterWithId, StaffWithAvailableDates,
+    StaffToRegisterWithId,
+    StaffWithAvailableDates,
 )
 from repositories.errors import handle_errors
 
@@ -55,17 +55,5 @@ class StaffRepository:
         response = await self.__connection.update_by_telegram_id(
             telegram_id=telegram_id,
             is_banned=is_banned,
-        )
-        handle_errors(response)
-
-    async def update_available_dates(
-            self,
-            *,
-            staff_available_dates: StaffAvailableDates,
-    ) -> None:
-        data = staff_available_dates.model_dump()
-        response = await self.__connection.update_available_dates(
-            staff_id=data['staff_id'],
-            months_and_years=data['dates'],
         )
         handle_errors(response)

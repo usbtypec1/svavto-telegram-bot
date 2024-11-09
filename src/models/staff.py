@@ -2,13 +2,10 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from models import MonthAndYear
-
 __all__ = (
     'Staff',
     'StaffToRegister',
     'StaffToRegisterWithId',
-    'StaffWithAvailableDates',
 )
 
 
@@ -30,7 +27,3 @@ class Staff(BaseModel):
     is_banned: bool
     created_at: datetime
     last_activity_at: datetime
-
-
-class StaffWithAvailableDates(Staff):
-    available_dates: list[MonthAndYear]
