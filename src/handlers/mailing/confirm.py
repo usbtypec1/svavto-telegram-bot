@@ -65,6 +65,8 @@ async def on_confirm_mailing(
 
     chat_ids = [staff.id for staff in staff_list]
 
+    await callback_query.answer('Рассылка создана', show_alert=True)
+
     if len(mailing_params.photo_file_ids) == 0:
         await mailing_service.send_text(
             chat_ids=chat_ids,
@@ -85,7 +87,7 @@ async def on_confirm_mailing(
             photo_file_ids=mailing_params.photo_file_ids
         )
 
-    await callback_query.answer('Рассылка создана', show_alert=True)
+    await callback_query.message.answer('✅ Рассылка завершена')
     await callback_query.message.edit_text(
         format_accept_text(callback_query.message),
     )

@@ -107,11 +107,11 @@ class MailingConfirmView(TextView):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text='Отправить',
+                    text='✅ Отправить',
                     callback_data=CallbackDataPrefix.MAILING_CREATE_ACCEPT,
                 ),
                 InlineKeyboardButton(
-                    text='Отклонить',
+                    text='❌ Отклонить',
                     callback_data=CallbackDataPrefix.MAILING_CREATE_REJECT,
                 )
             ]
