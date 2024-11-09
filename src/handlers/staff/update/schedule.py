@@ -6,14 +6,13 @@ from fast_depends import Depends, inject
 from callback_data import StaffScheduleDetailCallbackData
 from config import Config
 from dependencies.repositories import get_staff_repository
-from enums import StaffOrderBy
 from filters import admins_filter
 from models import StaffAvailableDates
 from repositories import StaffRepository
-from views.admins import AdminMenuView
+from views.admins import AdminMenuView, AdminShiftsMenuView
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.schedules import StaffListForScheduleView, StaffScheduleDetailView
+from views.schedules import StaffScheduleDetailView
 
 __all__ = ('router',)
 
@@ -25,18 +24,11 @@ router = Router(name=__name__)
     admins_filter,
     StateFilter('*'),
 )
-@inject
 async def on_show_staff_list(
         message: Message,
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
-            use_cache=False,
-        ),
+        config: Config,
 ) -> None:
-    staff_list = await staff_repository.get_all(
-        order_by=StaffOrderBy.FULL_NAME_ASC,
-    )
-    view = StaffListForScheduleView(staff_list)
+    view = AdminShiftsMenuView(config.web_app_base_url)
     await answer_view(message, view)
 
 

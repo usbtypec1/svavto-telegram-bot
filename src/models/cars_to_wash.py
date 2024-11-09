@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from enums import CarClass, WashType
 
@@ -26,7 +26,7 @@ class CarToWashWebAppData(BaseModel):
     class_type: CarClass
     wash_type: WashType
     windshield_washer_refilled_bottle_percentage: int
-    additional_services: list[AdditionalService]
+    additional_services: list[AdditionalService] = Field(default_factory=list)
 
 
 class Car(BaseModel):

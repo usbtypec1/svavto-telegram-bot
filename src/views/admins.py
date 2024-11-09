@@ -1,9 +1,12 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
+from aiogram.types import (
+    InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
+    ReplyKeyboardMarkup, WebAppInfo,
+)
 
 from views.base import TextView
 from views.button_texts import ButtonText
 
-__all__ = ('AdminMenuView',)
+__all__ = ('AdminMenuView', 'AdminShiftsMenuView')
 
 
 class AdminMenuView(TextView):
@@ -41,5 +44,30 @@ class AdminMenuView(TextView):
                     ),
                     KeyboardButton(text=ButtonText.MAILING),
                 ],
+            ]
+        )
+
+
+class AdminShiftsMenuView(TextView):
+    text = '📆 Меню графиков'
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        available_dates_button = InlineKeyboardButton(
+            text=ButtonText.AVAILABLE_DATES,
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/shifts/available-dates',
+            ),
+        )
+        shifts_table_button = InlineKeyboardButton(
+            text=ButtonText.SHIFTS_TABLE,
+            url='https://google.com',
+        )
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [available_dates_button],
+                [shifts_table_button],
             ]
         )
