@@ -28,7 +28,7 @@ class StaffRegisterView(TextView):
                 url=url,
             )
         )
-        return ReplyKeyboardMarkup(keyboard=[[button]])
+        return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[button]])
 
 
 class StaffRegisterNotificationView(TextView):

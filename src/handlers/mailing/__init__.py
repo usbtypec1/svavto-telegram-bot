@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from . import menu, text, photos, reply_markup, reject, confirm
+from . import menu, text, photos, reply_markup, reject, confirm, chat_ids
 
 __all__ = ('router',)
 
@@ -12,4 +12,5 @@ router.include_routers(
     reply_markup.router,
     reject.router,
     confirm.router,
+    chat_ids.router,
 )

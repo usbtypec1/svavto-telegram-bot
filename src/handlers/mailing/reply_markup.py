@@ -6,6 +6,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from filters import admins_filter
+from models import MailingParams
+from services.mailing import render_message_for_mailing
 from services.telegram_events import (
     parse_web_app_data_buttons,
     reply_markup_to_buttons,
@@ -30,11 +32,14 @@ async def on_skip_reply_markup(
         state: FSMContext,
 ) -> None:
     state_data: dict = await state.get_data()
-    text: str = state_data['text']
-    await message.answer(
-        text=text,
-        parse_mode=ParseMode.HTML,
+    mailing_params = MailingParams.model_validate(state_data)
+    await render_message_for_mailing(
+        message=message,
+        text=mailing_params.text,
+        photo_file_ids=mailing_params.photo_file_ids,
+        reply_markup=None,
     )
+
     await state.update_data(reply_markup=None)
     await state.set_state(MailingToLastActiveStaffStates.confirm)
     view = MailingConfirmView()
@@ -52,15 +57,13 @@ async def on_input_reply_markup(
 ) -> None:
     state_data: dict = await state.get_data()
     markup = parse_web_app_data_buttons(message.web_app_data.data)
-    try:
-        await message.answer(
-            text=state_data['text'],
-            reply_markup=markup,
-            parse_mode=ParseMode.HTML,
-        )
-    except TelegramConflictError:
-        await message.answer('Неправильный формат текста или кнопок')
-        return
+    mailing_params = MailingParams.model_validate(state_data)
+    await render_message_for_mailing(
+        message=message,
+        text=mailing_params.text,
+        photo_file_ids=mailing_params.photo_file_ids,
+        reply_markup=markup,
+    )
     await state.update_data(reply_markup=markup.model_dump_json())
     await state.set_state(MailingToLastActiveStaffStates.confirm)
     view = MailingConfirmView()

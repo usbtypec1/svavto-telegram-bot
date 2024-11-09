@@ -1,6 +1,7 @@
 from aiogram import Router, F
 from aiogram.filters import StateFilter, CommandStart, ExceptionTypeFilter, \
     invert_f, or_f
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ErrorEvent
 from fast_depends import Depends, inject
 
@@ -44,6 +45,7 @@ async def on_performer_not_found_error(event: ErrorEvent) -> None:
 async def on_show_menu(
         message: Message,
         config: Config,
+        state: FSMContext,
         staff_repository: StaffRepository = Depends(
             get_staff_repository,
             use_cache=False,
@@ -53,6 +55,7 @@ async def on_show_menu(
             use_cache=False,
         ),
 ) -> None:
+    await state.clear()
     try:
         staff = await staff_repository.get_by_id(message.from_user.id)
     except StaffNotFoundError:

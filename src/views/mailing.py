@@ -94,9 +94,10 @@ class MailingStaffWebAppView(TextView):
                 url=f'{self.__web_app_base_url}/mailing/staff',
             ),
         )
+        main_menu_button = KeyboardButton(text=ButtonText.MAIN_MENU)
         return ReplyKeyboardMarkup(
             resize_keyboard=True,
-            keyboard=[[web_app_button]],
+            keyboard=[[web_app_button], [main_menu_button]],
         )
 
 

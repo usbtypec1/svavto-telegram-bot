@@ -629,6 +629,7 @@ class StaffShiftScheduleCreatedNotificationView(TextView):
 class StaffHasNoAnyCreatedShiftView(TextView):
     text = '❗️ Вы еще не заполнили график'
     reply_markup = ReplyKeyboardMarkup(
+        resize_keyboard=True,
         keyboard=[
             [
                 KeyboardButton(text=ButtonText.SHIFT_APPLY),
