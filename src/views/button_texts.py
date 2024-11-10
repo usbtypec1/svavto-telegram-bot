@@ -6,7 +6,6 @@ __all__ = ('ButtonText',)
 class ButtonText(StrEnum):
     STAFF_LIST = '👥 Список всех сотрудников'
     SHIFTS = '📅 Графики'
-    REPORTS = '📊 Отчеты'
     SHIFTS_TODAY = '📅 Сегодня в смене'
     CAR_WASH_LIST = '🚿 Меню моек'
     PENALTY = '🛑 Оштрафовать'
@@ -34,4 +33,4 @@ class ButtonText(StrEnum):
     SHIFT_APPLY = '✏️ Записаться на смены'
     SHIFT_SCHEDULE_MONTH_CALENDAR = '📅 Выбрать даты рабочих смен'
     EXTRA_SHIFT_CALENDAR = '📆 Выбрать дату на доп.смену'
-
+    OTHER = '📱 Другое'

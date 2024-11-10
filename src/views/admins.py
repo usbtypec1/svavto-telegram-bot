@@ -1,12 +1,16 @@
 from aiogram.types import (
-    InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
-    ReplyKeyboardMarkup, WebAppInfo,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+    WebAppInfo,
 )
 
+from callback_data.prefixes import CallbackDataPrefix
 from views.base import TextView
 from views.button_texts import ButtonText
 
-__all__ = ('AdminMenuView', 'AdminShiftsMenuView')
+__all__ = ('AdminMenuView', 'AdminShiftsMenuView', 'AdminOtherMenuView')
 
 
 class AdminMenuView(TextView):
@@ -21,7 +25,6 @@ class AdminMenuView(TextView):
             keyboard=[
                 [
                     KeyboardButton(text=ButtonText.STAFF_LIST),
-                    KeyboardButton(text=ButtonText.REPORTS),
                 ],
                 [
                     KeyboardButton(
@@ -42,7 +45,10 @@ class AdminMenuView(TextView):
                     KeyboardButton(
                         text=ButtonText.SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER,
                     ),
+                ],
+                [
                     KeyboardButton(text=ButtonText.MAILING),
+                    KeyboardButton(text=ButtonText.OTHER),
                 ],
             ]
         )
@@ -80,5 +86,30 @@ class AdminShiftsMenuView(TextView):
                 [available_dates_button],
                 [shifts_edit_button],
                 [shifts_table_button],
+            ]
+        )
+
+
+class AdminOtherMenuView(TextView):
+    text = '🔧 Другое'
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        direct_shift = InlineKeyboardButton(
+            text='🚀 Выдать тестовый доступ',
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/shifts/direct-shift',
+            ),
+        )
+        reports_button = InlineKeyboardButton(
+            text='📊 Отчеты',
+            callback_data=CallbackDataPrefix.REPORTS,
+        )
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [direct_shift],
+                [reports_button],
             ]
         )
