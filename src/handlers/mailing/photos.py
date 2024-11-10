@@ -6,7 +6,7 @@ from aiogram.types import CallbackQuery, Message
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from filters import admins_filter
-from states import MailingStates, MailingToAllStates
+from states import MailingStates
 from views.base import answer_view
 from views.mailing import (
     MailingConfirmView,
@@ -42,10 +42,10 @@ async def on_mailing_photo_accept_finish(
             '❗️ Так как вы выбрали несколько фотографий,'
             ' то вы не сможете прикрепить кнопки'
         )
-        await state.set_state(MailingToAllStates.confirm)
+        await state.set_state(MailingStates.confirm)
         view = MailingConfirmView()
     else:
-        await state.set_state(MailingToAllStates.reply_markup)
+        await state.set_state(MailingStates.reply_markup)
         view = MailingReplyMarkupWebAppView(config.web_app_base_url)
     await answer_view(callback_query.message, view)
 
@@ -59,7 +59,7 @@ async def on_mailing_photo_accept_finish(
 @router.message(
     F.photo,
     admins_filter,
-    StateFilter(MailingToAllStates.photos)
+    StateFilter(MailingStates.photos)
 )
 async def on_input_photo(
         message: Message,

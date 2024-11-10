@@ -11,41 +11,30 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.media_group import MediaType
 
 from callback_data import (
-    CarClassChoiceCallbackData,
-    ExtraShiftCreateAcceptCallbackData, ExtraShiftCreateRejectCallbackData,
-    ExtraShiftStartCallbackData, ShiftApplyCallbackData,
+    ExtraShiftCreateAcceptCallbackData,
+    ExtraShiftCreateRejectCallbackData,
+    ExtraShiftStartCallbackData,
+    ShiftApplyCallbackData,
     ShiftRejectCallbackData,
     ShiftStartCallbackData,
     ShiftStartCarWashCallbackData,
     ShiftWorkTypeChoiceCallbackData,
-    WashTypeChoiceCallbackData,
-    WindshieldWasherRefilledValueCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
 from callback_data.shifts import ShiftCarWashUpdateCallbackData
-from enums import CarClass, ShiftWorkType, WashType
+from enums import ShiftWorkType
 from models import (
     AvailableDate, CarWash,
-    MonthAndYear,
     ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher,
     ShiftFinishResult,
 )
-from views.base import MediaGroupView, ReplyMarkup, TextView
+from views.base import MediaGroupView, TextView
 from views.button_texts import ButtonText
 
 __all__ = (
     'ShiftWorkTypeChoiceView',
     'shift_work_types_and_names',
-    'CarNumberInputView',
-    'CarClassInputView',
-    'WashTypeInputView',
-    'WindshieldWasherRefilledInputView',
-    'WindshieldWasherRefilledValueInputView',
-    'AdditionalServicesIncludedInputView',
-    'AddCarWithoutAdditionalServicesConfirmView',
-    'ShiftApplyWebAppView',
-    'ShiftStartRequestView',
     'ShiftCarsCountByStaffView',
     'ShiftCarsWithoutWindshieldWasherView',
     'ShiftCarWashUpdateView',
@@ -94,103 +83,6 @@ class ShiftWorkTypeChoiceView(TextView):
     )
 
 
-class CarClassInputView(TextView):
-    text = (
-        'Укажите какому классу принадлежит автомобиль\n'
-        '<blockquote expandable>'
-        'Комфорт-класс: Volkswagen polo 6, skoda rapid 2,'
-        ' chery tiggo 4, chery tiggo 4 pro, chery tiggo 7 pro ,'
-        ' geely atlas pro, exeed lx, geely coolray, geely coolray flagship,'
-        ' moskvich m3, nissan qashqai, renault duster, geely belgee x50'
-        '\nБизнес-класс: audi a6, haval Jolion, Mercedes e200, Tank 300,'
-        ' Tank 500, bmw 520d'
-        '\nФургоны и микроавтобусы: ford transit, sollers atlant'
-        '</blockquote>'
-    )
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Комфорт',
-                    callback_data=CarClassChoiceCallbackData(
-                        car_class=CarClass.COMFORT,
-                    ).pack(),
-                ),
-                InlineKeyboardButton(
-                    text='Бизнес',
-                    callback_data=CarClassChoiceCallbackData(
-                        car_class=CarClass.BUSINESS,
-                    ).pack(),
-                ),
-                InlineKeyboardButton(
-                    text='Фургон',
-                    callback_data=CarClassChoiceCallbackData(
-                        car_class=CarClass.VAN,
-                    ).pack(),
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    text='🔙 Назад',
-                    callback_data=CallbackDataPrefix.CAR_NUMBER,
-                )
-            ]
-        ]
-    )
-
-
-class CarNumberInputView(TextView):
-    text = 'Укажите гос номер автомобиля в формате а111аа799'
-
-
-class WashTypeInputView(TextView):
-    text = 'Вид мойки'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Плановая',
-                    callback_data=WashTypeChoiceCallbackData(
-                        wash_type=WashType.PLANNED,
-                    ).pack(),
-                ),
-                InlineKeyboardButton(
-                    text='Срочная',
-                    callback_data=WashTypeChoiceCallbackData(
-                        wash_type=WashType.URGENT,
-                    ).pack(),
-                ),
-            ],
-        ],
-    )
-
-
-class WindshieldWasherRefilledInputView(TextView):
-    text = 'Осуществлен долив стеклоомывателя?'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Да',
-                    callback_data=(
-                        CallbackDataPrefix.WINDSHIELD_WASHER_REFILLED_VALUE
-                    ),
-                ),
-                InlineKeyboardButton(
-                    text='Нет',
-                    callback_data=WindshieldWasherRefilledValueCallbackData(
-                        value=None,
-                    ).pack(),
-                ),
-            ]
-        ]
-    )
-
-
-windshield_washer_refilled_values: tuple[int, ...] = (
-    10, 20, 30, 50, 70, 90, 100, 120,
-)
-
 month_names: Final[tuple[str, ...]] = (
     'январь',
     'февраль',
@@ -205,92 +97,6 @@ month_names: Final[tuple[str, ...]] = (
     'ноябрь',
     'декабрь',
 )
-
-
-class WindshieldWasherRefilledValueInputView(TextView):
-    text = 'Сколько % от бутылки было залито?'
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        keyboard = InlineKeyboardBuilder()
-        keyboard.max_width = 2
-        for value in windshield_washer_refilled_values:
-            keyboard.button(
-                text=f'{value}%',
-                callback_data=WindshieldWasherRefilledValueCallbackData(
-                    value=value,
-                ).pack()
-            )
-        return keyboard.as_markup()
-
-
-class AdditionalServicesIncludedInputView(TextView):
-    text = 'Добавить доп услуги?'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Да',
-                    callback_data=(
-                        CallbackDataPrefix.ADDITIONAL_SERVICES_INCLUDED
-                    ),
-                ),
-                InlineKeyboardButton(
-                    text='Добавить позже',
-                    callback_data=CallbackDataPrefix.ADD_CAR_CONFIRM,
-                ),
-            ],
-        ],
-    )
-
-
-class AddCarWithoutAdditionalServicesConfirmView(TextView):
-
-    def __init__(self, car_number: str):
-        self.__car_number = car_number
-
-    def get_text(self) -> str:
-        return (
-            f'Автомобиль {self.__car_number} записан.'
-            ' Добавить доп услуги или завершить автомобиль'
-            ' можно будет позже в главном меню'
-        )
-
-
-class ShiftStartRequestView(TextView):
-    text = 'Подтвердите выход на смену'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Подтвердить',
-                    callback_data=CallbackDataPrefix.SHIFT_OWN,
-                ),
-                InlineKeyboardButton(
-                    text='Отклонить',
-                    callback_data=CallbackDataPrefix.SHIFT_OWN,
-                ),
-            ],
-        ],
-    )
-
-
-class ShiftApplyWebAppView(TextView):
-    text = 'Выберите даты для выхода на смены'
-
-    def __init__(self, web_app_base_url: str):
-        self.__web_app_url = web_app_base_url
-
-    def get_reply_markup(self) -> ReplyKeyboardMarkup:
-        web_app_button = KeyboardButton(
-            text='📆 Выбрать даты',
-            web_app=WebAppInfo(
-                url=f'{self.__web_app_url}/shifts/apply',
-            ),
-        )
-        return ReplyKeyboardMarkup(
-            resize_keyboard=True,
-            keyboard=[[web_app_button]],
-        )
 
 
 class ShiftCarsCountByStaffView(TextView):

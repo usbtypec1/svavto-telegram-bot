@@ -6,7 +6,6 @@ from enums import StaffUpdateAction
 __all__ = (
     'StaffDetailCallbackData',
     'StaffUpdateCallbackData',
-    'StaffScheduleDetailCallbackData',
 )
 
 
@@ -23,10 +22,3 @@ class StaffUpdateCallbackData(
 ):
     telegram_id: int
     action: StaffUpdateAction
-
-
-class StaffScheduleDetailCallbackData(
-    CallbackData,
-    prefix=CallbackDataPrefix.STAFF_SCHEDULE,
-):
-    staff_id: int

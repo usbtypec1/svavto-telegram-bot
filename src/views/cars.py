@@ -1,7 +1,9 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, \
-    ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.types import (
+    InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
+    ReplyKeyboardMarkup, WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import CarDetailForAdditionalServicesCallbackData

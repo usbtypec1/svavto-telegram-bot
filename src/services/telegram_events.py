@@ -4,7 +4,6 @@ from aiogram.types import (
     ErrorEvent, InlineKeyboardButton,
     InlineKeyboardMarkup, Message, Update,
 )
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 from pydantic import TypeAdapter
 
 from models import Button

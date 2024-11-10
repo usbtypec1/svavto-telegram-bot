@@ -3,11 +3,7 @@ from pydantic import TypeAdapter
 from connections import StaffConnection
 from enums import StaffOrderBy
 from logger import create_logger
-from models import (
-    Staff,
-    StaffToRegisterWithId,
-    AvailableDate
-)
+from models import Staff, StaffToRegisterWithId
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)

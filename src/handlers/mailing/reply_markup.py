@@ -1,6 +1,4 @@
 from aiogram import F, Router
-from aiogram.enums import ParseMode
-from aiogram.exceptions import TelegramConflictError
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -8,11 +6,8 @@ from aiogram.types import Message
 from filters import admins_filter
 from models import MailingParams
 from services.mailing import render_message_for_mailing
-from services.telegram_events import (
-    parse_web_app_data_buttons,
-    reply_markup_to_buttons,
-)
-from states import MailingStates, MailingToLastActiveStaffStates
+from services.telegram_events import parse_web_app_data_buttons
+from states import MailingStates
 from views.base import answer_view
 from views.button_texts import ButtonText
 from views.mailing import MailingConfirmView
@@ -41,7 +36,7 @@ async def on_skip_reply_markup(
     )
 
     await state.update_data(reply_markup=None)
-    await state.set_state(MailingToLastActiveStaffStates.confirm)
+    await state.set_state(MailingStates.confirm)
     view = MailingConfirmView()
     await answer_view(message, view)
 
@@ -65,6 +60,6 @@ async def on_input_reply_markup(
         reply_markup=markup,
     )
     await state.update_data(reply_markup=markup.model_dump_json())
-    await state.set_state(MailingToLastActiveStaffStates.confirm)
+    await state.set_state(MailingStates.confirm)
     view = MailingConfirmView()
     await answer_view(message, view)

@@ -6,7 +6,7 @@ from aiogram.types import CallbackQuery, Message
 from config import Config
 from enums import MailingType
 from filters import admins_filter
-from states import MailingStates, MailingToAllStates
+from states import MailingStates
 from views.base import answer_view
 from views.button_texts import ButtonText
 from views.mailing import (
@@ -34,10 +34,10 @@ async def on_input_text(
     state_data: dict = await state.get_data()
     mailing_type: MailingType = state_data['type']
     if mailing_type == MailingType.SPECIFIC_STAFF:
-        await state.set_state(MailingToAllStates.chat_ids)
+        await state.set_state(MailingStates.chat_ids)
         view = MailingStaffWebAppView(config.web_app_base_url)
     else:
-        await state.set_state(MailingToAllStates.photos)
+        await state.set_state(MailingStates.photos)
         view = MailingPhotoInputView()
     await answer_view(message, view)
 
@@ -51,6 +51,6 @@ async def on_start_mailing_to_all_flow(
         callback_query: CallbackQuery,
         state: FSMContext,
 ) -> None:
-    await state.set_state(MailingToAllStates.text)
+    await state.set_state(MailingStates.text)
     view = MailingTextInputView()
     await answer_view(callback_query.message, view)

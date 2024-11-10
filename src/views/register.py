@@ -1,16 +1,18 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.types import (
+    InlineKeyboardButton, InlineKeyboardMarkup,
+    KeyboardButton, ReplyKeyboardMarkup, WebAppInfo,
+)
 
 from callback_data.prefixes import CallbackDataPrefix
 from models import StaffToRegister
 from views.base import TextView
 from views.button_texts import ButtonText
-from views.menu import MainMenuView
 
 __all__ = (
     'StaffRegisterNotificationView',
     'StaffRegisterView',
     'StaffRegisterAcceptedView',
+    'StaffRegisterRejectedView',
 )
 
 
