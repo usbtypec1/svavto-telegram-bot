@@ -1,7 +1,7 @@
 import datetime
 
 from aiogram import F, Router
-from aiogram.filters import StateFilter, invert_f, or_f
+from aiogram.filters import StateFilter, invert_f
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
 from pydantic import TypeAdapter
@@ -10,14 +10,10 @@ from callback_data import ShiftApplyCallbackData
 from config import Config
 from dependencies.repositories import (
     get_available_date_repository,
-    get_shift_repository, get_staff_repository,
+    get_shift_repository,
 )
 from filters import admins_filter
-from models import AvailableDate
-from repositories import (
-    AvailableDateRepository, ShiftRepository,
-    StaffRepository,
-)
+from repositories import AvailableDateRepository, ShiftRepository
 from services.notifications import SpecificChatsNotificationService
 from views.base import answer_view
 from views.button_texts import ButtonText

@@ -27,8 +27,6 @@ class ButtonText(StrEnum):
     SKIP = '➡ Пропустить'
     MAILING_STAFF = '👥 Выбрать сотрудников'
     REGISTER = '🚀 Зарегистрироваться'
-    AVAILABLE_DATES = '📅 Открыть запись в смены'
-    SHIFTS_TABLE = '📊 Таблица'
     MAIN_MENU = '📲 Главное меню'
     SCHEDULE_SELF = '📆 Мой график'
     CAR_ADDITIONAL_SERVICES = '🔧 Отметить доп.услуги авто'
