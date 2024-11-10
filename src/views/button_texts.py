@@ -34,3 +34,5 @@ class ButtonText(StrEnum):
     SHIFT_SCHEDULE_MONTH_CALENDAR = '📅 Выбрать даты рабочих смен'
     EXTRA_SHIFT_CALENDAR = '📆 Выбрать дату на доп.смену'
     OTHER = '📱 Другое'
+    DIRECT_SHIFT = '📅 Открыть запись на смены'
+    REPORTS = '📊 Отчеты'

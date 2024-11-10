@@ -6,7 +6,6 @@ from aiogram.types import (
     WebAppInfo,
 )
 
-from callback_data.prefixes import CallbackDataPrefix
 from views.base import TextView
 from views.button_texts import ButtonText
 
@@ -96,20 +95,20 @@ class AdminOtherMenuView(TextView):
     def __init__(self, web_app_base_url: str):
         self.__web_app_base_url = web_app_base_url
 
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        direct_shift = InlineKeyboardButton(
-            text='🚀 Выдать тестовый доступ',
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        direct_shift = KeyboardButton(
+            text=ButtonText.DIRECT_SHIFT,
             web_app=WebAppInfo(
                 url=f'{self.__web_app_base_url}/shifts/direct-shift',
             ),
         )
-        reports_button = InlineKeyboardButton(
-            text='📊 Отчеты',
-            callback_data=CallbackDataPrefix.REPORTS,
-        )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
+        reports_button = KeyboardButton(text=ButtonText.REPORTS)
+        main_menu_button = KeyboardButton(text=ButtonText.MAIN_MENU)
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[
                 [direct_shift],
                 [reports_button],
-            ]
+                [main_menu_button],
+            ],
         )
