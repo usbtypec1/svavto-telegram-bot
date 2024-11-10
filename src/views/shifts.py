@@ -25,7 +25,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from callback_data.shifts import ShiftCarWashUpdateCallbackData
 from enums import CarClass, ShiftWorkType, WashType
 from models import (
-    CarWash,
+    AvailableDate, CarWash,
     MonthAndYear,
     ShiftCarsCountByStaff,
     ShiftCarsWithoutWindshieldWasher,
@@ -192,18 +192,18 @@ windshield_washer_refilled_values: tuple[int, ...] = (
 )
 
 month_names: Final[tuple[str, ...]] = (
-    'Январь',
-    'Февраль',
-    'Март',
-    'Апрель',
-    'Май',
-    'Июнь',
-    'Июль',
-    'Август',
-    'Сентябрь',
-    'Октябрь',
-    'Ноябрь',
-    'Декабрь',
+    'январь',
+    'февраль',
+    'март',
+    'апрель',
+    'май',
+    'июнь',
+    'июль',
+    'август',
+    'сентябрь',
+    'октябрь',
+    'ноябрь',
+    'декабрь',
 )
 
 
@@ -547,7 +547,7 @@ class ShiftApplyChooseMonthView(TextView):
 
     def __init__(
             self,
-            available_dates: Iterable[MonthAndYear],
+            available_dates: Iterable[AvailableDate],
             timezone: ZoneInfo,
     ):
         self.__available_dates = tuple(available_dates)
@@ -555,8 +555,8 @@ class ShiftApplyChooseMonthView(TextView):
 
     def get_text(self) -> str:
         if self.__available_dates:
-            return 'Выберите месяц'
-        return 'Нет доступных месяцев для записи на смену'
+            return '📆 Выберите месяц'
+        return '❌ Нет доступных месяцев для записи на смену'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()
@@ -573,7 +573,7 @@ class ShiftApplyChooseMonthView(TextView):
                 text = f'{month_name} - {available_date.year} год'
 
             keyboard.button(
-                text=text,
+                text=text.capitalize(),
                 callback_data=ShiftApplyCallbackData(
                     month=available_date.month,
                     year=available_date.year,
@@ -584,7 +584,6 @@ class ShiftApplyChooseMonthView(TextView):
 
 
 class ShiftApplyScheduleMonthCalendarWebAppView(TextView):
-    text = 'Выберите даты рабочих смен'
 
     def __init__(
             self,
@@ -595,6 +594,13 @@ class ShiftApplyScheduleMonthCalendarWebAppView(TextView):
         self.__web_app_base_url = web_app_base_url
         self.__month = month
         self.__year = year
+
+    def get_text(self) -> str:
+        month_name = month_names[self.__month - 1]
+        return (
+            f'📆 Выберите даты для выхода на смены за {month_name}'
+            f' {self.__year} года'
+        )
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         url = (

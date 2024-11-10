@@ -8,9 +8,16 @@ from pydantic import TypeAdapter
 
 from callback_data import ShiftApplyCallbackData
 from config import Config
-from dependencies.repositories import get_shift_repository, get_staff_repository
+from dependencies.repositories import (
+    get_available_date_repository,
+    get_shift_repository, get_staff_repository,
+)
 from filters import admins_filter
-from repositories import ShiftRepository, StaffRepository
+from models import AvailableDate
+from repositories import (
+    AvailableDateRepository, ShiftRepository,
+    StaffRepository,
+)
 from services.notifications import SpecificChatsNotificationService
 from views.base import answer_view
 from views.button_texts import ButtonText
@@ -94,6 +101,7 @@ async def on_choose_month_apply_to_shift(
         month=callback_data.month,
     )
     await answer_view(callback_query.message, view)
+    await callback_query.message.delete()
 
 
 @router.message(
@@ -105,14 +113,14 @@ async def on_choose_month_apply_to_shift(
 async def on_shift_apply(
         message: Message,
         config: Config,
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
+        available_dates: AvailableDateRepository = Depends(
+            dependency=get_available_date_repository,
             use_cache=False,
         ),
 ) -> None:
-    staff = await staff_repository.get_by_id(message.from_user.id)
+    available_dates = await available_dates.get_all()
     view = ShiftApplyChooseMonthView(
-        available_dates=staff.available_dates,
+        available_dates=available_dates,
         timezone=config.timezone,
     )
     await answer_view(message, view)
