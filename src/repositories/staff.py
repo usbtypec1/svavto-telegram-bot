@@ -6,7 +6,7 @@ from logger import create_logger
 from models import (
     Staff,
     StaffToRegisterWithId,
-    StaffWithAvailableDates,
+    AvailableDate
 )
 from repositories.errors import handle_errors
 
@@ -20,7 +20,7 @@ class StaffRepository:
     def __init__(self, connection: StaffConnection):
         self.__connection = connection
 
-    async def get_by_id(self, user_id: int) -> StaffWithAvailableDates:
+    async def get_by_id(self, user_id: int) -> Staff:
         response = await self.__connection.get_by_id(user_id)
         response_data = response.json()
         logger.info(
@@ -28,7 +28,7 @@ class StaffRepository:
             extra={'response_data': response_data},
         )
         handle_errors(response)
-        return StaffWithAvailableDates.model_validate(response_data)
+        return Staff.model_validate(response_data)
 
     async def get_all(self, *, order_by: StaffOrderBy) -> list[Staff]:
         response = await self.__connection.get_all(order_by=order_by)

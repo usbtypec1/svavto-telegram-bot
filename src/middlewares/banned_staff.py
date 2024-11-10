@@ -26,6 +26,7 @@ async def banned_staff_middleware(
         ),
 ):
     bot: Bot = data['bot']
+    data['staff'] = None
 
     try:
         user_id = get_user_id_from_update(event)
@@ -39,5 +40,7 @@ async def banned_staff_middleware(
     if staff.is_banned:
         await send_view(bot, StaffBannedView(), user_id)
         return
+
+    data['staff'] = staff
 
     return await handler(event, data)

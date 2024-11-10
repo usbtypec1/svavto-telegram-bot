@@ -9,6 +9,7 @@ from config import Config
 from dependencies.repositories import get_staff_repository, get_shift_repository
 from exceptions import StaffNotFoundError, StaffHasNoActiveShiftError
 from filters import admins_filter
+from models import Staff
 from repositories import StaffRepository, ShiftRepository
 from views.admins import AdminMenuView
 from views.base import answer_view
@@ -46,6 +47,7 @@ async def on_show_menu(
         message: Message,
         config: Config,
         state: FSMContext,
+        staff: Staff | None,
         staff_repository: StaffRepository = Depends(
             get_staff_repository,
             use_cache=False,
@@ -56,9 +58,7 @@ async def on_show_menu(
         ),
 ) -> None:
     await state.clear()
-    try:
-        staff = await staff_repository.get_by_id(message.from_user.id)
-    except StaffNotFoundError:
+    if staff is None:
         view = StaffRegisterView(config.web_app_base_url)
     else:
         try:
