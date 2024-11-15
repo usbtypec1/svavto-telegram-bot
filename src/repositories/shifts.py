@@ -1,9 +1,13 @@
 import datetime
+from collections.abc import Iterable
 
 from pydantic import TypeAdapter
 
 from connections import ShiftConnection
-from models import CarWash, Shift, ShiftCreateResult, ShiftFinishResult
+from models import (
+    CarWash, Shift, ShiftCreateResult, ShiftFinishResult,
+    ShiftListPage,
+)
 from repositories.errors import handle_errors
 
 __all__ = ('ShiftRepository',)
@@ -13,6 +17,26 @@ class ShiftRepository:
 
     def __init__(self, connection: ShiftConnection):
         self.__connection = connection
+
+    async def get_list(
+            self,
+            *,
+            date_from: datetime.date | None = None,
+            date_to: datetime.date | None = None,
+            staff_ids: Iterable[int] | None = None,
+            limit: int | None = None,
+            offset: int | None = None,
+    ) -> ShiftListPage:
+        response = await self.__connection.get_list(
+            date_from=date_from,
+            date_to=date_to,
+            staff_ids=staff_ids,
+            limit=limit,
+            offset=offset,
+        )
+        handle_errors(response)
+        response_data = response.json()
+        return ShiftListPage.model_validate(response_data)
 
     async def get_active(self, staff_id: int):
         response = await self.__connection.get_active(staff_id)
@@ -53,18 +77,6 @@ class ShiftRepository:
         handle_errors(response)
         response_data = response.json()
         return ShiftFinishResult.model_validate(response_data)
-
-    async def confirm(
-            self,
-            *,
-            staff_id: int,
-            date: datetime.date,
-    ) -> None:
-        response = await self.__connection.confirm(
-            staff_id=staff_id,
-            date=date,
-        )
-        handle_errors(response)
 
     async def get_shifts_by_staff_id(
             self,

@@ -15,6 +15,7 @@ class MailingParams(BaseModel):
     chat_ids: list[int] = Field(default_factory=list)
     reply_markup: InlineKeyboardMarkup | None = None
 
+    # noinspection PyNestedDecorators
     @field_validator('reply_markup', mode='before')
     @classmethod
     def validate_reply_markup(cls, value):

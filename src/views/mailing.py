@@ -1,5 +1,5 @@
 from aiogram.types import (
-    ForceReply, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
+    InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
     ReplyKeyboardMarkup, WebAppInfo,
 )
 

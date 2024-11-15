@@ -1,10 +1,9 @@
 from datetime import datetime
-from zoneinfo import ZoneInfo
 
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.types import Message
-from fast_depends import inject, Depends
+from fast_depends import Depends, inject
 
 from config import Config
 from dependencies.repositories import get_car_to_wash_repository
@@ -12,8 +11,10 @@ from filters import admins_filter
 from repositories import CarToWashRepository
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.shifts import ShiftCarsCountByStaffView, \
-    ShiftCarsWithoutWindshieldWasherView
+from views.shifts import (
+    ShiftCarsCountByStaffView,
+    ShiftCarsWithoutWindshieldWasherView,
+)
 
 __all__ = ('router',)
 

@@ -1,17 +1,14 @@
 from aiogram import F, Router
 from aiogram.filters import StateFilter
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import Message
 
-from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from filters import admins_filter
-
-__all__ = ('router',)
-
 from views.admins import AdminOtherMenuView
 from views.base import answer_view
-
 from views.button_texts import ButtonText
+
+__all__ = ('router',)
 
 router = Router(name=__name__)
 

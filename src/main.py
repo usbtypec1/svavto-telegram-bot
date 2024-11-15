@@ -6,8 +6,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (
-    BotCommand, BotCommandScope,
-    BotCommandScopeAllPrivateChats, BotCommandScopeChat,
+    BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat,
 )
 from fast_depends import Depends, inject
 

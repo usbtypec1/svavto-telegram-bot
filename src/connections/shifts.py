@@ -13,6 +13,35 @@ logger = create_logger('connections')
 
 class ShiftConnection(ApiConnection):
 
+    async def get_list(
+            self,
+            *,
+            date_from: datetime.date | None = None,
+            date_to: datetime.date | None = None,
+            staff_ids: Iterable[int] | None = None,
+            limit: int | None = None,
+            offset: int | None = None,
+    ):
+        url = '/shifts/'
+        query_params = {}
+        if date_from is not None:
+            query_params['date_from'] = f'{date_from:%Y-%m-%d}'
+        if date_to is not None:
+            query_params['date_to'] = f'{date_to:%Y-%m-%d}'
+        if staff_ids is not None:
+            query_params['staff_ids'] = tuple(staff_ids)
+        if limit is not None:
+            query_params['limit'] = limit
+        if offset is not None:
+            query_params['offset'] = offset
+        logger.debug('Retrieving shifts list')
+        response = await self._http_client.get(url, params=query_params)
+        logger.debug(
+            'Received shifts list',
+            extra={'status_code': response.status_code},
+        )
+        return response
+
     async def get_active(self, staff_id: int) -> httpx.Response:
         url = f'/shifts/current/{staff_id}/'
         logger.debug(
@@ -81,27 +110,6 @@ class ShiftConnection(ApiConnection):
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
             f'Finished shift for staff {staff_id}',
-            extra={'status_code': response.status_code},
-        )
-        return response
-
-    async def confirm(
-            self,
-            *,
-            staff_id: int,
-            date: datetime.date,
-    ) -> httpx.Response:
-        url = '/shifts/confirm/'
-        logger.debug(
-            f'Confirming shift for staff {staff_id}',
-        )
-        request_data = {
-            'staff_id': staff_id,
-            'date': f'{date:%Y-%m-%d}',
-        }
-        response = await self._http_client.post(url, json=request_data)
-        logger.debug(
-            f'Confirmed shift for staff {staff_id}',
             extra={'status_code': response.status_code},
         )
         return response

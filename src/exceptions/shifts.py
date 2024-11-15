@@ -2,10 +2,6 @@ class StaffHasNoActiveShiftError(Exception):
     pass
 
 
-class ShiftByDateNotFoundError(Exception):
-    pass
-
-
 class ShiftNotConfirmedError(Exception):
     pass
 

@@ -1,5 +1,3 @@
-from collections.abc import Iterable
-
 import httpx
 
 from connections.base import ApiConnection

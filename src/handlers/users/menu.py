@@ -1,16 +1,17 @@
-from aiogram import Router, F
-from aiogram.filters import StateFilter, CommandStart, ExceptionTypeFilter, \
-    invert_f, or_f
+from aiogram import F, Router
+from aiogram.filters import (
+    CommandStart, ExceptionTypeFilter, StateFilter, invert_f, or_f,
+)
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, ErrorEvent
+from aiogram.types import ErrorEvent, Message
 from fast_depends import Depends, inject
 
 from config import Config
-from dependencies.repositories import get_staff_repository, get_shift_repository
-from exceptions import StaffNotFoundError, StaffHasNoActiveShiftError
+from dependencies.repositories import get_shift_repository
+from exceptions import StaffHasNoActiveShiftError, StaffNotFoundError
 from filters import admins_filter
 from models import Staff
-from repositories import StaffRepository, ShiftRepository
+from repositories import ShiftRepository
 from views.admins import AdminMenuView
 from views.base import answer_view
 from views.button_texts import ButtonText
@@ -48,10 +49,6 @@ async def on_show_menu(
         config: Config,
         state: FSMContext,
         staff: Staff | None,
-        staff_repository: StaffRepository = Depends(
-            get_staff_repository,
-            use_cache=False,
-        ),
         shift_repository: ShiftRepository = Depends(
             get_shift_repository,
             use_cache=False,

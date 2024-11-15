@@ -1,13 +1,10 @@
 import datetime
-from zoneinfo import ZoneInfo
 
 from aiogram import Bot, F, Router
-from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import StateFilter, invert_f
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
-from pydantic import TypeAdapter
 
 from callback_data import (
     ShiftStartCallbackData,
@@ -20,18 +17,18 @@ from dependencies.repositories import (
     get_shift_repository,
 )
 from enums import ShiftWorkType
-from exceptions import ShiftAlreadyConfirmedError, ShiftByDateNotFoundError
 from filters import admins_filter
-from models import ShiftConfirmation
+from models import ShiftsConfirmation, Staff
 from repositories import CarWashRepository, ShiftRepository
+from services.notifications import SpecificChatsNotificationService
 from states import ShiftStartStates
 from views.base import answer_view, edit_message_by_view, send_view
 from views.button_texts import ButtonText
 from views.menu import ShiftMenuView
 from views.shifts import (
-    ShiftStartCarWashChooseView,
+    ShiftImmediateStartRequestView, ShiftStartCarWashChooseView,
     ShiftStartConfirmView,
-    ShiftWorkTypeChoiceView,
+    ShiftStartRequestView, ShiftWorkTypeChoiceView,
 )
 
 __all__ = ('router',)
@@ -105,23 +102,42 @@ async def on_start_shift(
 async def on_send_confirmation_to_staff(
         message: Message,
         bot: Bot,
+        shift_repository: ShiftRepository = Depends(
+            dependency=get_shift_repository,
+            use_cache=False,
+        ),
 ) -> None:
-    type_adapter = TypeAdapter(list[ShiftConfirmation])
-    shift_confirmations: list[ShiftConfirmation] = type_adapter.validate_json(
-        message.web_app_data.data,
+    shifts_confirmation = ShiftsConfirmation.model_validate_json(
+        json_data=message.web_app_data.data,
     )
+    shifts_page = await shift_repository.get_list(
+        staff_ids=shifts_confirmation.staff_ids,
+        limit=1000,
+    )
+    shifts = shifts_page.shifts
 
-    for shift_confirmation in shift_confirmations:
-        view = ShiftStartConfirmView(
-            shift_id=shift_confirmation.shift_id,
-            staff_full_name=shift_confirmation.staff_full_name,
-        )
+    staff_id_to_shift = {shift.staff.id: shift for shift in shifts}
+
+    await message.answer('Отправляю запросы на начало смены')
+
+    count = 0
+    for staff_id in shifts_confirmation.staff_ids:
         try:
-            await send_view(bot, view, shift_confirmation.staff_id)
-        except TelegramAPIError:
-            pass
+            shift = staff_id_to_shift[staff_id]
+        except KeyError:
+            view = ShiftImmediateStartRequestView(date=shifts_confirmation.date)
+        else:
+            view = ShiftStartConfirmView(
+                shift_id=shift.id,
+                staff_full_name=shift.staff.full_name,
+            )
+        finally:
+            count += 1
+        await send_view(bot, view, staff_id)
 
-    await message.answer('✅ Запросы на начало смены отправлены')
+    await message.answer(
+        f'✅ Запросы на начало смены отправлены {count} сотрудникам',
+    )
 
 
 @router.callback_query(
@@ -135,30 +151,28 @@ async def on_send_confirmation_to_staff(
 async def on_move_to_wash_shift_work_type_choice(
         callback_query: CallbackQuery,
         config: Config,
-        bot: Bot,
+        staff: Staff,
+        admins_notification_service: SpecificChatsNotificationService,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
-    date = datetime.datetime.now(config.timezone)
-    try:
-        await shift_repository.confirm(
-            date=date,
-            staff_id=callback_query.from_user.id,
-        )
-    except ShiftByDateNotFoundError:
+    now = datetime.datetime.now(config.timezone)
+    shifts_page = await shift_repository.get_list(
+        date_from=now,
+        date_to=now,
+        staff_ids=[staff.id],
+    )
+    if not shifts_page.shifts:
         await callback_query.answer(
-            text='У вас нет на сегодня смены',
+            text='❌У вас нет на сегодня смены',
             show_alert=True
         )
         return
-    except ShiftAlreadyConfirmedError:
-        await callback_query.answer(
-            text='Вы уже отправили запрос на начало смены',
-            show_alert=True
-        )
-        return
+    shift = shifts_page.shifts[0]
+    view = ShiftStartRequestView(shift=shift, staff=staff)
+    await admins_notification_service.send_view(view)
     await callback_query.message.edit_text(
         'До 21:30 Вам придет уведомление в этот бот с запросом'
         ' <b>подтвердить или отклонить</b> выход на смену.'
