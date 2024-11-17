@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery
 from fast_depends import Depends, inject
 
 from callback_data import StaffDetailCallbackData
+from config import Config
 from dependencies.repositories import get_staff_repository
 from filters import admins_filter
 from repositories import StaffRepository
@@ -24,11 +25,12 @@ router = Router(name=__name__)
 async def on_show_staff_detail(
         callback_query: CallbackQuery,
         callback_data: StaffDetailCallbackData,
+        config: Config,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
             use_cache=False,
         ),
 ) -> None:
     staff = await staff_repository.get_by_id(callback_data.telegram_id)
-    view = StaffDetailView(staff)
+    view = StaffDetailView(staff, config.web_app_base_url)
     await edit_message_by_view(callback_query.message, view)

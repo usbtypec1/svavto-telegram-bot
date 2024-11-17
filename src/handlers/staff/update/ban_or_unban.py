@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery
 from fast_depends import inject, Depends
 
 from callback_data import StaffUpdateCallbackData
+from config import Config
 from dependencies.repositories import get_staff_repository
 from enums import StaffUpdateAction
 from repositories import StaffRepository
@@ -25,6 +26,7 @@ router = Router(name=__name__)
 async def on_ban_or_unban_staff(
         callback_query: CallbackQuery,
         callback_data: StaffUpdateCallbackData,
+        config: Config,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
             use_cache=False,
@@ -41,5 +43,5 @@ async def on_ban_or_unban_staff(
             is_banned=False,
         )
     staff = await staff_repository.get_by_id(callback_data.telegram_id)
-    view = StaffDetailView(staff)
+    view = StaffDetailView(staff, config.web_app_base_url)
     await edit_message_by_view(callback_query.message, view)

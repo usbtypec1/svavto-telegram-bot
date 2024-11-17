@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import StaffDetailCallbackData, StaffUpdateCallbackData
@@ -20,7 +20,7 @@ class StaffListView(TextView):
     def get_text(self) -> str:
         if not self.__staff_list:
             return '😔 Нет зарегистрированных сотрудников'
-        return 'Список сотрудников'
+        return '👥 Список сотрудников'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()
@@ -40,8 +40,9 @@ class StaffListView(TextView):
 
 class StaffDetailView(TextView):
 
-    def __init__(self, staff: Staff):
+    def __init__(self, staff: Staff, web_app_base_url: str):
         self.__staff = staff
+        self.__web_app_base_url = web_app_base_url
 
     def get_text(self) -> str:
         if self.__staff.is_banned:
@@ -63,31 +64,33 @@ class StaffDetailView(TextView):
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()
+        keyboard.max_width = 1
 
         if self.__staff.is_banned:
-            ban_button = InlineKeyboardButton(
+            keyboard.button(
                 text='🔑 Разблокировать',
                 callback_data=StaffUpdateCallbackData(
                     telegram_id=self.__staff.id,
                     action=StaffUpdateAction.UNBAN,
-                ).pack(),
+                ),
             )
-            keyboard.row(ban_button)
         else:
-            unban_button = InlineKeyboardButton(
+            keyboard.button(
                 text='❌ Заблокировать',
                 callback_data=StaffUpdateCallbackData(
                     telegram_id=self.__staff.id,
                     action=StaffUpdateAction.BAN,
-                ).pack(),
+                ),
             )
-            keyboard.row(unban_button)
-
-        keyboard.row(
-            InlineKeyboardButton(
-                text='🔙 Назад',
-                callback_data=CallbackDataPrefix.STAFF_LIST,
+        keyboard.button(
+            text='🛑 Штрафы',
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/penalties/{self.__staff.id}',
             ),
+        )
+        keyboard.button(
+            text='🔙 Назад',
+            callback_data=CallbackDataPrefix.STAFF_LIST,
         )
 
         return keyboard.as_markup()
