@@ -100,7 +100,7 @@ class AdminOtherMenuView(TextView):
         direct_shift = KeyboardButton(
             text=ButtonText.DIRECT_SHIFT,
             web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/shifts/direct-shift',
+                url=f'{self.__web_app_base_url}/shifts/direct',
             ),
         )
         reports_button = KeyboardButton(text=ButtonText.REPORTS)

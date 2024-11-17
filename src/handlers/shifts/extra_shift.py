@@ -27,7 +27,8 @@ from views.menu import MainMenuView
 from views.shifts import (
     ExtraShiftScheduleNotificationView,
     ExtraShiftScheduleWebAppView,
-    ExtraShiftStartView, ShiftStartCarWashChooseView,
+    ExtraShiftStartView,
+    ShiftStartCarWashChooseView,
 )
 
 __all__ = ('router',)

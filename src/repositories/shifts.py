@@ -103,12 +103,14 @@ class ShiftRepository:
             dates: list[datetime.date],
             immediate_start: bool = False,
             car_wash_id: int | None = None,
+            is_extra: bool = False,
     ) -> ShiftCreateResult:
         response = await self.__connection.create(
             staff_id=staff_id,
             dates=dates,
             immediate_start=immediate_start,
             car_wash_id=car_wash_id,
+            is_extra=is_extra,
         )
         handle_errors(response)
         response_data = response.json()

@@ -53,15 +53,14 @@ async def on_start_shift_car_wash(
         ),
 ) -> None:
     state_data: dict = await state.get_data()
-    is_extra: bool = state_data.get('is_extra', False)
     await state.clear()
-    if is_extra:
-        shift_date = state_data['date']
+    if (shift_date := state_data.get('date')) is not None:
         await shift_repository.create(
             staff_id=callback_query.from_user.id,
             car_wash_id=callback_data.car_wash_id,
             dates=[datetime.date.fromisoformat(shift_date)],
             immediate_start=True,
+            is_extra=state_data.get('is_extra', False),
         )
     else:
         shift_id: int = state_data['shift_id']

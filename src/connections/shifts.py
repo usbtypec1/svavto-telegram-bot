@@ -137,6 +137,7 @@ class ShiftConnection(ApiConnection):
             dates: Iterable[datetime.date],
             immediate_start: bool,
             car_wash_id: int | None,
+            is_extra: bool,
     ) -> httpx.Response:
         url = '/shifts/create/'
         logger.debug(f'Creating shifts for staff {staff_id}')
@@ -145,6 +146,7 @@ class ShiftConnection(ApiConnection):
             'dates': [f'{date:%Y-%m-%d}' for date in dates],
             'immediate_start': immediate_start,
             'car_wash_id': car_wash_id,
+            'is_extra': is_extra,
         }
         response = await self._http_client.post(url, json=request_data)
         logger.debug(

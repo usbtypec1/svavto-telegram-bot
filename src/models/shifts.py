@@ -12,6 +12,7 @@ __all__ = (
     'ShiftCreateResult',
     'ShiftListItem',
     'ShiftListPage',
+    'DirectShiftWebAppData',
 )
 
 
@@ -54,3 +55,8 @@ class ShiftListItem(BaseModel):
 class ShiftListPage(BaseModel):
     shifts: list[ShiftListItem]
     is_end_of_list_reached: bool
+
+
+class DirectShiftWebAppData(BaseModel):
+    staff_ids: set[int]
+    date: datetime.date
