@@ -1,15 +1,15 @@
 from collections.abc import Iterable
+from typing import Final
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
+from aiogram.types import ForceReply, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import (
-    PenaltyCreateChooseStaffCallbackData,
-    PenaltyCreateChooseReasonCallbackData,
+    PenaltyCreateChooseReasonCallbackData, PenaltyCreateChooseStaffCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
-from enums import PenaltyReason
-from models import Staff, Penalty
+from enums import PenaltyConsequence, PenaltyReason
+from models import Penalty, Staff
 from views.base import TextView
 
 __all__ = (
@@ -18,7 +18,59 @@ __all__ = (
     'PenaltyCreateInputOtherReasonView',
     'PenaltyCreateConfirmView',
     'PenaltyCreateSuccessView',
+    'PenaltyPhotoInputView',
+    'penalty_reason_to_name',
 )
+
+penalty_reason_to_name: Final[dict[PenaltyReason: str]] = {
+    PenaltyReason.NOT_SHOWING_UP: '🙅 Невыход',
+    PenaltyReason.EARLY_LEAVE: '🏃 Ранний уход',
+    PenaltyReason.LATE_REPORT: '📝 Отчет не вовремя',
+    PenaltyReason.OTHER: '✏️ Другая причина',
+}
+
+
+class PenaltyCreateInputOtherReasonView(TextView):
+    text = 'Вы можете сами ввести причину'
+    reply_markup = ForceReply(input_field_placeholder='Другая причина')
+
+
+class PenaltyCreateConfirmView(TextView):
+    __accept_button = InlineKeyboardButton(
+        text='✅ Да',
+        callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
+    )
+    __reject_button = InlineKeyboardButton(
+        text='❌ Нет',
+        callback_data=CallbackDataPrefix.PENALTY_CREATE_REJECT,
+    )
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[[__accept_button, __reject_button]],
+    )
+
+    def __init__(
+            self,
+            *,
+            staff: Staff,
+            reason: str,
+            amount: int | None,
+    ):
+        self.__staff = staff
+        self.__reason = reason
+        self.__amount = amount
+
+    def get_text(self) -> str:
+        if self.__amount is not None:
+            return (
+                '❗️ Вы действительно хотите оштрафовать'
+                f' сотрудника {self.__staff.full_name}'
+                f' на сумму {self.__amount} по причине <i>{self.__reason}</i>?'
+            )
+        return (
+            '❗️ Вы действительно хотите оштрафовать'
+            f' сотрудника {self.__staff.full_name}'
+            f' по причине <i>{self.__reason}</i>?'
+        )
 
 
 class PenaltyCreateChooseStaffView(TextView):
@@ -28,8 +80,8 @@ class PenaltyCreateChooseStaffView(TextView):
 
     def get_text(self) -> str:
         if not self.__staff_list:
-            return 'Некого штрафовать'
-        return 'Выберите Сотрудника'
+            return '😔 Некого штрафовать'
+        return '👥 Выберите сотрудника которого хотите оштрафовать'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()
@@ -47,68 +99,19 @@ class PenaltyCreateChooseStaffView(TextView):
 
 
 class PenaltyCreateChooseReasonView(TextView):
-    text = 'Выберите причину штрафа из списка'
+    text = '✏️ Выберите причину штрафа из списка'
     reply_markup = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text='Невыход',
+                    text=reason_name,
                     callback_data=PenaltyCreateChooseReasonCallbackData(
-                        reason=PenaltyReason.NOT_SHOWING_UP,
+                        reason=reason,
                     ).pack(),
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    text='Ранний уход',
-                    callback_data=PenaltyCreateChooseReasonCallbackData(
-                        reason=PenaltyReason.EARLY_LEAVE,
-                    ).pack(),
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    text='Отчет не вовремя',
-                    callback_data=PenaltyCreateChooseReasonCallbackData(
-                        reason=PenaltyReason.LATE_REPORT,
-                    ).pack(),
-                ),
-            ]
+                )
+            ] for reason, reason_name in penalty_reason_to_name.items()
         ],
     )
-
-
-class PenaltyCreateInputOtherReasonView(TextView):
-    text = 'Вы можете сами ввести причину'
-    reply_markup = ForceReply(input_field_placeholder='Другая причина')
-
-
-class PenaltyCreateConfirmView(TextView):
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Да',
-                    callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
-                ),
-                InlineKeyboardButton(
-                    text='Нет',
-                    callback_data=CallbackDataPrefix.PENALTY_CREATE_REJECT,
-                ),
-            ],
-        ],
-    )
-
-    def __init__(self, staff: Staff, reason: str):
-        self.__staff = staff
-        self.__reason = reason
-
-    def get_text(self) -> str:
-        return (
-            '❗️ Вы действительно хотите оштрафовать'
-            f' сотрудника {self.__staff.full_name}'
-            f' по причине <i>{self.__reason}</i>?'
-        )
 
 
 class PenaltyCreateSuccessView(TextView):
@@ -118,12 +121,31 @@ class PenaltyCreateSuccessView(TextView):
         self.__staff = staff
 
     def get_text(self) -> str:
-        if self.__penalty.is_notification_delivered:
-            notification_delivered_line = '✅ Уведомление отправлено'
-        else:
-            notification_delivered_line = '❌ Уведомление не отправлено'
-        return (
-            f'❗️ Сотрудник {self.__staff.full_name} оштрафован'
-            f' по причине <i>{self.__penalty.reason}</i>\n'
-            f'{notification_delivered_line}'
+        reason_name = penalty_reason_to_name.get(
+            self.__penalty.reason,
+            self.__penalty.reason,
         )
+        text = (
+            f'❗️ Сотрудник {self.__staff.full_name} оштрафован'
+            f'\nПричина: {reason_name}'
+            f'\nСумма: {self.__penalty.amount}'
+        )
+        if self.__penalty.consequence == PenaltyConsequence.DISMISSAL:
+            text += '\n❗️ Сотрудник должен быть уволен'
+        if self.__penalty.consequence == PenaltyConsequence.WARN:
+            text += '\n❗️ Сотруднику отправлено предупреждение'
+        return text
+
+
+class PenaltyPhotoInputView(TextView):
+    text = '🖼️ Вы можете прикрепить фото'
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='➡️ Пропустить',
+                    callback_data=CallbackDataPrefix.SKIP,
+                ),
+            ],
+        ],
+    )

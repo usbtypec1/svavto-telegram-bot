@@ -79,6 +79,8 @@ async def on_show_menu(
 async def on_show_admin_menu(
         message: Message,
         config: Config,
+        state: FSMContext,
 ) -> None:
+    await state.clear()
     view = AdminMenuView(config.web_app_base_url)
     await answer_view(message, view)

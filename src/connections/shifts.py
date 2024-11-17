@@ -21,7 +21,7 @@ class ShiftConnection(ApiConnection):
             staff_ids: Iterable[int] | None = None,
             limit: int | None = None,
             offset: int | None = None,
-    ):
+    ) -> httpx.Response:
         url = '/shifts/'
         query_params = {}
         if date_from is not None:

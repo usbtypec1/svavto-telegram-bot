@@ -15,12 +15,15 @@ class EconomicsConnection(ApiConnection):
             *,
             staff_id: int,
             reason: str,
+            amount: int | None,
     ) -> httpx.Response:
         url = '/economics/penalties/'
         request_data = {
             'staff_id': staff_id,
             'reason': reason,
         }
+        if amount is not None:
+            request_data['amount'] = amount
         logger.debug(
             'Creating penalty',
             extra={'request_data': request_data},

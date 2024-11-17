@@ -6,4 +6,6 @@ __all__ = ('PenaltyCreateStates',)
 class PenaltyCreateStates(StatesGroup):
     staff = State()
     reason = State()
+    amount = State()
+    photo = State()
     confirm = State()

@@ -34,6 +34,7 @@ class ShiftRepository:
             limit=limit,
             offset=offset,
         )
+        print(response.text)
         handle_errors(response)
         response_data = response.json()
         return ShiftListPage.model_validate(response_data)

@@ -10,4 +10,5 @@ from . import (
     mailing,
     cars,
     reports,
+    validators_errors,
 )

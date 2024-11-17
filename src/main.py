@@ -23,6 +23,7 @@ from services.notifications import (
 def include_handlers(dispatcher: Dispatcher) -> None:
     dispatcher.include_routers(
         handlers.errors.router,
+        handlers.validators_errors.router,
         handlers.car_washes.router,
         handlers.users.router,
         handlers.shifts.router,

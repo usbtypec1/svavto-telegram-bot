@@ -15,10 +15,12 @@ class EconomicsRepository:
             *,
             staff_id: int,
             reason: str,
+            amount: int | None,
     ) -> Penalty:
         response = await self.__connection.create_penalty(
             staff_id=staff_id,
             reason=reason,
+            amount=amount,
         )
         handle_errors(response)
         response_data = response.json()

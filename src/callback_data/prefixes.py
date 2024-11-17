@@ -47,3 +47,4 @@ class CallbackDataPrefix(StrEnum):
     SHIFT_START_REQUEST_ACCEPT = auto()
     SHIFT_START_REQUEST_REJECT = auto()
     SHIFT_IMMEDIATE_START = auto()
+    SKIP = auto()

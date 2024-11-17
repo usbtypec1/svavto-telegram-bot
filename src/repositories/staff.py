@@ -16,8 +16,8 @@ class StaffRepository:
     def __init__(self, connection: StaffConnection):
         self.__connection = connection
 
-    async def get_by_id(self, user_id: int) -> Staff:
-        response = await self.__connection.get_by_id(user_id)
+    async def get_by_id(self, staff_id: int) -> Staff:
+        response = await self.__connection.get_by_id(staff_id)
         response_data = response.json()
         logger.info(
             'Decoded response data',

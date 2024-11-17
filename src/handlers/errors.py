@@ -1,5 +1,6 @@
 from json import JSONDecodeError
 
+import httpx
 from aiogram import Router
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
@@ -11,6 +12,27 @@ __all__ = ('router',)
 
 router = Router(name='global_errors')
 logger = create_logger('global_errors')
+
+
+@router.error(ExceptionTypeFilter(httpx.ConnectError))
+async def on_connect_error(event: ErrorEvent) -> None:
+    if event.update.message is not None:
+        logger.error(
+            'Connection error',
+            exc_info=event.exception,
+        )
+        await event.update.message.reply(
+            text='Ошибка подключения к серверу',
+        )
+    if event.update.callback_query is not None:
+        logger.error(
+            'Connection error',
+            exc_info=event.exception,
+        )
+        await event.update.callback_query.answer(
+            text='Ошибка подключения к серверу',
+            show_alert=True,
+        )
 
 
 @router.error(ExceptionTypeFilter(ServerApiError))

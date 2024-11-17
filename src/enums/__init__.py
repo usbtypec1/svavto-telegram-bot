@@ -1,6 +1,7 @@
 from .car_classes import *
 from .car_wash_update_actions import *
 from .mailing_types import *
+from .penalty_consequences import *
 from .penalty_reasons import *
 from .server_api_error_codes import *
 from .shift_work_types import *

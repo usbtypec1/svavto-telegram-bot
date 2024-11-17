@@ -13,7 +13,7 @@ __all__ = ('AdminMenuView', 'AdminShiftsMenuView', 'AdminOtherMenuView')
 
 
 class AdminMenuView(TextView):
-    text = 'Меню старшего смены'
+    text = '📲 Меню старшего смены'
 
     def __init__(self, web_app_base_url: str):
         self.__web_app_base_url = web_app_base_url

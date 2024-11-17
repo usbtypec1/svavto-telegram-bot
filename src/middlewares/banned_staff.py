@@ -32,6 +32,10 @@ async def banned_staff_middleware(
         user_id = get_user_id_from_update(event)
     except ValueError:
         return
+
+    if user_id in data['admin_user_ids']:
+        return await handler(event, data)
+
     try:
         staff = await staff_repository.get_by_id(user_id)
     except StaffNotFoundError:

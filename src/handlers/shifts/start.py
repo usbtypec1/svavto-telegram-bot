@@ -99,6 +99,7 @@ async def on_start_shift(
     admins_filter,
     StateFilter('*'),
 )
+@inject
 async def on_send_confirmation_to_staff(
         message: Message,
         bot: Bot,

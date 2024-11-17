@@ -46,8 +46,8 @@ class ShiftListItem(BaseModel):
     date: datetime.date
     car_wash: CarWash | None
     staff: Staff
-    is_started: datetime.datetime | None
-    is_finished: datetime.datetime | None
+    is_started: bool
+    is_finished: bool
     created_at: datetime.datetime
 
 

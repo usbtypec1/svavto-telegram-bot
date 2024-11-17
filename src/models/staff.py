@@ -24,6 +24,10 @@ class Staff(BaseModel):
     full_name: str
     car_sharing_phone_number: str
     console_phone_number: str
-    is_banned: bool
+    banned_at: datetime | None
     created_at: datetime
     last_activity_at: datetime
+
+    @property
+    def is_banned(self) -> bool:
+        return self.banned_at is not None
