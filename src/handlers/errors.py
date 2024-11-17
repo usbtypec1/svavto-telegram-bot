@@ -5,13 +5,22 @@ from aiogram import Router
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
 
-from exceptions import ServerApiError
+from exceptions import ServerApiError, ShiftAlreadyExistsError
 from logger import create_logger
 
 __all__ = ('router',)
 
+from services.telegram_events import answer_appropriate_event
+
 router = Router(name='global_errors')
 logger = create_logger('global_errors')
+
+@router.error(ExceptionTypeFilter(ShiftAlreadyExistsError))
+async def on_shift_already_exists_error(event: ErrorEvent) -> None:
+    await answer_appropriate_event(
+        event=event,
+        text='❌ У вас уже есть смена на эту дату',
+    )
 
 
 @router.error(ExceptionTypeFilter(httpx.ConnectError))

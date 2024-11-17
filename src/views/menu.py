@@ -18,6 +18,7 @@ class MainMenuView(TextView):
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         report_web_app_url = f'{self.__web_app_base_url}/reports'
         return ReplyKeyboardMarkup(
+            is_persistent=True,
             resize_keyboard=True,
             keyboard=[
                 [
@@ -66,6 +67,7 @@ class ShiftMenuView(TextView):
         )
         return ReplyKeyboardMarkup(
             is_persistent=True,
+            resize_keyboard=True,
             keyboard=[
                 [
                     shift_add_car_button,

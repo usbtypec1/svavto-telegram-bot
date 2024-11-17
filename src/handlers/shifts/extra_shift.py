@@ -3,6 +3,7 @@ import datetime
 from aiogram import Bot, F, Router
 from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import StateFilter, invert_f
+from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
 
@@ -11,18 +12,22 @@ from callback_data import (
     ExtraShiftCreateRejectCallbackData, ExtraShiftStartCallbackData,
 )
 from config import Config
-from dependencies.repositories import get_staff_repository
+from dependencies.repositories import (
+    get_car_wash_repository,
+    get_staff_repository,
+)
 from filters import admins_filter
-from repositories import StaffRepository
+from repositories import CarWashRepository, StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
+from states import ShiftStartStates
 from views.base import answer_view, send_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView
 from views.shifts import (
     ExtraShiftScheduleNotificationView,
     ExtraShiftScheduleWebAppView,
-    ExtraShiftStartView,
+    ExtraShiftStartView, ShiftStartCarWashChooseView,
 )
 
 __all__ = ('router',)
@@ -35,10 +40,16 @@ router = Router(name=__name__)
     invert_f(admins_filter),
     StateFilter('*'),
 )
+@inject
 async def on_extra_shift_start(
         callback_query: CallbackQuery,
         callback_data: ExtraShiftStartCallbackData,
         config: Config,
+        state: FSMContext,
+        car_wash_repository: CarWashRepository = Depends(
+            dependency=get_car_wash_repository,
+            use_cache=False,
+        ),
 ) -> None:
     now_date = datetime.datetime.now(config.timezone).date()
     shift_date = callback_data.date
@@ -55,10 +66,17 @@ async def on_extra_shift_start(
             show_alert=True,
         )
     else:
-        await callback_query.answer('✅ Вы начали доп.смену', show_alert=True)
-        await callback_query.message.edit_text(
-            format_accept_text(callback_query.message),
-        )
+        await state.set_state(ShiftStartStates.car_wash)
+        await state.update_data(is_extra=True, date=shift_date.isoformat())
+        car_washes = await car_wash_repository.get_all()
+        if not car_washes:
+            await callback_query.answer(
+                text='❌ Нет доступных моек',
+                show_alert=True,
+            )
+            return
+        view = ShiftStartCarWashChooseView(car_washes)
+        await answer_view(callback_query.message, view)
 
 
 @router.callback_query(

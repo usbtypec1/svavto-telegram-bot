@@ -20,6 +20,7 @@ class AdminMenuView(TextView):
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         return ReplyKeyboardMarkup(
+            is_persistent=True,
             resize_keyboard=True,
             keyboard=[
                 [

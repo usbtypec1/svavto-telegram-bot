@@ -28,3 +28,7 @@ class ShiftNotFoundError(Exception):
 
 class CarAlreadyWashedOnShiftError(Exception):
     pass
+
+
+class ShiftAlreadyExistsError(Exception):
+    pass

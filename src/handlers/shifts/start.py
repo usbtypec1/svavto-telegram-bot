@@ -53,12 +53,22 @@ async def on_start_shift_car_wash(
         ),
 ) -> None:
     state_data: dict = await state.get_data()
+    is_extra: bool = state_data.get('is_extra', False)
     await state.clear()
-    shift_id: int = state_data['shift_id']
-    await shift_repository.start(
-        shift_id=shift_id,
-        car_wash_id=callback_data.car_wash_id,
-    )
+    if is_extra:
+        shift_date = state_data['date']
+        await shift_repository.create(
+            staff_id=callback_query.from_user.id,
+            car_wash_id=callback_data.car_wash_id,
+            dates=[datetime.date.fromisoformat(shift_date)],
+            immediate_start=True,
+        )
+    else:
+        shift_id: int = state_data['shift_id']
+        await shift_repository.start(
+            shift_id=shift_id,
+            car_wash_id=callback_data.car_wash_id,
+        )
     await callback_query.message.edit_text(
         text='✅ Вы начали смену водителя перегонщика на мойку',
     )
