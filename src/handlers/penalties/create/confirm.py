@@ -1,4 +1,4 @@
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
@@ -15,8 +15,11 @@ from repositories import EconomicsRepository, StaffRepository
 from services.telegram_events import format_reject_text
 from states import PenaltyCreateStates
 from views.admins import AdminMenuView
-from views.base import answer_view, edit_message_by_view
-from views.penalties import PenaltyCreateSuccessView
+from views.base import answer_view, edit_message_by_view, send_view
+from views.penalties import (
+    PenaltyCreateNotificationView,
+    PenaltyCreateSuccessView,
+)
 
 __all__ = ('router',)
 
@@ -50,6 +53,8 @@ async def on_reject_penalty_creation(
 async def on_accept_penalty_creation(
         callback_query: CallbackQuery,
         state: FSMContext,
+        bot: Bot,
+        config: Config,
         economics_repository: EconomicsRepository = Depends(
             dependency=get_economics_repository,
             use_cache=False,
@@ -71,3 +76,5 @@ async def on_accept_penalty_creation(
     staff = await staff_repository.get_by_id(staff_id)
     view = PenaltyCreateSuccessView(penalty, staff)
     await edit_message_by_view(callback_query.message, view)
+    view = PenaltyCreateNotificationView(penalty, config.web_app_base_url)
+    await send_view(bot, view, staff.id)

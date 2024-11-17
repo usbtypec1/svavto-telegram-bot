@@ -1,11 +1,15 @@
 from collections.abc import Iterable
 from typing import Final
 
-from aiogram.types import ForceReply, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import (
+    ForceReply, InlineKeyboardButton,
+    InlineKeyboardMarkup, WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import (
-    PenaltyCreateChooseReasonCallbackData, PenaltyCreateChooseStaffCallbackData,
+    PenaltyCreateChooseReasonCallbackData,
+    PenaltyCreateChooseStaffCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
 from enums import PenaltyConsequence, PenaltyReason
@@ -20,6 +24,7 @@ __all__ = (
     'PenaltyCreateSuccessView',
     'PenaltyPhotoInputView',
     'penalty_reason_to_name',
+    'PenaltyCreateNotificationView',
 )
 
 penalty_reason_to_name: Final[dict[PenaltyReason: str]] = {
@@ -149,3 +154,29 @@ class PenaltyPhotoInputView(TextView):
             ],
         ],
     )
+
+
+class PenaltyCreateNotificationView(TextView):
+
+    def __init__(self, penalty: Penalty, web_app_base_url: str):
+        self.__penalty = penalty
+        self.__web_app_base_url = web_app_base_url
+
+    def get_text(self) -> str:
+        reason_name = penalty_reason_to_name.get(
+            self.__penalty.reason,
+            self.__penalty.reason,
+        )
+        return (
+            f'❗️ {self.__penalty.staff.full_name}, вы получили новый штраф'
+            f'\nПричина: {reason_name}'
+            f'\nСумма: {self.__penalty.amount}'
+        )
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        url = f'{self.__web_app_base_url}/penalties/{self.__penalty.staff.id}'
+        button = InlineKeyboardButton(
+            text='🛑 Все мои штрафы',
+            web_app=WebAppInfo(url=url),
+        )
+        return InlineKeyboardMarkup(inline_keyboard=[[button]])
