@@ -52,3 +52,7 @@ class StaffConnection(ApiConnection):
         url = f'/staff/{telegram_id}/'
         request_data = {'is_banned': is_banned}
         return await self._http_client.put(url, json=request_data)
+
+    async def get_all_admin_staff(self) -> httpx.Response:
+        url = '/staff/admins/'
+        return await self._http_client.get(url)

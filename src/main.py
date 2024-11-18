@@ -12,8 +12,10 @@ from fast_depends import Depends, inject
 
 import handlers
 from config import Config, load_config_from_file
+from dependencies.repositories import get_staff_repository
 from logger import setup_logging
 from middlewares import banned_staff_middleware
+from repositories import StaffRepository
 from services.notifications import (
     MailingService, NotificationService,
     SpecificChatsNotificationService,
@@ -62,7 +64,14 @@ async def setup_commands(bot: Bot, admin_chat_ids: Iterable[int]) -> None:
 
 @inject
 async def main(
-        config: Config = Depends(load_config_from_file),
+        config: Config = Depends(
+            dependency=load_config_from_file,
+            use_cache=False,
+        ),
+        staff_repository: StaffRepository = Depends(
+            dependency=get_staff_repository,
+            use_cache=False,
+        ),
 ) -> None:
     setup_logging()
     bot = Bot(
@@ -72,9 +81,11 @@ async def main(
         ),
     )
 
+    admin_user_ids = await staff_repository.get_all_admin_user_ids()
+
     admins_notification_service = SpecificChatsNotificationService(
         bot=bot,
-        chat_ids=config.admin_user_ids,
+        chat_ids=admin_user_ids,
     )
     main_chat_notification_service = SpecificChatsNotificationService(
         bot=bot,
@@ -87,7 +98,7 @@ async def main(
     dispatcher.update.middleware(banned_staff_middleware)
 
     dispatcher['config'] = config
-    dispatcher['admin_user_ids'] = config.admin_user_ids
+    dispatcher['admin_user_ids'] = admin_user_ids
     dispatcher['admins_notification_service'] = admins_notification_service
     dispatcher['main_chat_notification_service'] = (
         main_chat_notification_service
@@ -101,7 +112,7 @@ async def main(
 
     include_handlers(dispatcher)
 
-    await setup_commands(bot, config.admin_user_ids)
+    await setup_commands(bot, admin_user_ids)
 
     await dispatcher.start_polling(bot)
 

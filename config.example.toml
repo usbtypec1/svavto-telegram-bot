@@ -1,6 +1,10 @@
 [telegram_bot]
-token = "your token"
+token = "your bot token"
 
 [app]
-admin_user_ids = [12345]
+main_chat_id = -1002413313371
 api_base_url = "http://127.0.0.1:8000"
+timezone = "Asia/Bishkek"
+
+[web_app]
+base_url = "web app base url"

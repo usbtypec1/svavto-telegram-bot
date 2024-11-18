@@ -53,3 +53,12 @@ class StaffRepository:
             is_banned=is_banned,
         )
         handle_errors(response)
+
+    async def get_all_admin_user_ids(self) -> set[int]:
+        response = await self.__connection.get_all_admin_staff()
+        handle_errors(response)
+        response_data = response.json()
+        return {
+            staff['id']
+            for staff in response_data['admin_staff']
+        }
