@@ -28,6 +28,8 @@ async def on_input_car(
             use_cache=False,
         ),
 ) -> None:
+    print(message.web_app_data.data)
+    return
     car_to_wash_web_app_data = CarToWashWebAppData.model_validate_json(
         message.web_app_data.data,
     )

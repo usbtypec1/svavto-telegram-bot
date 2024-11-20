@@ -1,4 +1,5 @@
 import datetime
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -17,7 +18,7 @@ __all__ = (
 
 
 class AdditionalService(BaseModel):
-    name: str
+    id: UUID
     count: int
 
 

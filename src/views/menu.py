@@ -62,7 +62,7 @@ class ShiftMenuView(TextView):
         shift_add_car_button = KeyboardButton(
             text=ButtonText.SHIFT_ADD_CAR,
             web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/shifts/add-car',
+                url=f'{self.__web_app_base_url}/shifts/cars',
             )
         )
         return ReplyKeyboardMarkup(
