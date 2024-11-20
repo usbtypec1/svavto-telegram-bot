@@ -63,7 +63,10 @@ async def on_show_menu(
         except StaffHasNoActiveShiftError:
             view = MainMenuView(config.web_app_base_url)
         else:
-            view = ShiftMenuView(config.web_app_base_url)
+            view = ShiftMenuView(
+                staff_id=message.from_user.id,
+                web_app_base_url=config.web_app_base_url,
+            )
     await answer_view(message, view)
 
 

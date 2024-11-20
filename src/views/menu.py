@@ -55,15 +55,15 @@ class RegisterView(TextView):
 class ShiftMenuView(TextView):
     text = 'Меню смены'
 
-    def __init__(self, web_app_base_url: str):
+    def __init__(self, staff_id: int, web_app_base_url: str):
+        self.__staff_id = staff_id
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        url = f'{self.__web_app_base_url}/shifts/cars/create/{self.__staff_id}'
         shift_add_car_button = KeyboardButton(
             text=ButtonText.SHIFT_ADD_CAR,
-            web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/shifts/cars',
-            )
+            web_app=WebAppInfo(url=url)
         )
         return ReplyKeyboardMarkup(
             is_persistent=True,

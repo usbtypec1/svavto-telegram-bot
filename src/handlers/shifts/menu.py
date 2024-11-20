@@ -21,5 +21,8 @@ async def on_show_staff_shift_car_wash_menu(
         message: Message,
         config: Config,
 ) -> None:
-    view = ShiftMenuView(config.web_app_base_url)
+    view = ShiftMenuView(
+        staff_id=message.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await answer_view(message, view)

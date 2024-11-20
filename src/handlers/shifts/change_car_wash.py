@@ -52,7 +52,10 @@ async def on_shift_car_wash_update(
         text=f'✅ Вы успешно поменяли мойку на {car_wash.name}',
         show_alert=True,
     )
-    view = ShiftMenuView(web_app_base_url=config.web_app_base_url)
+    view = ShiftMenuView(
+        staff_id=callback_query.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await answer_view(callback_query.message, view)
 
 

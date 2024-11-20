@@ -239,7 +239,10 @@ async def on_shift_finish_reject(
         ),
 ) -> None:
     await shift_repository.get_active(callback_query.from_user.id)
-    view = ShiftMenuView(config.web_app_base_url)
+    view = ShiftMenuView(
+        staff_id=callback_query.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await answer_view(callback_query.message, view)
     await callback_query.answer(
         text='❗️ Вы отменили завершение смены',

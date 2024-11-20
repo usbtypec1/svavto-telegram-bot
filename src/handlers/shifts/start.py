@@ -71,7 +71,10 @@ async def on_start_shift_car_wash(
     await callback_query.message.edit_text(
         text='✅ Вы начали смену водителя перегонщика на мойку',
     )
-    view = ShiftMenuView(config.web_app_base_url)
+    view = ShiftMenuView(
+        staff_id=callback_query.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await answer_view(callback_query.message, view)
 
 
