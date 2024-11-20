@@ -6,6 +6,7 @@ from fast_depends import inject, Depends
 
 from callback_data import CarWashActionCallbackData
 from callback_data.prefixes import CallbackDataPrefix
+from config import Config
 from dependencies.repositories import get_car_wash_repository
 from enums import CarWashAction
 from filters import admins_filter
@@ -32,6 +33,7 @@ router = Router(name=__name__)
 async def on_car_wash_rename_confirmed(
         callback_query: CallbackQuery,
         state: FSMContext,
+        config: Config,
         car_wash_repository: CarWashRepository = Depends(
             dependency=get_car_wash_repository,
             use_cache=False,
@@ -47,7 +49,7 @@ async def on_car_wash_rename_confirmed(
     )
     await callback_query.message.edit_text('✅ Название мойки обновлено')
     car_wash = await car_wash_repository.get_by_id(car_wash_id)
-    view = CarWashDetailView(car_wash)
+    view = CarWashDetailView(car_wash, config.web_app_base_url)
     await answer_view(callback_query.message, view)
 
 

@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import CarWashActionCallbackData, CarWashDetailCallbackData
@@ -103,8 +103,9 @@ class CarWashCreateConfirmView(TextView):
 
 class CarWashDetailView(TextView):
 
-    def __init__(self, car_wash: CarWash):
+    def __init__(self, car_wash: CarWash, web_app_base_url: str):
         self.__car_wash = car_wash
+        self.__web_app_base_url = web_app_base_url
 
     def get_text(self) -> str:
         return (
@@ -124,6 +125,12 @@ class CarWashDetailView(TextView):
                 action=CarWashAction.RENAME,
             ).pack(),
         )
+        price_list_button = InlineKeyboardButton(
+            text='💰 Прайс-лист',
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/car-washes/{self.__car_wash.id}',
+            ),
+        )
         delete_button = InlineKeyboardButton(
             text='❌ Удалить',
             callback_data=CarWashActionCallbackData(
@@ -134,6 +141,7 @@ class CarWashDetailView(TextView):
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [rename_button],
+                [price_list_button],
                 [delete_button],
                 [car_washes_list_button],
             ]
