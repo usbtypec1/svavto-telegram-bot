@@ -6,6 +6,7 @@ from fast_depends import Depends, inject
 from callback_data import CarDetailForAdditionalServicesCallbackData
 from config import Config
 from dependencies.repositories import get_car_to_wash_repository
+from exceptions import AdditionalServicesCouldNotBeProvidedError
 from filters import admins_filter
 from models import CarAdditionalServices
 from repositories import CarToWashRepository
@@ -40,9 +41,16 @@ async def on_car_additional_services_edit(
     car_additional_services = CarAdditionalServices.model_validate_json(
         message.web_app_data.data,
     )
-    await car_to_wash_repository.update_additional_services(
-        car_additional_services,
-    )
+    try:
+        await car_to_wash_repository.update_additional_services(
+            car_additional_services,
+        )
+    except AdditionalServicesCouldNotBeProvidedError:
+        await message.answer(
+            '❌ Указанные доп.услуги не предоставляются на этой мойке',
+        )
+        return
+
     await message.answer('Доп.услуги машины обновлены')
     view = ShiftMenuView(
         staff_id=message.from_user.id,

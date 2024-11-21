@@ -4,7 +4,10 @@ from aiogram.types import Message
 from fast_depends import Depends, inject
 
 from dependencies.repositories import get_car_to_wash_repository
-from exceptions import CarAlreadyWashedOnShiftError
+from exceptions import (
+    AdditionalServicesCouldNotBeProvidedError,
+    CarAlreadyWashedOnShiftError,
+)
 from filters import admins_filter
 from models import CarToWashWebAppData
 from repositories import CarToWashRepository
@@ -41,6 +44,10 @@ async def on_input_car(
             f'❌ Авто с гос.номером {car_to_wash_web_app_data.number}'
             ' уже было добавлено',
 
+        )
+    except AdditionalServicesCouldNotBeProvidedError:
+        await message.answer(
+            '❌ Указанные доп.услуги не предоставляются на этой мойке',
         )
     else:
         await message.answer(
