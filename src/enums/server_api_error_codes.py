@@ -18,3 +18,4 @@ class ServerApiErrorCode(StrEnum):
     SHIFT_NOT_FOUND = auto()
     CAR_ALREADY_WASHED_ON_SHIFT = auto()
     SHIFT_ALREADY_EXISTS = auto()
+    ADDITIONAL_SERVICE_COULD_NOT_BE_PROVIDED = auto()

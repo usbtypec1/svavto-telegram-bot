@@ -5,7 +5,8 @@ import httpx
 
 from enums import ServerApiErrorCode
 from exceptions import (
-    CarAlreadyWashedOnShiftError, CarWashNotFoundError,
+    AdditionalServicesCouldNotBeProvidedError, CarAlreadyWashedOnShiftError,
+    CarWashNotFoundError,
     CarWashSameAsCurrentError, ServerApiError, ShiftAlreadyConfirmedError,
     ShiftAlreadyExistsError, ShiftAlreadyFinishedError, ShiftNotConfirmedError,
     ShiftNotFoundError, StaffAlreadyExistsError, StaffHasActiveShiftError,
@@ -34,6 +35,9 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
         CarAlreadyWashedOnShiftError
     ),
     ServerApiErrorCode.SHIFT_ALREADY_EXISTS: ShiftAlreadyExistsError,
+    ServerApiErrorCode.ADDITIONAL_SERVICE_COULD_NOT_BE_PROVIDED: (
+        AdditionalServicesCouldNotBeProvidedError
+    ),
 }
 
 
@@ -41,10 +45,11 @@ def raise_appropriate_error(errors: Iterable[dict]) -> Never:
     for error in errors:
         error_code = error['code']
         error_detail = error['detail']
+        error_extra = error.get('extra', {})
 
         exception_class = code_to_exception_class.get(error_code)
         if exception_class is not None:
-            raise exception_class(error_detail)
+            raise exception_class(error_detail, **error_extra)
 
     raise ServerApiError
 

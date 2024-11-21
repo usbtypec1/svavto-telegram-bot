@@ -20,9 +20,21 @@ class CarToWashConnection(ApiConnection):
             car_to_wash: CarToWashWebAppData,
     ) -> httpx.Response:
         url = '/shifts/cars/'
-        request_data = car_to_wash.model_dump() | {
+        request_data = {
             'staff_id': staff_id,
+            'number': car_to_wash.number,
             'car_class': car_to_wash.class_type,
+            'wash_type': car_to_wash.wash_type,
+            'windshield_washer_refilled_bottle_percentage': (
+                car_to_wash.windshield_washer_refilled_bottle_percentage
+            ),
+            'additional_services': [
+                {
+                    'id': str(service.id),
+                    'count': service.count,
+                }
+                for service in car_to_wash.additional_services
+            ]
         }
         logger.debug(
             'Adding car to wash',
@@ -56,7 +68,13 @@ class CarToWashConnection(ApiConnection):
     ) -> httpx.Response:
         url = f'/shifts/cars/{car_id}/'
         request_data = {
-            'additional_services': additional_services,
+            'additional_services': [
+                {
+                    'id': str(service['id']),
+                    'count': service['count'],
+                }
+                for service in additional_services
+            ],
         }
         return await self._http_client.patch(url, json=request_data)
 

@@ -28,8 +28,6 @@ async def on_input_car(
             use_cache=False,
         ),
 ) -> None:
-    print(message.web_app_data.data)
-    return
     car_to_wash_web_app_data = CarToWashWebAppData.model_validate_json(
         message.web_app_data.data,
     )
@@ -44,7 +42,7 @@ async def on_input_car(
             ' уже было добавлено',
 
         )
-        return
-    await message.answer(
-        f'✅ Авто с гос.номером {car_to_wash.number} добавлено',
-    )
+    else:
+        await message.answer(
+            f'✅ Авто с гос.номером {car_to_wash.number} добавлено',
+        )
