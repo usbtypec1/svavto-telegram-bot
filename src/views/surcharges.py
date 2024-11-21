@@ -43,12 +43,12 @@ class SurchargeCreateChooseStaffView(TextView):
 
 
 class SurchargeCreateInputReasonView(TextView):
-    text = 'За что доплата?'
+    text = '📝 За что доплата?'
     reply_markup = ForceReply(input_field_placeholder='Причина доплаты')
 
 
 class SurchargeCreateInputAmountView(TextView):
-    text = 'Укажите размер доплаты'
+    text = '💰 Укажите размер доплаты'
     reply_markup = ForceReply(input_field_placeholder='Размер доплаты')
 
 
@@ -57,11 +57,11 @@ class SurchargeCreateConfirmView(TextView):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text='Да',
+                    text='✅ Да',
                     callback_data=CallbackDataPrefix.SURCHARGE_CREATE_ACCEPT,
                 ),
                 InlineKeyboardButton(
-                    text='Нет',
+                    text='❌ Нет',
                     callback_data=CallbackDataPrefix.SURCHARGE_CREATE_REJECT,
                 ),
             ],
@@ -89,13 +89,8 @@ class SurchargeCreateSuccessView(TextView):
         self.__staff = staff
 
     def get_text(self) -> str:
-        if self.__surcharge.is_notification_delivered:
-            notification_delivered_line = '✅ Уведомление отправлено'
-        else:
-            notification_delivered_line = '❌ Уведомление не отправлено'
         return (
             f'❗️ Сотруднику {self.__staff.full_name}'
             f' доплачено <b>{self.__surcharge.amount}</b>'
             f' по причине <i>{self.__surcharge.reason}</i>\n'
-            f'{notification_delivered_line}'
         )

@@ -11,4 +11,3 @@ class Surcharge(BaseModel):
     reason: str
     amount: int
     created_at: datetime
-    is_notification_delivered: bool
