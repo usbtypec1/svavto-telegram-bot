@@ -44,7 +44,7 @@ class CarToWashRepository:
             car_additional_services: CarAdditionalServices,
     ) -> None:
         response = await self.__connection.update_additional_services(
-            car_id=car_additional_services.car_id,
+            car_id=car_additional_services.id,
             additional_services=car_additional_services.model_dump()[
                 'additional_services'],
         )
