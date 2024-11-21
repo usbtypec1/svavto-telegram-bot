@@ -84,6 +84,8 @@ async def on_shift_finish_accept(
     await state.clear()
     shift_finish_result = await shift_repository.finish(
         staff_id=callback_query.from_user.id,
+        statement_photo_file_id=statement_photo_file_id,
+        service_app_photo_file_id=service_app_photo_file_id,
     )
 
     if shift_finish_result.is_first_shift:

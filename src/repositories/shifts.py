@@ -73,8 +73,25 @@ class ShiftRepository:
             self,
             *,
             staff_id: int,
+            statement_photo_file_id: str,
+            service_app_photo_file_id: str,
     ) -> ShiftFinishResult:
-        response = await self.__connection.finish(staff_id=staff_id)
+        """
+        Finish current shift of staff.
+
+        Keyword Args:
+            staff_id: Staff Telegram ID.
+            statement_photo_file_id: File ID of photo of statement.
+            service_app_photo_file_id: File ID of photo of service application.
+
+        Returns:
+            Response from the API.
+        """
+        response = await self.__connection.finish(
+            staff_id=staff_id,
+            statement_photo_file_id=statement_photo_file_id,
+            service_app_photo_file_id=service_app_photo_file_id,
+        )
         handle_errors(response)
         response_data = response.json()
         return ShiftFinishResult.model_validate(response_data)

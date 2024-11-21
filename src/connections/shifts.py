@@ -101,12 +101,29 @@ class ShiftConnection(ApiConnection):
             self,
             *,
             staff_id: int,
+            statement_photo_file_id: str,
+            service_app_photo_file_id: str,
     ) -> httpx.Response:
+        """
+        Call API endpoint that finishes current shift of staff.
+
+        Keyword Args:
+            staff_id: Staff Telegram ID.
+            statement_photo_file_id: File ID of photo of statement.
+            service_app_photo_file_id: File ID of photo of service application.
+
+        Returns:
+            Response from the API.
+        """
         url = f'/shifts/finish/'
         logger.debug(
             f'Finishing shift for staff {staff_id}',
         )
-        request_data = {'staff_id': staff_id}
+        request_data = {
+            'staff_id': staff_id,
+            'statement_photo_file_id': statement_photo_file_id,
+            'service_app_photo_file_id': service_app_photo_file_id,
+        }
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
             f'Finished shift for staff {staff_id}',
