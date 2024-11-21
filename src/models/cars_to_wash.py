@@ -41,7 +41,7 @@ class Car(BaseModel):
 
 
 class CarAdditionalServices(BaseModel):
-    car_id: int
+    id: int
     additional_services: list[AdditionalService]
 
 
