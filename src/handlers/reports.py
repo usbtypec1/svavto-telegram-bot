@@ -33,10 +33,7 @@ async def on_other(
 )
 async def on_show_reports(message: Message) -> None:
     await message.answer(
-        '📊 Таблица 1: <a href="https://docs.google.com/spreadsheets/d'
-        '/1q6eSsP3JtPe3J517vf_KEsZWiIiFYMc9h7h_CMFiaG4/edit?gid=0#gid=0'
-        '">*ссылка*</a>'
-        '\n📊 Таблица 2: <a href="https://docs.google.com/spreadsheets/d'
-        '/1q6eSsP3JtPe3J517vf_KEsZWiIiFYMc9h7h_CMFiaG4/edit?gid=0#gid=0'
-        '">*ссылка*</a>'
+        '📊 Услуги: <a href="https://docs.google.com/spreadsheets/d/'
+        '1lV77O1DquJqdC_zqXD0aRkp1C4IRKQjMlQMjnS4K8Fc/edit?gid=0#gid=0">'
+        '*ссылка*</a>'
     )
