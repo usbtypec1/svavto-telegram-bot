@@ -14,7 +14,7 @@ from callback_data import (
 from callback_data.prefixes import CallbackDataPrefix
 from enums import PenaltyConsequence, PenaltyReason
 from models import Penalty, Staff
-from views.base import TextView
+from views.base import PhotoView, TextView
 
 __all__ = (
     'PenaltyCreateChooseStaffView',
@@ -25,6 +25,9 @@ __all__ = (
     'PenaltyPhotoInputView',
     'penalty_reason_to_name',
     'PenaltyCreateNotificationView',
+    'PhotoCreateWithPhotoNotificationView',
+    'format_penalty_create_notification_text',
+    'render_penalty_create_notification_markup',
 )
 
 penalty_reason_to_name: Final[dict[PenaltyReason: str]] = {
@@ -156,27 +159,68 @@ class PenaltyPhotoInputView(TextView):
     )
 
 
+def format_penalty_create_notification_text(penalty: Penalty) -> str:
+    reason_name = penalty_reason_to_name.get(
+        penalty.reason,
+        penalty.reason,
+    )
+    return (
+        f'❗️ {penalty.staff.full_name}, вы получили новый штраф'
+        f'\nПричина: {reason_name}'
+        f'\nСумма: {penalty.amount}'
+    )
+
+
+def render_penalty_create_notification_markup(
+        *,
+        penalty: Penalty,
+        web_app_base_url: str,
+) -> InlineKeyboardMarkup:
+    url = f'{web_app_base_url}/penalties/{penalty.staff.id}'
+    button = InlineKeyboardButton(
+        text='🛑 Все мои штрафы',
+        web_app=WebAppInfo(url=url),
+    )
+    return InlineKeyboardMarkup(inline_keyboard=[[button]])
+
+
 class PenaltyCreateNotificationView(TextView):
 
-    def __init__(self, penalty: Penalty, web_app_base_url: str):
+    def __init__(self, *, penalty: Penalty, web_app_base_url: str):
         self.__penalty = penalty
         self.__web_app_base_url = web_app_base_url
 
     def get_text(self) -> str:
-        reason_name = penalty_reason_to_name.get(
-            self.__penalty.reason,
-            self.__penalty.reason,
-        )
-        return (
-            f'❗️ {self.__penalty.staff.full_name}, вы получили новый штраф'
-            f'\nПричина: {reason_name}'
-            f'\nСумма: {self.__penalty.amount}'
-        )
+        return format_penalty_create_notification_text(self.__penalty)
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        url = f'{self.__web_app_base_url}/penalties/{self.__penalty.staff.id}'
-        button = InlineKeyboardButton(
-            text='🛑 Все мои штрафы',
-            web_app=WebAppInfo(url=url),
+        return render_penalty_create_notification_markup(
+            penalty=self.__penalty,
+            web_app_base_url=self.__web_app_base_url,
         )
-        return InlineKeyboardMarkup(inline_keyboard=[[button]])
+
+
+class PhotoCreateWithPhotoNotificationView(PhotoView):
+
+    def __init__(
+            self,
+            *,
+            penalty: Penalty,
+            web_app_base_url: str,
+            photo_file_id: str,
+    ):
+        self.__penalty = penalty
+        self.__web_app_base_url = web_app_base_url
+        self.__photo_file_id = photo_file_id
+
+    def get_caption(self) -> str:
+        return format_penalty_create_notification_text(self.__penalty)
+
+    def get_photo(self) -> str:
+        return self.__photo_file_id
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        return render_penalty_create_notification_markup(
+            penalty=self.__penalty,
+            web_app_base_url=self.__web_app_base_url,
+        )

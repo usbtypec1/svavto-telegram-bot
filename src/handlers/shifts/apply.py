@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter, invert_f
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
@@ -38,12 +38,17 @@ router = Router(name=__name__)
 async def on_shift_schedule_month_calendar_input(
         message: Message,
         config: Config,
-        admins_notification_service: SpecificChatsNotificationService,
+        admin_user_ids: set[int],
+        bot: Bot,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
+    admins_notification_service = SpecificChatsNotificationService(
+        bot=bot,
+        chat_ids=admin_user_ids,
+    )
     type_adapter = TypeAdapter(list[datetime.date])
     shift_dates: list[datetime.date] = type_adapter.validate_json(
         message.web_app_data.data,

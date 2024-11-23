@@ -165,12 +165,17 @@ async def on_move_to_wash_shift_work_type_choice(
         callback_query: CallbackQuery,
         config: Config,
         staff: Staff,
-        admins_notification_service: SpecificChatsNotificationService,
+        bot: Bot,
+        admin_user_ids: set[int],
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
+    admins_notification_service = SpecificChatsNotificationService(
+        bot=bot,
+        chat_ids=admin_user_ids,
+    )
     now = datetime.datetime.now(config.timezone)
     shifts_page = await shift_repository.get_list(
         date_from=now,

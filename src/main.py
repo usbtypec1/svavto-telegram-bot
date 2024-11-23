@@ -15,6 +15,7 @@ from config import Config, load_config_from_file
 from dependencies.repositories import get_staff_repository
 from logger import setup_logging
 from middlewares import banned_staff_middleware
+from middlewares.admins import AdminUserIdsMiddleware
 from repositories import StaffRepository
 from services.notifications import (
     MailingService, NotificationService,
@@ -83,10 +84,6 @@ async def main(
 
     admin_user_ids = await staff_repository.get_all_admin_user_ids()
 
-    admins_notification_service = SpecificChatsNotificationService(
-        bot=bot,
-        chat_ids=admin_user_ids,
-    )
     main_chat_notification_service = SpecificChatsNotificationService(
         bot=bot,
         chat_ids=(config.main_chat_id,),
@@ -95,11 +92,14 @@ async def main(
     storage = MemoryStorage()
     dispatcher = Dispatcher(storage=storage)
 
+    admin_user_ids_middleware = AdminUserIdsMiddleware(
+        ttl_in_seconds=config.admin_user_ids_ttl_in_seconds,
+    )
+
+    dispatcher.update.outer_middleware(admin_user_ids_middleware)
     dispatcher.update.middleware(banned_staff_middleware)
 
     dispatcher['config'] = config
-    dispatcher['admin_user_ids'] = admin_user_ids
-    dispatcher['admins_notification_service'] = admins_notification_service
     dispatcher['main_chat_notification_service'] = (
         main_chat_notification_service
     )

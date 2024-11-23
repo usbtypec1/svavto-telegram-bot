@@ -1,4 +1,4 @@
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import ExceptionTypeFilter, StateFilter
 from aiogram.types import ErrorEvent, Message, ReplyKeyboardRemove
 from fast_depends import Depends, inject
@@ -45,13 +45,18 @@ async def on_staff_register_text_parse_error(event: ErrorEvent) -> None:
 @inject
 async def on_register_form_filled(
         message: Message,
-        admins_notification_service: SpecificChatsNotificationService,
+        admin_user_ids: set[int],
+        bot: Bot,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
             use_cache=False,
         ),
 
 ) -> None:
+    admins_notification_service = SpecificChatsNotificationService(
+        bot=bot,
+        chat_ids=admin_user_ids,
+    )
     try:
         await staff_repository.get_by_id(message.from_user.id)
     except StaffNotFoundError:

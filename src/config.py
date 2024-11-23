@@ -20,6 +20,7 @@ class Config:
     main_chat_id: int
     web_app_base_url: str
     timezone: ZoneInfo
+    admin_user_ids_ttl_in_seconds: int
 
 
 def load_config_from_file(
@@ -33,4 +34,7 @@ def load_config_from_file(
         main_chat_id=config['app']['main_chat_id'],
         timezone=ZoneInfo(config['app']['timezone']),
         web_app_base_url=config['web_app']['base_url'].rstrip('/'),
+        admin_user_ids_ttl_in_seconds=(
+            config['app']['admin_user_ids_ttl_in_seconds']
+        ),
     )

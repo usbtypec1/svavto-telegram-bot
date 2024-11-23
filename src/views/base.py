@@ -17,6 +17,8 @@ __all__ = (
     'send_view',
     'answer_media_group_view',
     'MediaGroupView',
+    'PhotoView',
+    'answer_photo_view',
 )
 
 ReplyMarkup: TypeAlias = (
@@ -25,6 +27,21 @@ ReplyMarkup: TypeAlias = (
         | ForceReply
         | ReplyKeyboardRemove
 )
+
+
+class PhotoView:
+    photo: str | None = None
+    caption: str | None = None
+    reply_markup: ReplyMarkup | None = None
+
+    def get_photo(self) -> str | None:
+        return self.photo
+
+    def get_caption(self) -> str | None:
+        return self.caption
+
+    def get_reply_markup(self) -> ReplyMarkup | None:
+        return self.reply_markup
 
 
 class TextView:
@@ -63,6 +80,14 @@ class MediaGroupView:
 async def answer_view(message: Message, view: TextView) -> Message:
     return await message.answer(
         text=view.get_text(),
+        reply_markup=view.get_reply_markup(),
+    )
+
+
+async def answer_photo_view(message: Message, view: PhotoView) -> Message:
+    return await message.answer_photo(
+        photo=view.get_photo(),
+        caption=view.get_caption(),
         reply_markup=view.get_reply_markup(),
     )
 

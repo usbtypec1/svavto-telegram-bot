@@ -150,12 +150,17 @@ async def on_extra_shift_create_reject(
 async def on_extra_shift_calendar(
         message: Message,
         config: Config,
-        admins_notification_service: SpecificChatsNotificationService,
+        admin_user_ids: set[int],
+        bot: Bot,
         staff_repository: StaffRepository = Depends(
             dependency=get_staff_repository,
             use_cache=False,
         ),
 ) -> None:
+    admins_notification_service = SpecificChatsNotificationService(
+        bot=bot,
+        chat_ids=admin_user_ids,
+    )
     shift_date = datetime.date.fromisoformat(message.web_app_data.data)
     staff = await staff_repository.get_by_id(message.from_user.id)
     view = ExtraShiftScheduleNotificationView(
