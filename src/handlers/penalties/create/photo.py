@@ -63,7 +63,9 @@ async def on_input_penalty_photo(
             use_cache=False,
         ),
 ) -> None:
-    state_data: dict = await state.get_data()
+    state_data: dict = await state.update_data(
+        photo_file_id=message.photo[-1].file_id,
+    )
     reason: str = state_data['reason']
     amount: int = state_data['amount']
     staff_id: int = state_data['staff_id']

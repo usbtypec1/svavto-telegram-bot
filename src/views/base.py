@@ -19,6 +19,7 @@ __all__ = (
     'MediaGroupView',
     'PhotoView',
     'answer_photo_view',
+    'send_photo_view',
 )
 
 ReplyMarkup: TypeAlias = (
@@ -129,6 +130,30 @@ async def send_view(
         try:
             result.append(
                 await bot.send_message(chat_id, text, reply_markup=reply_markup)
+            )
+        except TelegramAPIError:
+            result.append(None)
+    return result
+
+
+async def send_photo_view(
+        bot: Bot,
+        view: PhotoView,
+        *chat_ids: int,
+) -> list[Message | None]:
+    caption = view.get_caption()
+    photo = view.get_photo()
+    reply_markup = view.get_reply_markup()
+    result = []
+    for chat_id in chat_ids:
+        try:
+            result.append(
+                await bot.send_photo(
+                    chat_id=chat_id,
+                    photo=photo,
+                    caption=caption,
+                    reply_markup=reply_markup,
+                )
             )
         except TelegramAPIError:
             result.append(None)

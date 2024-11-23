@@ -15,10 +15,13 @@ from repositories import EconomicsRepository, StaffRepository
 from services.telegram_events import format_reject_text
 from states import PenaltyCreateStates
 from views.admins import AdminMenuView
-from views.base import answer_view, edit_message_by_view, send_view
+from views.base import (
+    answer_view, edit_message_by_view, send_photo_view,
+    send_view,
+)
 from views.penalties import (
     PenaltyCreateNotificationView,
-    PenaltyCreateSuccessView,
+    PenaltyCreateSuccessView, PhotoCreateWithPhotoNotificationView,
 )
 
 __all__ = ('router',)
@@ -68,6 +71,7 @@ async def on_accept_penalty_creation(
     staff_id: int = state_data['staff_id']
     reason: str = state_data['reason']
     amount: int | None = state_data.get('amount')
+    photo_file_id: str | None = state_data.get('photo_file_id')
     penalty = await economics_repository.create_penalty(
         staff_id=staff_id,
         reason=reason,
@@ -76,5 +80,17 @@ async def on_accept_penalty_creation(
     staff = await staff_repository.get_by_id(staff_id)
     view = PenaltyCreateSuccessView(penalty, staff)
     await edit_message_by_view(callback_query.message, view)
-    view = PenaltyCreateNotificationView(penalty, config.web_app_base_url)
-    await send_view(bot, view, staff.id)
+
+    if photo_file_id is None:
+        view = PenaltyCreateNotificationView(
+            penalty=penalty,
+            web_app_base_url=config.web_app_base_url,
+        )
+        await send_view(bot, view, staff.id)
+    else:
+        view = PhotoCreateWithPhotoNotificationView(
+            penalty=penalty,
+            web_app_base_url=config.web_app_base_url,
+            photo_file_id=photo_file_id,
+        )
+        await send_photo_view(bot, view, staff.id)
