@@ -34,7 +34,12 @@ class AdminMenuView(TextView):
                         ),
                     ),
                     KeyboardButton(text=ButtonText.SHIFTS),
-                    KeyboardButton(text=ButtonText.CAR_WASH_LIST),
+                    KeyboardButton(
+                        text=ButtonText.CAR_WASH_LIST,
+                        web_app=WebAppInfo(
+                            url=f'{self.__web_app_base_url}/car-washes',
+                        ),
+                    ),
                 ],
                 [
                     KeyboardButton(text=ButtonText.PENALTY),
