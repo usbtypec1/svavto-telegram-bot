@@ -7,6 +7,7 @@ from filters import admins_filter
 from views.admins import AdminOtherMenuView
 from views.base import answer_view
 from views.button_texts import ButtonText
+from views.reports import ReportsMenuView
 
 __all__ = ('router',)
 
@@ -31,9 +32,9 @@ async def on_other(
     admins_filter,
     StateFilter('*'),
 )
-async def on_show_reports(message: Message) -> None:
-    await message.answer(
-        '📊 Услуги: <a href="https://docs.google.com/spreadsheets/d/'
-        '1lV77O1DquJqdC_zqXD0aRkp1C4IRKQjMlQMjnS4K8Fc/edit?gid=0#gid=0">'
-        '*ссылка*</a>'
+async def on_show_reports(message: Message, config: Config) -> None:
+    view = ReportsMenuView(
+        staff_revenue_report_table_url=config.staff_revenue_report_table_url,
+        service_costs_report_table_url=config.service_costs_report_table_url,
     )
+    await answer_view(message, view)

@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, constr, field_validator
 
 from enums import MailingType
 
-__all__ = ('MailingParams',)
+__all__ = ("MailingParams",)
 
 
 class MailingParams(BaseModel):
@@ -16,7 +16,7 @@ class MailingParams(BaseModel):
     reply_markup: InlineKeyboardMarkup | None = None
 
     # noinspection PyNestedDecorators
-    @field_validator('reply_markup', mode='before')
+    @field_validator("reply_markup", mode="before")
     @classmethod
     def validate_reply_markup(cls, value):
         if isinstance(value, str):

@@ -21,6 +21,8 @@ class Config:
     web_app_base_url: str
     timezone: ZoneInfo
     admin_user_ids_ttl_in_seconds: int
+    staff_revenue_report_table_url: str
+    service_costs_report_table_url: str
 
 
 def load_config_from_file(
@@ -36,5 +38,11 @@ def load_config_from_file(
         web_app_base_url=config['web_app']['base_url'].rstrip('/'),
         admin_user_ids_ttl_in_seconds=(
             config['app']['admin_user_ids_ttl_in_seconds']
+        ),
+        staff_revenue_report_table_url=(
+            config['reports']['staff_revenue_report_table_url']
+        ),
+        service_costs_report_table_url=(
+            config['reports']['service_costs_report_table_url']
         ),
     )
