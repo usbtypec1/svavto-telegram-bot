@@ -14,6 +14,13 @@ CONFIG_FILE_PATH: Final[pathlib.Path] = pathlib.Path(
 
 
 @dataclass(frozen=True, slots=True)
+class SentryConfig:
+    dsn: str
+    is_enabled: bool
+    traces_sample_rate: float
+
+
+@dataclass(frozen=True, slots=True)
 class Config:
     telegram_bot_token: str
     api_base_url: str
@@ -23,6 +30,7 @@ class Config:
     admin_user_ids_ttl_in_seconds: int
     staff_revenue_report_table_url: str
     service_costs_report_table_url: str
+    sentry: SentryConfig
 
 
 def load_config_from_file(
@@ -44,5 +52,10 @@ def load_config_from_file(
         ),
         service_costs_report_table_url=(
             config['reports']['service_costs_report_table_url']
+        ),
+        sentry=SentryConfig(
+            dsn=config['sentry']['dsn'],
+            is_enabled=config['sentry']['is_enabled'],
+            traces_sample_rate=config['sentry']['traces_sample_rate'],
         ),
     )

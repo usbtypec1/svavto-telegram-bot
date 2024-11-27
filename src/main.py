@@ -9,6 +9,7 @@ from aiogram.types import (
     BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat,
 )
 from fast_depends import Depends, inject
+import sentry_sdk
 
 import handlers
 from config import Config, load_config_from_file
@@ -81,6 +82,12 @@ async def main(
             parse_mode=ParseMode.HTML,
         ),
     )
+
+    if config.sentry.is_enabled:
+        sentry_sdk.init(
+            dsn=config.sentry.dsn,
+            traces_sample_rate=config.sentry.traces_sample_rate,
+        )
 
     admin_user_ids = await staff_repository.get_all_admin_user_ids()
 
