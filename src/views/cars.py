@@ -48,7 +48,7 @@ class CarsListView(TextView):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text='Главное меню',
+                    text='Меню смены',
                     callback_data=CallbackDataPrefix.STAFF_MENU,
                 )
             ],

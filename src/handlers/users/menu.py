@@ -3,9 +3,10 @@ from aiogram.filters import (
     CommandStart, ExceptionTypeFilter, StateFilter, invert_f, or_f,
 )
 from aiogram.fsm.context import FSMContext
-from aiogram.types import ErrorEvent, Message
+from aiogram.types import CallbackQuery, ErrorEvent, Message
 from fast_depends import Depends, inject
 
+from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import get_shift_repository
 from exceptions import StaffHasNoActiveShiftError, StaffNotFoundError
@@ -35,6 +36,11 @@ async def on_performer_not_found_error(event: ErrorEvent) -> None:
         raise event.exception
 
 
+@router.callback_query(
+    F.data == CallbackDataPrefix.STAFF_MENU,
+    invert_f(admins_filter),
+    StateFilter('*'),
+)
 @router.message(
     or_f(
         CommandStart(),
@@ -45,7 +51,7 @@ async def on_performer_not_found_error(event: ErrorEvent) -> None:
 )
 @inject
 async def on_show_menu(
-        message: Message,
+        message_or_callback_query: Message | CallbackQuery,
         config: Config,
         state: FSMContext,
         staff: Staff | None,
@@ -59,15 +65,22 @@ async def on_show_menu(
         view = StaffRegisterView(config.web_app_base_url)
     else:
         try:
-            await shift_repository.get_active(message.from_user.id)
+            await shift_repository.get_active(
+                message_or_callback_query.from_user.id,
+            )
         except StaffHasNoActiveShiftError:
             view = MainMenuView(config.web_app_base_url)
         else:
             view = ShiftMenuView(
-                staff_id=message.from_user.id,
+                staff_id=message_or_callback_query.from_user.id,
                 web_app_base_url=config.web_app_base_url,
             )
-    await answer_view(message, view)
+    if isinstance(message_or_callback_query, Message):
+        await answer_view(message_or_callback_query, view)
+    else:
+        await answer_view(message_or_callback_query.message, view)
+        await message_or_callback_query.message.delete()
+
 
 
 @router.message(
