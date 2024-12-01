@@ -10,7 +10,7 @@ class ButtonText(StrEnum):
     CAR_WASH_LIST = '🚿 Меню моек'
     PENALTY = '🛑 Оштрафовать'
     SURCHARGE = '💰 Доплатить'
-    SHIFT_CARS_COUNT_BY_STAFF = '📊 Кто сколько'
+    SHIFT_CARS_COUNT_BY_STAFF = '🔍 Контроль'
     SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER = '💧 Недоливы'
     MAILING = '📩 Рассылка'
     SHIFT_START = '🚀 Начать смену'

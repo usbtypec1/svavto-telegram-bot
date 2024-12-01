@@ -54,6 +54,14 @@ class CarToWashRepository:
             self,
             date: datetime.date,
     ) -> ShiftCarsCountByStaff:
+        """Get count of cars by staff.
+
+        Args:
+            date: Date that shift scheduled on.
+
+        Returns:
+            ShiftCarsCountByStaff: Count of cars by staff.
+        """
         response = await self.__connection.get_count_by_staff(date)
         handle_errors(response)
         response_data = response.json()

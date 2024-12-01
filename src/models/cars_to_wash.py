@@ -11,7 +11,7 @@ __all__ = (
     'Car',
     'CarAdditionalServices',
     'ShiftCarsCountByStaff',
-    'CarStatisticsItem',
+    'CarCountTransferredByStaff',
     'ShiftCarsWithoutWindshieldWasher',
     'CarToWashCreateResult',
 )
@@ -45,7 +45,7 @@ class CarAdditionalServices(BaseModel):
     additional_services: list[AdditionalService]
 
 
-class CarStatisticsItem(BaseModel):
+class CarCountTransferredByStaff(BaseModel):
     staff_id: int
     staff_full_name: str
     cars_count: int
@@ -53,7 +53,8 @@ class CarStatisticsItem(BaseModel):
 
 class ShiftCarsCountByStaff(BaseModel):
     date: datetime.date
-    cars: list[CarStatisticsItem]
+    active_shifts: list[CarCountTransferredByStaff]
+    completed_shifts: list[CarCountTransferredByStaff]
 
 
 class ShiftCarsWithoutWindshieldWasher(BaseModel):
