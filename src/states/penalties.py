@@ -5,6 +5,7 @@ __all__ = ('PenaltyCreateStates',)
 
 class PenaltyCreateStates(StatesGroup):
     staff = State()
+    shift = State()
     reason = State()
     amount = State()
     photo = State()

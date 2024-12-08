@@ -14,12 +14,14 @@ class EconomicsConnection(ApiConnection):
             self,
             *,
             staff_id: int,
+            shift_id: int,
             reason: str,
             amount: int | None,
     ) -> httpx.Response:
         url = '/economics/penalties/'
         request_data = {
             'staff_id': staff_id,
+            'shift_id': shift_id,
             'reason': reason,
         }
         if amount is not None:

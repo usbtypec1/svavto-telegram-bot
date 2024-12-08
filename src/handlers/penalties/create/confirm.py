@@ -19,6 +19,7 @@ from views.base import (
     answer_view, edit_message_by_view, send_photo_view,
     send_view,
 )
+from views.menu import MainMenuView
 from views.penalties import (
     PenaltyCreateNotificationView,
     PenaltyCreateSuccessView, PhotoCreateWithPhotoNotificationView,
@@ -69,17 +70,24 @@ async def on_accept_penalty_creation(
 ) -> None:
     state_data = await state.get_data()
     staff_id: int = state_data['staff_id']
+    shift_id: int = state_data['shift_id']
     reason: str = state_data['reason']
     amount: int | None = state_data.get('amount')
     photo_file_id: str | None = state_data.get('photo_file_id')
+
     penalty = await economics_repository.create_penalty(
         staff_id=staff_id,
+        shift_id=shift_id,
         reason=reason,
         amount=amount,
     )
     staff = await staff_repository.get_by_id(staff_id)
+
     view = PenaltyCreateSuccessView(penalty, staff)
     await edit_message_by_view(callback_query.message, view)
+
+    view = AdminMenuView(config.web_app_base_url)
+    await answer_view(callback_query.message, view)
 
     if photo_file_id is None:
         view = PenaltyCreateNotificationView(

@@ -14,11 +14,25 @@ class EconomicsRepository:
             self,
             *,
             staff_id: int,
+            shift_id: int,
             reason: str,
             amount: int | None,
     ) -> Penalty:
+        """
+        Give penalty to staff member.
+
+        Keyword Args:
+            staff_id: staff member ID
+            shift_id: shift ID.
+            reason: penalty reason.
+            amount: optional penalty amount.
+
+        Returns:
+            Penalty: created penalty.
+        """
         response = await self.__connection.create_penalty(
             staff_id=staff_id,
+            shift_id=shift_id,
             reason=reason,
             amount=amount,
         )

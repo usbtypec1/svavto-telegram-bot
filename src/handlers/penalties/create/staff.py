@@ -5,17 +5,16 @@ from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
 
 from callback_data import PenaltyCreateChooseStaffCallbackData
+from config import Config
 from dependencies.repositories import get_staff_repository
 from enums import StaffOrderBy
 from filters import admins_filter
 from repositories import StaffRepository
 from states import PenaltyCreateStates
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_view
 from views.button_texts import ButtonText
-from views.penalties import (
-    PenaltyCreateChooseReasonView,
-    PenaltyCreateChooseStaffView,
-)
+from views.penalties import PenaltyCreateChooseStaffView
+from views.shifts import SpecificShiftPickerView
 
 __all__ = ('router',)
 
@@ -31,11 +30,15 @@ async def on_choose_staff_for_penalty(
         callback_query: CallbackQuery,
         state: FSMContext,
         callback_data: PenaltyCreateChooseStaffCallbackData,
+        config: Config,
 ) -> None:
     await state.update_data(staff_id=callback_data.staff_id)
-    await state.set_state(PenaltyCreateStates.reason)
-    view = PenaltyCreateChooseReasonView()
-    await edit_message_by_view(callback_query.message, view)
+    await state.set_state(PenaltyCreateStates.shift)
+    view = SpecificShiftPickerView(
+        web_app_base_url=config.web_app_base_url,
+        staff_id=callback_data.staff_id,
+    )
+    await answer_view(callback_query.message, view)
 
 
 @router.message(

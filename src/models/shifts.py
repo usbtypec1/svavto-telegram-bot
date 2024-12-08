@@ -13,6 +13,7 @@ __all__ = (
     'ShiftListItem',
     'ShiftListPage',
     'DirectShiftWebAppData',
+    'SpecificShiftPickResult',
 )
 
 
@@ -60,3 +61,8 @@ class ShiftListPage(BaseModel):
 class DirectShiftWebAppData(BaseModel):
     staff_ids: set[int]
     date: datetime.date
+
+
+class SpecificShiftPickResult(BaseModel):
+    staff_id: int
+    shift_id: int
