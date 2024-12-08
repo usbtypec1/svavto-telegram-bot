@@ -5,6 +5,7 @@ __all__ = ('SurchargeCreateStates',)
 
 class SurchargeCreateStates(StatesGroup):
     staff = State()
+    shift = State()
     reason = State()
     amount = State()
     confirm = State()

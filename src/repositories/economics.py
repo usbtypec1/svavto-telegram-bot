@@ -44,11 +44,25 @@ class EconomicsRepository:
             self,
             *,
             staff_id: int,
+            shift_id: int,
             reason: str,
             amount: int,
     ) -> Surcharge:
+        """
+        Give surcharge to staff member.
+
+        Keyword Args:
+            staff_id: staff member ID
+            shift_id: shift ID.
+            reason: penalty reason.
+            amount: optional penalty amount.
+
+        Returns:
+            Surcharge: created surcharge.
+        """
         response = await self.__connection.create_surcharge(
             staff_id=staff_id,
+            shift_id=shift_id,
             reason=reason,
             amount=amount,
         )

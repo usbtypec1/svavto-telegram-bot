@@ -18,7 +18,7 @@ router = Router(name=__name__)
 @router.message(
     F.web_app_data.button_text == ButtonText.SPECIFIC_SHIFT,
     admins_filter,
-    StateFilter('*'),
+    StateFilter(PenaltyCreateStates.shift),
 )
 async def on_pick_specific_shift(
         message: Message,
