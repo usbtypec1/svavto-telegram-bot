@@ -172,22 +172,6 @@ async def on_next_step(
     await answer_view(callback_query.message, view)
 
 
-@router.callback_query(
-    F.data == CallbackDataPrefix.SHIFT_FINISH_STATEMENT_PHOTO_CONFIRM,
-    invert_f(admins_filter),
-    StateFilter(ShiftFinishStates.statement_photo),
-)
-async def on_statement_photo_confirm(
-        callback_query: CallbackQuery,
-        state: FSMContext,
-) -> None:
-    await state.set_state(ShiftFinishStates.service_app_photo)
-    text = format_accept_text(callback_query.message)
-    await callback_query.message.edit_text(text)
-    await callback_query.message.answer(
-    )
-
-
 @router.message(
     F.text,
     invert_f(admins_filter),
