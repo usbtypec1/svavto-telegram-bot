@@ -44,3 +44,6 @@ class ShiftFinishPhotosState:
 
     async def get_photo_file_ids(self) -> set[str]:
         return await self.__redis.smembers(self.key)
+
+    async def delete_photo_file_id(self, photo_file_id: str) -> None:
+        await self.__redis.srem(self.key, photo_file_id)

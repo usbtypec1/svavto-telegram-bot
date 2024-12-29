@@ -11,7 +11,7 @@ from aiogram.utils.media_group import MediaType
 
 from callback_data.prefixes import CallbackDataPrefix
 from models import ShiftFinishResult
-from views.base import MediaGroupView, TextView
+from views.base import MediaGroupView, TextView, PhotoView
 from views.button_texts import ButtonText
 
 __all__ = (
@@ -41,25 +41,32 @@ class ShiftFinishConfirmView(TextView):
     )
 
 
-class ShiftFinishPhotoConfirmView(TextView):
-    text = (
+class ShiftFinishPhotoConfirmView(PhotoView):
+    caption = (
         '✅ Фотография принята\n'
-        'Чтобы заменить фото, отправьте сюда новое'
+        'Вы можете отправить ещё фото'
     )
 
-    def __init__(self, confirm_button_callback_data: str):
-        self.__confirm_button_callback_data = confirm_button_callback_data
+    def __init__(self, photo_file_id: str):
+        self.__photo_file_id = photo_file_id
+
+    def get_photo(self) -> str:
+        return self.__photo_file_id
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
+        photo_delete_button = InlineKeyboardButton(
+            text='❌ Удалить фото',
+            callback_data=CallbackDataPrefix.SHIFT_FINISH_PHOTO_DELETE,
+        )
+        next_step_button = InlineKeyboardButton(
+            text='🔜 Следующий шаг',
+            callback_data=CallbackDataPrefix.SHIFT_FINISH_PHOTO_NEXT_STEP,
+        )
         return InlineKeyboardMarkup(
             inline_keyboard=[
-                [
-                    InlineKeyboardButton(
-                        text='✅ Подтвердить фото',
-                        callback_data=self.__confirm_button_callback_data,
-                    )
-                ]
-            ]
+                [photo_delete_button],
+                [next_step_button],
+            ],
         )
 
 

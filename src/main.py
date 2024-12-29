@@ -104,7 +104,7 @@ async def main(
         ttl_in_seconds=config.admin_user_ids_ttl_in_seconds,
     )
 
-    redis_client = redis.from_url(config.redis_url)
+    redis_client = redis.from_url(config.redis_url, decode_responses=True)
     await redis_client.ping()
 
     dispatcher.update.outer_middleware(admin_user_ids_middleware)

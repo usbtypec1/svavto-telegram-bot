@@ -8,21 +8,23 @@ from fast_depends import Depends, inject
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import get_shift_repository
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
 from services.shifts import ShiftFinishPhotosState
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
-from views.base import answer_media_group_view, answer_view
+from views.base import answer_media_group_view, answer_photo_view, answer_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView, ShiftMenuView
 from views.shifts import (
     ShiftFinishConfirmAllView,
     ShiftFinishConfirmView,
     ShiftFinishPhotoConfirmView,
-    ShiftFinishPhotosView, StaffFirstShiftFinishedView,
-    StaffShiftFinishedNotificationView, StaffShiftFinishedView,
+    ShiftFinishPhotosView,
+    StaffFirstShiftFinishedView,
+    StaffShiftFinishedNotificationView,
+    StaffShiftFinishedView,
 )
 
 __all__ = ('router',)
@@ -72,22 +74,24 @@ async def on_shift_finish_reject(
 async def on_shift_finish_accept(
         callback_query: CallbackQuery,
         state: FSMContext,
+        redis: Redis,
         main_chat_notification_service: SpecificChatsNotificationService,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
-    state_data: dict = await state.get_data()
-
-    statement_photo_file_id: str = state_data['statement_photo_file_id']
-    service_app_photo_file_id: str = state_data['service_app_photo_file_id']
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=callback_query.from_user.id,
+    )
+    photo_file_ids = await shift_finish_photos_state.get_photo_file_ids()
 
     await state.clear()
+
     shift_finish_result = await shift_repository.finish(
         staff_id=callback_query.from_user.id,
-        statement_photo_file_id=statement_photo_file_id,
-        service_app_photo_file_id=service_app_photo_file_id,
+        photo_file_ids=photo_file_ids,
     )
 
     if shift_finish_result.is_first_shift:
@@ -101,34 +105,64 @@ async def on_shift_finish_accept(
 
     view = StaffShiftFinishedNotificationView(
         shift_finish_result,
-        photo_file_ids=(
-            statement_photo_file_id,
-            service_app_photo_file_id,
-        ),
+        photo_file_ids=photo_file_ids,
     )
     await main_chat_notification_service.send_media_group(view.as_media_group())
 
 
 @router.callback_query(
-    F.data == CallbackDataPrefix.SHIFT_FINISH_SERVICE_APP_PHOTO_CONFIRM,
-    invert_f(admins_filter),
-    StateFilter(ShiftFinishStates.service_app_photo),
+    F.data == CallbackDataPrefix.SHIFT_FINISH_PHOTO_DELETE,
+    staff_filter,
+    StateFilter(
+        ShiftFinishStates.statement_photo,
+        ShiftFinishStates.service_app_photo,
+    ),
 )
-async def on_service_app_photo_confirm(
+async def on_shift_finish_photo_delete(
+        callback_query: CallbackQuery,
+        redis: Redis,
+) -> None:
+    file_id = callback_query.message.photo[-1].file_id
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=callback_query.from_user.id,
+    )
+    await shift_finish_photos_state.delete_photo_file_id(file_id)
+    await callback_query.message.delete()
+    await callback_query.answer('❌ Фотография удалена', show_alert=True)
+
+
+@router.callback_query(
+    F.data == CallbackDataPrefix.SHIFT_FINISH_PHOTO_NEXT_STEP,
+    staff_filter,
+    StateFilter(
+        ShiftFinishStates.statement_photo,
+        ShiftFinishStates.service_app_photo,
+    ),
+)
+async def on_next_step(
         callback_query: CallbackQuery,
         redis: Redis,
         state: FSMContext,
 ) -> None:
-    await state.set_state(ShiftFinishStates.confirm)
+    state_string = await state.get_state()
+    await callback_query.message.delete_reply_markup()
+    if state_string == ShiftFinishStates.statement_photo.state:
+        await state.set_state(ShiftFinishStates.service_app_photo)
+        await callback_query.message.answer(
+            '🖼️ Отправьте скриншот из сервисного приложения,'
+            ' на котором нет активных аренд и задач.'
+            ' Не обрезайте скриншот перед отправкой.'
+        )
+        return
 
+    await state.set_state(ShiftFinishStates.confirm)
     shift_finish_photos_state = ShiftFinishPhotosState(
         redis=redis,
         user_id=callback_query.from_user.id,
     )
     photo_file_ids = await shift_finish_photos_state.get_photo_file_ids()
 
-    text = format_accept_text(callback_query.message)
-    await callback_query.message.edit_text(text)
     view = ShiftFinishPhotosView(photo_file_ids)
     await answer_media_group_view(
         callback_query.message,
@@ -136,27 +170,6 @@ async def on_service_app_photo_confirm(
     )
     view = ShiftFinishConfirmAllView()
     await answer_view(callback_query.message, view)
-
-
-@router.message(
-    F.photo,
-    invert_f(admins_filter),
-    StateFilter(ShiftFinishStates.service_app_photo),
-)
-async def on_service_app_photo_input(
-        message: Message,
-        redis: Redis,
-) -> None:
-    file_id = message.photo[-1].file_id
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=message.from_user.id,
-    )
-    await shift_finish_photos_state.add_photo_file_id(file_id)
-    view = ShiftFinishPhotoConfirmView(
-        CallbackDataPrefix.SHIFT_FINISH_SERVICE_APP_PHOTO_CONFIRM,
-    )
-    await answer_view(message, view)
 
 
 @router.callback_query(
@@ -172,9 +185,6 @@ async def on_statement_photo_confirm(
     text = format_accept_text(callback_query.message)
     await callback_query.message.edit_text(text)
     await callback_query.message.answer(
-        '🖼️ Отправьте скриншот из сервисного приложения,'
-        ' на котором нет активных аренд и задач.'
-        ' Не обрезайте скриншот перед отправкой.'
     )
 
 
@@ -195,10 +205,13 @@ async def on_statement_text_input(
 @router.message(
     F.photo,
     invert_f(admins_filter),
-    StateFilter(ShiftFinishStates.statement_photo),
+    StateFilter(
+        ShiftFinishStates.statement_photo,
+        ShiftFinishStates.service_app_photo,
+    ),
 )
 @inject
-async def on_statement_photo_input(
+async def on_photo_input(
         message: Message,
         redis: Redis,
         shift_repository: ShiftRepository = Depends(
@@ -213,10 +226,8 @@ async def on_statement_photo_input(
     )
     await shift_finish_photos_state.add_photo_file_id(file_id)
     await shift_repository.get_active(message.from_user.id)
-    view = ShiftFinishPhotoConfirmView(
-        CallbackDataPrefix.SHIFT_FINISH_STATEMENT_PHOTO_CONFIRM,
-    )
-    await answer_view(message, view)
+    view = ShiftFinishPhotoConfirmView(file_id)
+    await answer_photo_view(message, view)
 
 
 @router.callback_query(

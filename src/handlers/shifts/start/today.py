@@ -2,10 +2,14 @@ import datetime
 
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter, invert_f
+from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
 
-from callback_data import ShiftWorkTypeChoiceCallbackData
+from callback_data import (
+    ShiftStartRequestAcceptCallbackData,
+    ShiftWorkTypeChoiceCallbackData,
+)
 from config import Config
 from dependencies.repositories import get_shift_repository
 from enums import ShiftWorkType
@@ -13,6 +17,7 @@ from filters import admins_filter, staff_filter
 from models import Staff
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
+from states import ShiftStartStates
 from views.base import answer_view
 from views.button_texts import ButtonText
 from views.shifts import StaffReadyToStartShiftRequestView, ShiftWorkTypeChoiceView
@@ -20,6 +25,30 @@ from views.shifts import StaffReadyToStartShiftRequestView, ShiftWorkTypeChoiceV
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.callback_query(
+    ShiftStartRequestAcceptCallbackData.filter(),
+    staff_filter,
+    StateFilter('*'),
+)
+@inject
+async def on_shift_start_request_accept(
+        callback_query: CallbackQuery,
+        state: FSMContext,
+        config: Config,
+        shift_repository: ShiftRepository = Depends(
+            dependency=get_shift_repository,
+            use_cache=False,
+        )
+) -> None:
+    now = datetime.datetime.now(config.timezone)
+    shifts = await shift_repository.get_list(
+        date_from=now.date(),
+        date_to=now.date(),
+        staff_ids=(callback_query.from_user.id,),
+    )
+    await state.set_state(ShiftStartStates.car_wash)
 
 
 @router.callback_query(
