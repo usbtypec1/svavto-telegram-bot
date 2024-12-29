@@ -11,7 +11,6 @@ from . import (
     apply,
     schedule_self,
     extra_shift,
-    direct,
 )
 
 __all__ = ('router',)
@@ -28,5 +27,4 @@ router.include_routers(
     finish.router,
     schedule_self.router,
     extra_shift.router,
-    direct.router,
 )
