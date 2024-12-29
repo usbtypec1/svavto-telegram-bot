@@ -9,7 +9,7 @@ from callback_data import ShiftWorkTypeChoiceCallbackData
 from config import Config
 from dependencies.repositories import get_shift_repository
 from enums import ShiftWorkType
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from models import Staff
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
