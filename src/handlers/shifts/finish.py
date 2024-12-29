@@ -23,8 +23,8 @@ from views.shifts import (
     ShiftFinishConfirmView,
     ShiftFinishPhotoConfirmView,
     ShiftFinishPhotosView,
-    StaffFirstShiftFinishedView,
-    StaffShiftFinishedNotificationView,
+    ShiftFinishedWithoutPhotosView, StaffFirstShiftFinishedView,
+    ShiftFinishedWithPhotosView,
     StaffShiftFinishedView,
 )
 
@@ -113,11 +113,14 @@ async def on_shift_finish_accept(
     await callback_query.message.edit_text(
         format_accept_text(callback_query.message),
     )
-    view = StaffShiftFinishedNotificationView(
-        shift_finish_result,
-        photo_file_ids=photo_file_ids,
-    )
-    await main_chat_notification_service.send_media_group(view.as_media_group())
+    if shift_finish_result.finish_photo_file_ids:
+        view = ShiftFinishedWithPhotosView(shift_finish_result)
+        await main_chat_notification_service.send_media_group(
+            view.as_media_group(),
+        )
+    else:
+        view = ShiftFinishedWithoutPhotosView(shift_finish_result)
+        await main_chat_notification_service.send_view(view)
 
 
 @router.callback_query(

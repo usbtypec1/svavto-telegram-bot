@@ -18,10 +18,12 @@ __all__ = (
     'ShiftFinishConfirmView',
     'StaffShiftFinishedView',
     'ShiftFinishPhotosView',
-    'StaffShiftFinishedNotificationView',
+    'ShiftFinishedWithPhotosView',
     'ShiftFinishPhotoConfirmView',
     'ShiftFinishConfirmAllView',
     'StaffFirstShiftFinishedView',
+    'ShiftFinishedWithoutPhotosView',
+    'format_shift_finish_text',
 )
 
 
@@ -103,36 +105,52 @@ class ShiftFinishConfirmAllView(TextView):
     )
 
 
-class StaffShiftFinishedNotificationView(MediaGroupView):
+def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
+    lines: list[str] = [
+        f'Перегонщик: {shift_summary.staff_full_name}',
+        f'Мойка: {shift_summary.car_wash_name or "неизвестно"}',
+        f'Всего: {shift_summary.total_cars_count}',
+        f'Плановая мойка: {shift_summary.planned_cars_count}',
+        f'🔶 Эконом: {shift_summary.planned_cars_count}',
+        f'🔶 Бизнес: {shift_summary.business_cars_count}',
+        f'🔶 Фургон: {shift_summary.vans_count}',
+        f'Срочная мойка: {shift_summary.urgent_cars_count}',
+        f'Химчистки: {shift_summary.dry_cleaning_count}',
+        f'Долив: {shift_summary.refilled_cars_count}',
+        f'Недолив: {shift_summary.not_refilled_cars_count}',
+    ]
 
-    def __init__(
-            self,
-            shift_finish_result: ShiftFinishResult,
-            photo_file_ids: Iterable[str],
-    ):
-        self.__shift_finish_result = shift_finish_result
-        self.__photo_file_ids = tuple(photo_file_ids)
+    if shift_summary.car_numbers:
+        lines.append('🚗 Список добавленных машин:')
+
+    for car_number in shift_summary.car_numbers:
+        lines.append(car_number)
+
+    return '\n'.join(lines)
+
+
+class ShiftFinishedWithoutPhotosView(TextView):
+
+    def __init__(self, shift_finish_result: ShiftFinishResult):
+        self.__shift_summary = shift_finish_result
+
+    def get_text(self) -> str:
+        return format_shift_finish_text(self.__shift_summary)
+
+
+class ShiftFinishedWithPhotosView(MediaGroupView):
+
+    def __init__(self, shift_finish_result: ShiftFinishResult):
+        self.__shift_summary = shift_finish_result
 
     def get_medias(self) -> list[MediaType] | None:
         return [
             InputMediaPhoto(media=photo_file_id)
-            for photo_file_id in self.__photo_file_ids
+            for photo_file_id in self.__shift_summary.finish_photo_file_ids
         ]
 
     def get_caption(self) -> str:
-        lines: list[str] = [
-            f'❗️ Сотрудник {self.__shift_finish_result.staff_full_name}'
-            f' завершил смену\n',
-        ]
-
-        if self.__shift_finish_result.car_numbers:
-            lines.append('🚗 Список добавленных машин:')
-        else:
-            lines.append('Нет добавленных машин')
-        for car_number in self.__shift_finish_result.car_numbers:
-            lines.append(car_number)
-
-        return '\n'.join(lines)
+        return format_shift_finish_text(self.__shift_summary)
 
 
 class StaffFirstShiftFinishedView(TextView):
