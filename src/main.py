@@ -105,6 +105,7 @@ async def main(
     )
 
     redis_client = redis.from_url(config.redis_url)
+    await redis_client.ping()
 
     dispatcher.update.outer_middleware(admin_user_ids_middleware)
     dispatcher.update.middleware(banned_staff_middleware)
