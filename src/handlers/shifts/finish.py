@@ -56,7 +56,13 @@ async def on_new_shift_later(
 async def on_shift_finish_reject(
         callback_query: CallbackQuery,
         state: FSMContext,
+        redis: Redis,
 ) -> None:
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=callback_query.from_user.id,
+    )
+    await shift_finish_photos_state.clear()
     await state.clear()
     await callback_query.answer(
         text='❗️ Вы отменили завершение смены',
@@ -76,6 +82,7 @@ async def on_shift_finish_accept(
         callback_query: CallbackQuery,
         state: FSMContext,
         redis: Redis,
+        config: Config,
         main_chat_notification_service: SpecificChatsNotificationService,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
@@ -97,13 +104,15 @@ async def on_shift_finish_accept(
 
     if shift_finish_result.is_first_shift:
         view = StaffFirstShiftFinishedView()
+        await answer_view(callback_query.message, view)
     else:
         view = StaffShiftFinishedView()
+        await answer_view(callback_query.message, view)
+        view = MainMenuView(config.web_app_base_url)
+        await answer_view(callback_query.message, view)
     await callback_query.message.edit_text(
         format_accept_text(callback_query.message),
     )
-    await answer_view(callback_query.message, view)
-
     view = StaffShiftFinishedNotificationView(
         shift_finish_result,
         photo_file_ids=photo_file_ids,
@@ -273,11 +282,17 @@ async def on_shift_finish_reject(
 @inject
 async def on_shift_finish_confirm(
         message: Message,
+        redis: Redis,
         shift_repository: ShiftRepository = Depends(
             get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=message.from_user.id,
+    )
+    await shift_finish_photos_state.clear()
     await shift_repository.get_active(message.from_user.id)
     view = ShiftFinishConfirmView()
     await answer_view(message, view)
