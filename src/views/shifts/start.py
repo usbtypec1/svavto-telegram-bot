@@ -14,14 +14,14 @@ from models import ShiftListItem, Staff
 from views.base import TextView
 
 __all__ = (
-    'ShiftStartRequestView',
+    'StaffReadyToStartShiftRequestView',
     'ShiftImmediateStartRequestView',
     'ExtraShiftStartView',
     'ShiftStartConfirmView',
 )
 
 
-class ShiftStartRequestView(TextView):
+class StaffReadyToStartShiftRequestView(TextView):
 
     def __init__(self, *, staff: Staff, shift: ShiftListItem):
         self.__staff = staff

@@ -15,7 +15,7 @@ from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.shifts import ShiftStartRequestView, ShiftWorkTypeChoiceView
+from views.shifts import StaffReadyToStartShiftRequestView, ShiftWorkTypeChoiceView
 
 __all__ = ('router',)
 
@@ -58,7 +58,7 @@ async def on_move_to_wash_shift_work_type_choice(
         )
         return
     shift = shifts_page.shifts[0]
-    view = ShiftStartRequestView(shift=shift, staff=staff)
+    view = StaffReadyToStartShiftRequestView(shift=shift, staff=staff)
     await admins_notification_service.send_view(view)
     await callback_query.message.edit_text(
         'До 21:30 Вам придет уведомление в этот бот с запросом'
