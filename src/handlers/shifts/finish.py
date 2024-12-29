@@ -8,6 +8,7 @@ from fast_depends import Depends, inject
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import get_shift_repository
+from exceptions import ShiftFinishPhotosCountExceededError
 from filters import admins_filter, staff_filter
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
@@ -208,10 +209,14 @@ async def on_photo_input(
         redis=redis,
         user_id=message.from_user.id,
     )
-    await shift_finish_photos_state.add_photo_file_id(file_id)
-    await shift_repository.get_active(message.from_user.id)
-    view = ShiftFinishPhotoConfirmView(file_id)
-    await answer_photo_view(message, view)
+    try:
+        await shift_finish_photos_state.add_photo_file_id(file_id)
+    except ShiftFinishPhotosCountExceededError:
+        await message.answer('❌ Вы не можете загрузить больше 10 фотографий')
+    else:
+        await shift_repository.get_active(message.from_user.id)
+        view = ShiftFinishPhotoConfirmView(file_id)
+        await answer_photo_view(message, view)
 
 
 @router.callback_query(

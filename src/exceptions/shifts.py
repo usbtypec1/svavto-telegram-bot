@@ -32,3 +32,7 @@ class CarAlreadyWashedOnShiftError(Exception):
 
 class ShiftAlreadyExistsError(Exception):
     pass
+
+
+class ShiftFinishPhotosCountExceededError(Exception):
+    pass
