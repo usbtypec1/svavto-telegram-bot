@@ -34,6 +34,7 @@ class Shift(BaseModel):
     started_at: datetime.datetime | None
     finished_at: datetime.datetime | None
     created_at: datetime.datetime
+    is_test: bool
     car_wash: CarWash | None
 
 

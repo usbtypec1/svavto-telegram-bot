@@ -86,7 +86,8 @@ async def on_choose_month_apply_to_shift(
         month=callback_data.month,
         year=callback_data.year,
     )
-    if shifts:
+    not_test_shifts = [shift for shift in shifts if not shift.is_test]
+    if not_test_shifts:
         await callback_query.answer(
             text=(
                 'График за этот месяц уже заполнен.'
