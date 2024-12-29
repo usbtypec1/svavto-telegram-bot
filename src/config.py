@@ -31,6 +31,7 @@ class Config:
     staff_revenue_report_table_url: str
     service_costs_report_table_url: str
     sentry: SentryConfig
+    redis_url: str
 
 
 def load_config_from_file(
@@ -58,4 +59,5 @@ def load_config_from_file(
             is_enabled=config['sentry']['is_enabled'],
             traces_sample_rate=config['sentry']['traces_sample_rate'],
         ),
+        redis_url=config['redis']['url'],
     )

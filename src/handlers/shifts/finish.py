@@ -1,3 +1,4 @@
+from redis.asyncio import Redis
 from aiogram import F, Router
 from aiogram.filters import StateFilter, invert_f
 from aiogram.fsm.context import FSMContext
@@ -10,6 +11,7 @@ from dependencies.repositories import get_shift_repository
 from filters import admins_filter
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
+from services.shifts import ShiftFinishPhotosState
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
 from views.base import answer_media_group_view, answer_view
@@ -114,18 +116,20 @@ async def on_shift_finish_accept(
 )
 async def on_service_app_photo_confirm(
         callback_query: CallbackQuery,
+        redis: Redis,
         state: FSMContext,
 ) -> None:
     await state.set_state(ShiftFinishStates.confirm)
-    state_data: dict = await state.get_data()
-    statement_photo_file_id: str = state_data['statement_photo_file_id']
-    service_app_photo_file_id: str = state_data['service_app_photo_file_id']
+
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=callback_query.from_user.id,
+    )
+    photo_file_ids = await shift_finish_photos_state.get_photo_file_ids()
+
     text = format_accept_text(callback_query.message)
     await callback_query.message.edit_text(text)
-    view = ShiftFinishPhotosView(
-        statement_photo_file_id=statement_photo_file_id,
-        service_app_photo_file_id=service_app_photo_file_id,
-    )
+    view = ShiftFinishPhotosView(photo_file_ids)
     await answer_media_group_view(
         callback_query.message,
         view,
@@ -141,10 +145,14 @@ async def on_service_app_photo_confirm(
 )
 async def on_service_app_photo_input(
         message: Message,
-        state: FSMContext,
+        redis: Redis,
 ) -> None:
     file_id = message.photo[-1].file_id
-    await state.update_data(service_app_photo_file_id=file_id)
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=message.from_user.id,
+    )
+    await shift_finish_photos_state.add_photo_file_id(file_id)
     view = ShiftFinishPhotoConfirmView(
         CallbackDataPrefix.SHIFT_FINISH_SERVICE_APP_PHOTO_CONFIRM,
     )
@@ -192,15 +200,19 @@ async def on_statement_text_input(
 @inject
 async def on_statement_photo_input(
         message: Message,
-        state: FSMContext,
+        redis: Redis,
         shift_repository: ShiftRepository = Depends(
             get_shift_repository,
             use_cache=False,
         ),
 ) -> None:
     file_id = message.photo[-1].file_id
+    shift_finish_photos_state = ShiftFinishPhotosState(
+        redis=redis,
+        user_id=message.from_user.id,
+    )
+    await shift_finish_photos_state.add_photo_file_id(file_id)
     await shift_repository.get_active(message.from_user.id)
-    await state.update_data(statement_photo_file_id=file_id)
     view = ShiftFinishPhotoConfirmView(
         CallbackDataPrefix.SHIFT_FINISH_STATEMENT_PHOTO_CONFIRM,
     )

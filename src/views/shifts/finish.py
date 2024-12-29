@@ -66,23 +66,15 @@ class ShiftFinishPhotoConfirmView(TextView):
 class ShiftFinishPhotosView(MediaGroupView):
     caption = 'Проверьте правильность отправляемых данных'
 
-    def __init__(
-            self,
-            *,
-            statement_photo_file_id: str,
-            service_app_photo_file_id: str,
-    ):
-        self.__statement_photo_file_id = statement_photo_file_id
-        self.__service_app_photo_file_id = service_app_photo_file_id
+    def __init__(self, photo_file_ids: Iterable[str]):
+        self.__photo_file_ids = tuple(photo_file_ids)
 
     def get_medias(self) -> list[MediaType]:
         return [
             InputMediaPhoto(
-                media=self.__statement_photo_file_id,
-            ),
-            InputMediaPhoto(
-                media=self.__service_app_photo_file_id,
-            ),
+                media=photo_file_id,
+            )
+            for photo_file_id in self.__photo_file_ids
         ]
 
 

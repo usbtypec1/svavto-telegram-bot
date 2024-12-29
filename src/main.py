@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import Iterable
 
+import redis.asyncio as redis
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -103,6 +104,8 @@ async def main(
         ttl_in_seconds=config.admin_user_ids_ttl_in_seconds,
     )
 
+    redis_client = redis.from_url(config.redis_url)
+
     dispatcher.update.outer_middleware(admin_user_ids_middleware)
     dispatcher.update.middleware(banned_staff_middleware)
 
@@ -110,6 +113,8 @@ async def main(
     dispatcher['main_chat_notification_service'] = (
         main_chat_notification_service
     )
+
+    dispatcher['redis'] = redis_client
 
     notification_service = NotificationService(bot)
     dispatcher['notification_service'] = notification_service
