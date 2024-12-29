@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -63,7 +63,7 @@ class ShiftImmediateStartRequestView(TextView):
         button = InlineKeyboardButton(
             text='🚀 Начать смену',
             callback_data=ShiftImmediateStartCallbackData(
-                date=self.__date,
+                date=self.__date.isoformat(),
             ).pack()
         )
         return InlineKeyboardMarkup(inline_keyboard=[[button]])
@@ -74,7 +74,7 @@ class ExtraShiftStartView(TextView):
     def __init__(
             self,
             staff_full_name: str,
-            shift_date: datetime.date
+            shift_date: datetime.date,
     ):
         self.__staff_full_name = staff_full_name
         self.__shift_date = shift_date
@@ -89,7 +89,7 @@ class ExtraShiftStartView(TextView):
         button = InlineKeyboardButton(
             text='🚀 Начать доп.смену',
             callback_data=ExtraShiftStartCallbackData(
-                date=self.__shift_date,
+                date=self.__shift_date.isoformat(),
             ).pack(),
         )
         return InlineKeyboardMarkup(inline_keyboard=[[button]])

@@ -241,14 +241,14 @@ class ExtraShiftScheduleNotificationView(TextView):
             text='✅ Подтвердить',
             callback_data=ExtraShiftCreateAcceptCallbackData(
                 staff_id=self.__staff_id,
-                date=self.__shift_date,
+                date=self.__shift_date.isoformat(),
             ).pack(),
         )
         reject_button = InlineKeyboardButton(
             text='❌ Отклонить',
             callback_data=ExtraShiftCreateRejectCallbackData(
                 staff_id=self.__staff_id,
-                date=self.__shift_date,
+                date=self.__shift_date.isoformat(),
             ).pack(),
         )
         return InlineKeyboardMarkup(

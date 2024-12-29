@@ -69,7 +69,7 @@ class ExtraShiftCreateAcceptCallbackData(
     prefix=CallbackDataPrefix.SHIFT_EXTRA_CREATE_ACCEPT,
 ):
     staff_id: int
-    date: datetime.date
+    date: str
 
 
 class ExtraShiftCreateRejectCallbackData(
@@ -77,14 +77,14 @@ class ExtraShiftCreateRejectCallbackData(
     prefix=CallbackDataPrefix.SHIFT_EXTRA_CREATE_REJECT,
 ):
     staff_id: int
-    date: datetime.date
+    date: str
 
 
 class ExtraShiftStartCallbackData(
     CallbackData,
     prefix=CallbackDataPrefix.SHIFT_EXTRA_START,
 ):
-    date: datetime.date
+    date: str
 
 
 class ShiftStartRequestAcceptCallbackData(
@@ -105,4 +105,4 @@ class ShiftImmediateStartCallbackData(
     CallbackData,
     prefix=CallbackDataPrefix.SHIFT_IMMEDIATE_START,
 ):
-    date: datetime.date
+    date: str

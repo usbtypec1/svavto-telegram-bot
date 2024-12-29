@@ -53,13 +53,13 @@ async def on_extra_shift_start(
         ),
 ) -> None:
     now_date = datetime.datetime.now(config.timezone).date()
-    shift_date = callback_data.date
+    shift_date = datetime.date.fromisoformat(callback_data.date)
     if now_date > shift_date:
         await callback_query.answer(
             text='❌ Вы не можете начать запланированную в прошлом доп.смену',
             show_alert=True,
         )
-    elif now_date < callback_data.date:
+    elif now_date < shift_date:
         await callback_query.answer(
             text=(
                 f'❌ Вы сможете начать доп.смену только в {shift_date:%d.%m.%Y}'
@@ -98,7 +98,7 @@ async def on_extra_shift_create_accept(
     staff = await staff_repository.get_by_id(callback_data.staff_id)
     view = ExtraShiftStartView(
         staff_full_name=staff.full_name,
-        shift_date=callback_data.date,
+        shift_date=datetime.date.fromisoformat(callback_data.date),
     )
     sent_messages = await send_view(bot, view, callback_data.staff_id)
     if sent_messages[0] is None:

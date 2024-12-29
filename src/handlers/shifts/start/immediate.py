@@ -43,13 +43,13 @@ async def on_immediate_start_shift(
         ),
 ) -> None:
     now_date = datetime.datetime.now(config.timezone).date()
-    shift_date = callback_data.date
+    shift_date = datetime.date.fromisoformat(callback_data.date)
     if now_date > shift_date:
         await callback_query.answer(
             text='❌ Вы не можете начать запланированную в прошлом смену',
             show_alert=True,
         )
-    elif now_date < callback_data.date:
+    elif now_date < shift_date:
         await callback_query.answer(
             text=(
                 f'❌ Вы сможете начать только в {shift_date:%d.%m.%Y}'
