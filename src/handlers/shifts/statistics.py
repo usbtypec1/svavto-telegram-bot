@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.types import Message

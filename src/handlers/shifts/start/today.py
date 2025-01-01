@@ -20,7 +20,10 @@ from services.notifications import SpecificChatsNotificationService
 from states import ShiftStartStates
 from views.base import answer_view
 from views.button_texts import ButtonText
-from views.shifts import StaffReadyToStartShiftRequestView, ShiftWorkTypeChoiceView
+from views.shifts import (
+    ShiftWorkTypeChoiceView,
+    StaffReadyToStartShiftRequestView,
+)
 
 __all__ = ('router',)
 

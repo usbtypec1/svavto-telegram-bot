@@ -38,9 +38,23 @@ class StaffConnection(ApiConnection):
         )
         return response
 
-    async def get_all(self, *, order_by: str) -> httpx.Response:
+    async def get_all(
+            self,
+            *,
+            order_by: str,
+            include_banned: bool,
+            limit: int | None,
+            offset: int | None,
+    ) -> httpx.Response:
         url = '/staff/'
-        query_params = {'order_by': order_by}
+        query_params = {
+            'order_by': order_by,
+            'include_banned': include_banned,
+        }
+        if limit is not None:
+            query_params['limit'] = limit
+        if offset is not None:
+            query_params['offset'] = offset
         return await self._http_client.get(url, params=query_params)
 
     async def update_by_telegram_id(

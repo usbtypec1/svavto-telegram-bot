@@ -48,9 +48,11 @@ async def on_confirm_mailing(
     mailing_params = MailingParams.model_validate(state_data)
 
     staff_list = await staff_repository.get_all(
-        order_by=StaffOrderBy.LAST_ACTIVITY_AT_DESC
+        order_by=StaffOrderBy.LAST_ACTIVITY_AT_DESC,
+        include_banned=False,
+        limit=1000,
     )
-    staff_list = filter_banned_staff(staff_list)
+    staff_list = filter_banned_staff(staff_list.staff)
 
     if mailing_params.type == MailingType.SPECIFIC_STAFF:
         staff_list = filter_staff_by_chat_ids(

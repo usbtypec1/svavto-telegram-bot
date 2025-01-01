@@ -6,6 +6,7 @@ from enums import StaffUpdateAction
 __all__ = (
     'StaffDetailCallbackData',
     'StaffUpdateCallbackData',
+    'StaffListCallbackData',
 )
 
 
@@ -13,12 +14,24 @@ class StaffDetailCallbackData(
     CallbackData,
     prefix=CallbackDataPrefix.STAFF_DETAIL,
 ):
-    telegram_id: int
+    staff_id: int
+    include_banned: bool
+    limit: int
+    offset: int
 
 
 class StaffUpdateCallbackData(
     CallbackData,
     prefix=CallbackDataPrefix.STAFF_UPDATE,
 ):
-    telegram_id: int
+    staff_id: int
     action: StaffUpdateAction
+    include_banned: bool
+    limit: int
+    offset: int
+
+
+class StaffListCallbackData(CallbackData, prefix=CallbackDataPrefix.STAFF_LIST):
+    include_banned: bool
+    limit: int
+    offset: int

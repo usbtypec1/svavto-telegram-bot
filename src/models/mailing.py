@@ -1,4 +1,5 @@
 import json
+from typing import Annotated
 
 from aiogram.types import InlineKeyboardMarkup
 from pydantic import BaseModel, Field, constr, field_validator
@@ -11,8 +12,8 @@ __all__ = ("MailingParams",)
 class MailingParams(BaseModel):
     text: constr(min_length=1, max_length=4096)
     type: MailingType
-    photo_file_ids: list[str] = Field(default_factory=list)
-    chat_ids: list[int] = Field(default_factory=list)
+    photo_file_ids: Annotated[list[str], Field(default_factory=list)]
+    chat_ids: Annotated[list[int], Field(default_factory=list)]
     reply_markup: InlineKeyboardMarkup | None = None
 
     # noinspection PyNestedDecorators

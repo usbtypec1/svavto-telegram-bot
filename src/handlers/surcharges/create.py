@@ -198,6 +198,6 @@ async def on_start_surcharge_create_flow(
     staff_list = await staff_repository.get_all(
         order_by=StaffOrderBy.FULL_NAME_ASC,
     )
-    view = SurchargeCreateChooseStaffView(staff_list)
+    view = SurchargeCreateChooseStaffView(staff_list.staff)
     await state.set_state(SurchargeCreateStates.staff)
     await answer_view(message, view)

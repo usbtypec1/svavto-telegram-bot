@@ -58,6 +58,6 @@ async def on_start_penalty_create_flow(
     staff_list = await staff_repository.get_all(
         order_by=StaffOrderBy.FULL_NAME_ASC,
     )
-    view = PenaltyCreateChooseStaffView(staff_list)
+    view = PenaltyCreateChooseStaffView(staff_list.staff)
     await state.set_state(PenaltyCreateStates.staff)
     await answer_view(message, view)

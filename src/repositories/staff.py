@@ -1,9 +1,7 @@
-from pydantic import TypeAdapter
-
 from connections import StaffConnection
 from enums import StaffOrderBy
 from logger import create_logger
-from models import Staff, StaffToRegisterWithId
+from models import Staff, StaffListPage, StaffToRegisterWithId
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
@@ -26,12 +24,22 @@ class StaffRepository:
         handle_errors(response)
         return Staff.model_validate(response_data)
 
-    async def get_all(self, *, order_by: StaffOrderBy) -> list[Staff]:
-        response = await self.__connection.get_all(order_by=order_by)
-        response_data = response.json()
+    async def get_all(
+            self,
+            *,
+            order_by: StaffOrderBy,
+            include_banned: bool = False,
+            limit: int | None = None,
+            offset: int | None = None,
+    ) -> StaffListPage:
+        response = await self.__connection.get_all(
+            order_by=order_by,
+            include_banned=include_banned,
+            limit=limit,
+            offset=offset,
+        )
         handle_errors(response)
-        type_adapter = TypeAdapter(list[Staff])
-        return type_adapter.validate_python(response_data['staff'])
+        return StaffListPage.model_validate_json(response.text)
 
     async def create(self, staff: StaffToRegisterWithId) -> None:
         response = await self.__connection.create(

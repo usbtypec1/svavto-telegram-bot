@@ -14,7 +14,7 @@ from models import DirectShiftWebAppData
 from repositories import CarWashRepository
 from services.notifications import SpecificChatsNotificationService
 from states import ShiftStartStates
-from views.base import answer_view, edit_message_by_view
+from views.base import edit_message_by_view
 from views.button_texts import ButtonText
 from views.shifts import (
     ShiftImmediateStartRequestView,

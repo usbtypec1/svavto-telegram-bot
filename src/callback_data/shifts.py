@@ -1,5 +1,3 @@
-import datetime
-
 from aiogram.filters.callback_data import CallbackData
 
 from callback_data.prefixes import CallbackDataPrefix

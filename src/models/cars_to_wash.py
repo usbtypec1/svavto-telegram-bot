@@ -1,4 +1,5 @@
 import datetime
+from typing import Annotated
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -27,7 +28,10 @@ class CarToWashWebAppData(BaseModel):
     class_type: CarClass
     wash_type: WashType
     windshield_washer_refilled_bottle_percentage: int
-    additional_services: list[AdditionalService] = Field(default_factory=list)
+    additional_services: Annotated[
+        list[AdditionalService],
+        Field(default_factory=list),
+    ]
 
 
 class Car(BaseModel):

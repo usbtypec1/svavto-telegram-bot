@@ -19,7 +19,6 @@ from views.base import (
     answer_view, edit_message_by_view, send_photo_view,
     send_view,
 )
-from views.menu import MainMenuView
 from views.penalties import (
     PenaltyCreateNotificationView,
     PenaltyCreateSuccessView, PhotoCreateWithPhotoNotificationView,

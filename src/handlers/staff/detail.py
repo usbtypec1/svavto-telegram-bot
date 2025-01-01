@@ -31,6 +31,12 @@ async def on_show_staff_detail(
             use_cache=False,
         ),
 ) -> None:
-    staff = await staff_repository.get_by_id(callback_data.telegram_id)
-    view = StaffDetailView(staff, config.web_app_base_url)
+    staff = await staff_repository.get_by_id(callback_data.staff_id)
+    view = StaffDetailView(
+        staff=staff,
+        web_app_base_url=config.web_app_base_url,
+        include_banned=callback_data.include_banned,
+        limit=callback_data.limit,
+        offset=callback_data.offset,
+    )
     await edit_message_by_view(callback_query.message, view)

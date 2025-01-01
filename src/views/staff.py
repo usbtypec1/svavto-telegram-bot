@@ -1,33 +1,71 @@
-from collections.abc import Iterable
-
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from callback_data import StaffDetailCallbackData, StaffUpdateCallbackData
+from callback_data import (
+    StaffDetailCallbackData,
+    StaffListCallbackData,
+    StaffUpdateCallbackData,
+)
 from callback_data.prefixes import CallbackDataPrefix
 from enums import StaffUpdateAction
-from models import Staff
+from models import Staff, StaffListPage
 from views.base import TextView
 
-__all__ = ('StaffListView', 'StaffDetailView')
+__all__ = ('StaffListView', 'StaffDetailView', 'StaffMenuView')
+
+
+class StaffMenuView(TextView):
+    text = '👥 Cотрудники'
+    reply_markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='Все сотрудники',
+                    callback_data=StaffListCallbackData(
+                        include_banned=True,
+                        limit=10,
+                        offset=0,
+                    ).pack(),
+                ),
+            ],
+            [
+                InlineKeyboardButton(
+                    text='Только активные',
+                    callback_data=StaffListCallbackData(
+                        include_banned=False,
+                        limit=10,
+                        offset=0,
+                    ).pack(),
+                ),
+            ],
+        ],
+    )
 
 
 class StaffListView(TextView):
 
-    def __init__(self, staff_list: Iterable[Staff]):
-        self.__staff_list = tuple(staff_list)
+    def __init__(self, staff_list_page: StaffListPage, include_banned: bool):
+        self.__staff_list_page = staff_list_page
+        self.__include_banned = include_banned
 
     def get_text(self) -> str:
-        if not self.__staff_list:
+        if not self.__staff_list_page.staff:
             return '😔 Нет зарегистрированных сотрудников'
-        return '👥 Список сотрудников'
+        if self.__include_banned:
+            return '👥 Все сотрудники'
+        return '👥 Активные сотрудники'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()
 
-        for staff in self.__staff_list:
+        pagination = self.__staff_list_page.pagination
+
+        for staff in self.__staff_list_page.staff:
             callback_data = StaffDetailCallbackData(
-                telegram_id=staff.id,
+                staff_id=staff.id,
+                include_banned=self.__include_banned,
+                limit=pagination.limit,
+                offset=pagination.offset,
             )
             button = InlineKeyboardButton(
                 text=staff.full_name,
@@ -35,14 +73,60 @@ class StaffListView(TextView):
             )
             keyboard.row(button)
 
+        pagination_buttons_row: list[InlineKeyboardButton] = []
+
+        if not pagination.is_first_page:
+            pagination_buttons_row.append(
+                InlineKeyboardButton(
+                    text='Предыдущая',
+                    callback_data=StaffListCallbackData(
+                        include_banned=self.__include_banned,
+                        limit=pagination.limit,
+                        offset=pagination.next_offset,
+                    ).pack(),
+                ),
+            )
+
+        if not pagination.is_last_page:
+            pagination_buttons_row.append(
+                InlineKeyboardButton(
+                    text='Следующая',
+                    callback_data=StaffListCallbackData(
+                        include_banned=self.__include_banned,
+                        limit=pagination.limit,
+                        offset=pagination.previous_offset,
+                    ).pack(),
+                ),
+            )
+
+        if pagination_buttons_row:
+            keyboard.row(*pagination_buttons_row)
+
+        keyboard.row(
+            InlineKeyboardButton(
+                text='🔙 Назад',
+                callback_data=CallbackDataPrefix.STAFF_LIST,
+            ),
+        )
+
         return keyboard.as_markup()
 
 
 class StaffDetailView(TextView):
 
-    def __init__(self, staff: Staff, web_app_base_url: str):
+    def __init__(
+            self,
+            staff: Staff,
+            web_app_base_url: str,
+            include_banned: bool,
+            limit: int,
+            offset: int,
+    ):
         self.__staff = staff
         self.__web_app_base_url = web_app_base_url
+        self.__include_banned = include_banned
+        self.__limit = limit
+        self.__offset = offset
 
     def get_text(self) -> str:
         if self.__staff.is_banned:
@@ -70,16 +154,22 @@ class StaffDetailView(TextView):
             keyboard.button(
                 text='🔑 Разблокировать',
                 callback_data=StaffUpdateCallbackData(
-                    telegram_id=self.__staff.id,
+                    staff_id=self.__staff.id,
                     action=StaffUpdateAction.UNBAN,
+                    include_banned=self.__include_banned,
+                    limit=self.__limit,
+                    offset=self.__offset,
                 ),
             )
         else:
             keyboard.button(
                 text='❌ Заблокировать',
                 callback_data=StaffUpdateCallbackData(
-                    telegram_id=self.__staff.id,
+                    staff_id=self.__staff.id,
                     action=StaffUpdateAction.BAN,
+                    include_banned=self.__include_banned,
+                    limit=self.__limit,
+                    offset=self.__offset,
                 ),
             )
         keyboard.button(
@@ -90,7 +180,11 @@ class StaffDetailView(TextView):
         )
         keyboard.button(
             text='🔙 Назад',
-            callback_data=CallbackDataPrefix.STAFF_LIST,
+            callback_data=StaffListCallbackData(
+                include_banned=self.__include_banned,
+                limit=self.__limit,
+                offset=self.__offset,
+            ),
         )
 
         return keyboard.as_markup()
