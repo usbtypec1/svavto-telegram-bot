@@ -13,6 +13,16 @@ logger = create_logger('connections')
 
 class ShiftConnection(ApiConnection):
 
+    async def get_by_id(self, shift_id: int) -> httpx.Response:
+        url = f'/shifts/{shift_id}/'
+        logger.debug(f'Retrieving shift {shift_id}')
+        response = await self._http_client.get(url)
+        logger.debug(
+            f'Received shift {shift_id}',
+            extra={'status_code': response.status_code},
+        )
+        return response
+
     async def get_list(
             self,
             *,

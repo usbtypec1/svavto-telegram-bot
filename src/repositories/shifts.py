@@ -6,7 +6,7 @@ from pydantic import TypeAdapter
 from connections import ShiftConnection
 from models import (
     CarWash, Shift, ShiftCreateResult, ShiftFinishResult,
-    ShiftListPage,
+    ShiftListPage, ShiftWithCarWashAndStaff,
 )
 from repositories.errors import handle_errors
 
@@ -17,6 +17,11 @@ class ShiftRepository:
 
     def __init__(self, connection: ShiftConnection):
         self.__connection = connection
+
+    async def get_by_id(self, shift_id: int) -> ShiftWithCarWashAndStaff:
+        response = await self.__connection.get_by_id(shift_id)
+        handle_errors(response)
+        return ShiftWithCarWashAndStaff.model_validate_json(response.text)
 
     async def get_list(
             self,
@@ -34,7 +39,6 @@ class ShiftRepository:
             limit=limit,
             offset=offset,
         )
-        print(response.text)
         handle_errors(response)
         response_data = response.json()
         return ShiftListPage.model_validate(response_data)

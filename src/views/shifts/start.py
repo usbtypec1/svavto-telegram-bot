@@ -1,7 +1,9 @@
 import datetime
+from typing import Protocol
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+import ui
 from callback_data import (
     ExtraShiftStartCallbackData,
     ShiftImmediateStartCallbackData,
@@ -18,7 +20,34 @@ __all__ = (
     'ShiftImmediateStartRequestView',
     'ExtraShiftStartView',
     'ShiftStartConfirmView',
+    'ScheduledShiftStartRequestView',
 )
+
+
+class HasIdAndDate(Protocol):
+    id: int
+    date: datetime.date
+
+
+class ScheduledShiftStartRequestView(TextView):
+
+    def __init__(self, *, shift: HasIdAndDate):
+        self.__shift = shift
+
+    def get_text(self) -> str:
+        return f'🚀 Начните смену на дату: {self.__shift.date:%d.%m.%Y}'
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        accept_callback_data = ShiftStartRequestAcceptCallbackData(
+            shift_id=self.__shift.id,
+        )
+        reject_callback_data = ShiftStartRequestRejectCallbackData(
+            shift_id=self.__shift.id,
+        )
+        return ui.markups.create_accept_reject_markup(
+            accept_callback_data=accept_callback_data,
+            reject_callback_data=reject_callback_data,
+        )
 
 
 class StaffReadyToStartShiftRequestView(TextView):
@@ -34,20 +63,15 @@ class StaffReadyToStartShiftRequestView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        accept_button = InlineKeyboardButton(
-            text='✅ Подтвердить',
-            callback_data=ShiftStartRequestAcceptCallbackData(
-                shift_id=self.__shift.id,
-            ).pack(),
+        accept_callback_data = ShiftStartRequestAcceptCallbackData(
+            shift_id=self.__shift.id,
         )
-        reject_button = InlineKeyboardButton(
-            text='❌ Отклонить',
-            callback_data=ShiftStartRequestRejectCallbackData(
-                shift_id=self.__shift.id,
-            ).pack(),
+        reject_callback_data = ShiftStartRequestRejectCallbackData(
+            shift_id=self.__shift.id,
         )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[accept_button, reject_button]],
+        return ui.markups.create_accept_reject_markup(
+            accept_callback_data=accept_callback_data,
+            reject_callback_data=reject_callback_data,
         )
 
 
@@ -105,18 +129,9 @@ class ShiftStartConfirmView(TextView):
         return f'{self.__staff_full_name} подтвердите выход на смену'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        accept_button = InlineKeyboardButton(
-            text='✅ Подтвердить',
-            callback_data=ShiftStartCallbackData(
-                shift_id=self.__shift_id,
-            ).pack(),
-        )
-        reject_button = InlineKeyboardButton(
-            text='❌ Отклонить',
-            callback_data=ShiftRejectCallbackData(
-                shift_id=self.__shift_id,
-            ).pack(),
-        )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[accept_button, reject_button]]
+        accept_callback_data = ShiftStartCallbackData(shift_id=self.__shift_id)
+        reject_callback_data = ShiftRejectCallbackData(shift_id=self.__shift_id)
+        return ui.markups.create_accept_reject_markup(
+            accept_callback_data=accept_callback_data,
+            reject_callback_data=reject_callback_data,
         )

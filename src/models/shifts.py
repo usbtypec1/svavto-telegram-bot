@@ -14,6 +14,7 @@ __all__ = (
     'ShiftListPage',
     'DirectShiftWebAppData',
     'SpecificShiftPickResult',
+    'ShiftWithCarWashAndStaff',
 )
 
 
@@ -48,6 +49,16 @@ class Shift(BaseModel):
     created_at: datetime.datetime
     is_test: bool
     car_wash: CarWash | None
+
+
+class ShiftWithCarWashAndStaff(BaseModel):
+    id: int
+    date: datetime.date
+    car_wash: CarWash | None
+    staff: Staff
+    is_started: bool
+    is_finished: bool
+    created_at: datetime.datetime
 
 
 class ShiftCreateResult(BaseModel):

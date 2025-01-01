@@ -1,10 +1,26 @@
 import datetime
+from typing import Protocol
 from zoneinfo import ZoneInfo
+
+from aiogram import Bot
+from aiogram.exceptions import TelegramAPIError
 from redis.asyncio import Redis
 
-__all__ = ('get_current_shift_date', 'ShiftFinishPhotosState')
-
 from exceptions import ShiftFinishPhotosCountExceededError
+from models import Shift
+from views.base import send_view
+from views.shifts import ScheduledShiftStartRequestView
+
+__all__ = (
+    'get_current_shift_date',
+    'ShiftFinishPhotosState',
+    'ShiftStartRequestSender',
+)
+
+
+class HasIdAndDate(Protocol):
+    id: int
+    date: datetime.date
 
 
 def get_current_shift_date(timezone: ZoneInfo) -> datetime.date:
@@ -55,3 +71,21 @@ class ShiftFinishPhotosState:
 
     async def get_photo_file_ids_count(self) -> int:
         return await self.__redis.scard(self.key)
+
+
+class ShiftStartRequestSender:
+
+    def __init__(self, bot: Bot):
+        self.__bot = bot
+
+    async def send_scheduled_shift_start_request(
+            self,
+            *,
+            staff_id: int,
+            shift: HasIdAndDate,
+    ) -> None:
+        view = ScheduledShiftStartRequestView(shift=shift)
+        try:
+            await send_view(self.__bot, view, staff_id)
+        except TelegramAPIError:
+            pass

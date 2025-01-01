@@ -1,23 +1,23 @@
-import datetime
-
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter, invert_f
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
 
+import ui
 from callback_data import (
     ShiftStartRequestAcceptCallbackData,
     ShiftWorkTypeChoiceCallbackData,
 )
 from config import Config
-from dependencies.repositories import get_shift_repository
+from dependencies.repositories import (
+    get_shift_repository,
+)
 from enums import ShiftWorkType
-from filters import admins_filter, staff_filter
+from filters import admins_filter
 from models import Staff
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
-from states import ShiftStartStates
+from services.shifts import ShiftStartRequestSender, get_current_shift_date
 from views.base import answer_view
 from views.button_texts import ButtonText
 from views.shifts import (
@@ -32,26 +32,27 @@ router = Router(name=__name__)
 
 @router.callback_query(
     ShiftStartRequestAcceptCallbackData.filter(),
-    staff_filter,
+    admins_filter,
     StateFilter('*'),
 )
 @inject
 async def on_shift_start_request_accept(
         callback_query: CallbackQuery,
-        state: FSMContext,
-        config: Config,
+        callback_data: ShiftStartRequestAcceptCallbackData,
+        bot: Bot,
         shift_repository: ShiftRepository = Depends(
             dependency=get_shift_repository,
             use_cache=False,
-        )
+        ),
 ) -> None:
-    now = datetime.datetime.now(config.timezone)
-    shifts = await shift_repository.get_list(
-        date_from=now.date(),
-        date_to=now.date(),
-        staff_ids=(callback_query.from_user.id,),
+    shift_start_request_sender = ShiftStartRequestSender(bot)
+    shift = await shift_repository.get_by_id(callback_data.shift_id)
+    await shift_start_request_sender.send_scheduled_shift_start_request(
+        shift=shift,
+        staff_id=shift.staff.id,
     )
-    await state.set_state(ShiftStartStates.car_wash)
+    text = ui.texts.format_accept_text(callback_query.message.text)
+    await callback_query.message.edit_text(text)
 
 
 @router.callback_query(
@@ -77,10 +78,10 @@ async def on_move_to_wash_shift_work_type_choice(
         bot=bot,
         chat_ids=admin_user_ids,
     )
-    now = datetime.datetime.now(config.timezone)
+    shift_date = get_current_shift_date(config.timezone)
     shifts_page = await shift_repository.get_list(
-        date_from=now,
-        date_to=now,
+        date_from=shift_date,
+        date_to=shift_date,
         staff_ids=[staff.id],
     )
     if not shifts_page.shifts:

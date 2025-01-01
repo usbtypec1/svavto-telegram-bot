@@ -16,6 +16,8 @@ __all__ = (
     'ShiftStartRequestAcceptCallbackData',
     'ShiftStartRequestRejectCallbackData',
     'ShiftImmediateStartCallbackData',
+    'ScheduledShiftStartAcceptCallbackData',
+    'ScheduledShiftStartRejectCallbackData',
 )
 
 
@@ -104,3 +106,17 @@ class ShiftImmediateStartCallbackData(
     prefix=CallbackDataPrefix.SHIFT_IMMEDIATE_START,
 ):
     date: str
+
+
+class ScheduledShiftStartAcceptCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SCHEDULED_SHIFT_START_ACCEPT,
+):
+    shift_id: int
+
+
+class ScheduledShiftStartRejectCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SCHEDULED_SHIFT_START_REJECT,
+):
+    shift_id: int
