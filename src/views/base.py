@@ -22,6 +22,7 @@ __all__ = (
     'send_photo_view',
     'answer_view',
     'View',
+    'send_view',
 )
 
 ReplyMarkup: TypeAlias = (
@@ -107,14 +108,14 @@ async def answer_media_group_view(
     )
 
 
-async def answer_view(message: Message, view: View) -> None:
+async def answer_view(message: Message, view: View) -> Message | list[Message]:
     match view:
         case TextView():
-            await answer_text_view(message, view)
+            return await answer_text_view(message, view)
         case PhotoView():
-            await answer_photo_view(message, view)
+            return await answer_photo_view(message, view)
         case MediaGroupView():
-            await answer_media_group_view(message, view)
+            return await answer_media_group_view(message, view)
         case _:
             assert_never(view)
 
@@ -175,3 +176,17 @@ async def send_photo_view(
         except TelegramAPIError:
             result.append(None)
     return result
+
+
+async def send_view(
+        bot: Bot,
+        view: View,
+        *chat_ids: int,
+) -> list[Message | None]:
+    match view:
+        case TextView():
+            return await send_text_view(bot, view, *chat_ids)
+        case PhotoView():
+            return await send_photo_view(bot, view, *chat_ids)
+        case _:
+            assert_never(view)
