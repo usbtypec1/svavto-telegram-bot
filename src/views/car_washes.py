@@ -3,12 +3,12 @@ from collections.abc import Iterable
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+import ui.markups
+import ui.buttons
 from callback_data import CarWashActionCallbackData, CarWashDetailCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from enums import CarWashAction
 from models import CarWash
-from ui.buttons import create_accept_button, create_back_button
-from ui.markups import create_accept_and_back_markup
 from views.base import TextView
 
 __all__ = (
@@ -55,7 +55,7 @@ class CarWashCreateNameInputView(TextView):
     text = '✍️ Введите название мойки'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        back_button = create_back_button(
+        back_button = ui.buttons.create_back_button(
             callback_data=CallbackDataPrefix.CAR_WASH_LIST,
         )
         return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
@@ -68,7 +68,7 @@ class CarWashUpdateNameInputView(TextView):
         self.__car_wash_id = car_wash_id
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        back_button = create_back_button(
+        back_button = ui.buttons.create_back_button(
             callback_data=CarWashDetailCallbackData(
                 car_wash_id=self.__car_wash_id,
             ),
@@ -77,7 +77,7 @@ class CarWashUpdateNameInputView(TextView):
 
 
 class CarWashCreateConfirmView(TextView):
-    reply_markup = create_accept_and_back_markup(
+    reply_markup = ui.markups.create_accept_and_back_markup(
         accept_callback_data=CallbackDataPrefix.CAR_WASH_CREATE_CONFIRM,
         back_callback_data=CallbackDataPrefix.CAR_WASH_CREATE,
     )
@@ -104,7 +104,7 @@ class CarWashDetailView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        car_washes_list_button = create_back_button(
+        car_washes_list_button = ui.buttons.create_back_button(
             callback_data=CallbackDataPrefix.CAR_WASH_LIST,
         )
         rename_button = InlineKeyboardButton(
@@ -156,7 +156,7 @@ class CarWashRenameConfirmView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return create_accept_and_back_markup(
+        return ui.markups.create_accept_and_back_markup(
             accept_callback_data=CallbackDataPrefix.CAR_WASH_UPDATE_CONFIRM,
             back_callback_data=CarWashActionCallbackData(
                 car_wash_id=self.__car_wash_id,
@@ -172,7 +172,7 @@ class CarWashDeleteConfirmView(TextView):
         self.__car_wash_id = car_wash_id
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return create_accept_and_back_markup(
+        return ui.markups.create_accept_and_back_markup(
             accept_callback_data=CallbackDataPrefix.CAR_WASH_DELETE_CONFIRM,
             back_callback_data=CarWashDetailCallbackData(
                 car_wash_id=self.__car_wash_id,

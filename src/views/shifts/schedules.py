@@ -19,6 +19,10 @@ from enums import ShiftWorkType
 from models import (
     AvailableDate,
 )
+from ui.markups import (
+    create_accept_and_back_markup,
+    create_accept_reject_markup,
+)
 from views.base import TextView
 from views.button_texts import ButtonText
 
@@ -237,20 +241,13 @@ class ExtraShiftScheduleNotificationView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        accept_button = InlineKeyboardButton(
-            text='✅ Подтвердить',
-            callback_data=ExtraShiftCreateAcceptCallbackData(
+        return create_accept_reject_markup(
+            accept_callback_data=ExtraShiftCreateAcceptCallbackData(
                 staff_id=self.__staff_id,
                 date=self.__shift_date.isoformat(),
-            ).pack(),
-        )
-        reject_button = InlineKeyboardButton(
-            text='❌ Отклонить',
-            callback_data=ExtraShiftCreateRejectCallbackData(
+            ),
+            reject_callback_data=ExtraShiftCreateRejectCallbackData(
                 staff_id=self.__staff_id,
                 date=self.__shift_date.isoformat(),
-            ).pack(),
-        )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[accept_button, reject_button]],
+            ),
         )

@@ -9,9 +9,9 @@ from aiogram.types import (
 )
 from aiogram.utils.media_group import MediaType
 
+import ui.markups
 from callback_data.prefixes import CallbackDataPrefix
 from models import ShiftFinishResult
-from ui.markups import create_accept_reject_markup
 from views.base import MediaGroupView, TextView, PhotoView
 from views.button_texts import ButtonText
 
@@ -30,7 +30,7 @@ __all__ = (
 
 class ShiftFinishConfirmView(TextView):
     text = 'Подтверждаете завершение смены?'
-    reply_markup = create_accept_reject_markup(
+    reply_markup = ui.markups.create_accept_reject_markup(
         accept_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
         reject_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_REJECT,
     )
@@ -82,19 +82,9 @@ class ShiftFinishPhotosView(MediaGroupView):
 
 class ShiftFinishConfirmAllView(TextView):
     text = 'Подтверждаете завершение смены?'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='✅ Подтвердить',
-                    callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
-                ),
-                InlineKeyboardButton(
-                    text='❌ Отменить',
-                    callback_data=CallbackDataPrefix.SHIFT_FINISH_REJECT,
-                )
-            ],
-        ],
+    reply_markup = ui.markups.create_accept_reject_markup(
+        accept_callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
+        reject_callback_data=CallbackDataPrefix.SHIFT_FINISH_REJECT,
     )
 
 
@@ -104,7 +94,7 @@ def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
         f'Мойка: {shift_summary.car_wash_name or "неизвестно"}',
         f'Всего: {shift_summary.total_cars_count}',
         f'Плановая мойка: {shift_summary.planned_cars_count}',
-        f'🔶 Эконом: {shift_summary.planned_cars_count}',
+        f'🔶 Комфорт: {shift_summary.planned_cars_count}',
         f'🔶 Бизнес: {shift_summary.business_cars_count}',
         f'🔶 Фургон: {shift_summary.vans_count}',
         f'Срочная мойка: {shift_summary.urgent_cars_count}',
