@@ -1,4 +1,4 @@
-from typing import TypeAlias
+from typing import TypeAlias, assert_never
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
@@ -20,6 +20,8 @@ __all__ = (
     'PhotoView',
     'answer_photo_view',
     'send_photo_view',
+    'answer_view',
+    'View',
 )
 
 ReplyMarkup: TypeAlias = (
@@ -78,6 +80,9 @@ class MediaGroupView:
         return self.reply_markup
 
 
+View: TypeAlias = TextView | PhotoView | MediaGroupView
+
+
 async def answer_text_view(message: Message, view: TextView) -> Message:
     return await message.answer(
         text=view.get_text(),
@@ -100,6 +105,18 @@ async def answer_media_group_view(
     return await message.answer_media_group(
         media=view.as_media_group(),
     )
+
+
+async def answer_view(message: Message, view: View) -> None:
+    match view:
+        case TextView():
+            await answer_text_view(message, view)
+        case PhotoView():
+            await answer_photo_view(message, view)
+        case MediaGroupView():
+            await answer_media_group_view(message, view)
+        case _:
+            assert_never(view)
 
 
 async def edit_message_by_view(message: Message, view: TextView) -> Message:
