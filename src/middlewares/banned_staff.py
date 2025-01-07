@@ -9,7 +9,7 @@ from dependencies.repositories import get_staff_repository
 from exceptions import StaffNotFoundError
 from repositories import StaffRepository
 from services.telegram_events import get_user_id_from_update
-from views.base import send_view
+from views.base import send_text_view
 from views.menu import StaffBannedView
 
 __all__ = ('banned_staff_middleware',)
@@ -42,7 +42,7 @@ async def banned_staff_middleware(
         return await handler(event, data)
 
     if staff.is_banned:
-        await send_view(bot, StaffBannedView(), user_id)
+        await send_text_view(bot, StaffBannedView(), user_id)
         return
 
     data['staff'] = staff

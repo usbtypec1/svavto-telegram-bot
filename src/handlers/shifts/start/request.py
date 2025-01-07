@@ -7,7 +7,7 @@ from dependencies.repositories import get_shift_repository
 from filters import admins_filter
 from models import ShiftsConfirmation
 from repositories import ShiftRepository
-from views.base import send_view
+from views.base import send_text_view
 from views.button_texts import ButtonText
 from views.shifts import ShiftImmediateStartRequestView, ShiftStartConfirmView
 
@@ -56,7 +56,7 @@ async def on_send_confirmation_to_staff(
             )
         finally:
             count += 1
-        await send_view(bot, view, staff_id)
+        await send_text_view(bot, view, staff_id)
 
     await message.answer(
         f'✅ Запросы на начало смены отправлены {count} сотрудникам',

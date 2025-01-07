@@ -21,7 +21,7 @@ from repositories import CarWashRepository, StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftStartStates
-from views.base import answer_text_view, send_view
+from views.base import answer_text_view, send_text_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView
 from views.shifts import (
@@ -100,7 +100,7 @@ async def on_extra_shift_create_accept(
         staff_full_name=staff.full_name,
         shift_date=datetime.date.fromisoformat(callback_data.date),
     )
-    sent_messages = await send_view(bot, view, callback_data.staff_id)
+    sent_messages = await send_text_view(bot, view, callback_data.staff_id)
     if sent_messages[0] is None:
         await callback_query.answer(
             text='❌ Не удалось отправить сообщение сотруднику',

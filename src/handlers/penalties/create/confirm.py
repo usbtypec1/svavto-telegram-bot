@@ -17,7 +17,7 @@ from states import PenaltyCreateStates
 from views.admins import AdminMenuView
 from views.base import (
     answer_text_view, edit_message_by_view, send_photo_view,
-    send_view,
+    send_text_view,
 )
 from views.penalties import (
     PenaltyCreateNotificationView,
@@ -93,7 +93,7 @@ async def on_accept_penalty_creation(
             penalty=penalty,
             web_app_base_url=config.web_app_base_url,
         )
-        await send_view(bot, view, staff.id)
+        await send_text_view(bot, view, staff.id)
     else:
         view = PhotoCreateWithPhotoNotificationView(
             penalty=penalty,

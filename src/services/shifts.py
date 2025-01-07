@@ -7,7 +7,7 @@ from aiogram.exceptions import TelegramAPIError
 from redis.asyncio import Redis
 
 from exceptions import ShiftFinishPhotosCountExceededError
-from views.base import send_view
+from views.base import send_text_view
 from views.shifts import ScheduledShiftStartRequestView
 
 __all__ = (
@@ -85,6 +85,6 @@ class ShiftStartRequestSender:
     ) -> None:
         view = ScheduledShiftStartRequestView(shift=shift)
         try:
-            await send_view(self.__bot, view, staff_id)
+            await send_text_view(self.__bot, view, staff_id)
         except TelegramAPIError:
             pass

@@ -10,7 +10,7 @@ from exceptions import StaffNotFoundError, StaffAlreadyExistsError
 from filters import admins_filter
 from repositories import StaffRepository
 from services.staff import parse_staff_register_text
-from views.base import send_view
+from views.base import send_text_view
 from views.menu import MainMenuView
 from views.register import StaffRegisterAcceptedView, StaffRegisterRejectedView
 
@@ -43,7 +43,7 @@ async def on_staff_register_reject(
             f'{message_text}\n\n❌ Отклонено',
         )
         view = StaffRegisterRejectedView()
-        await send_view(bot, view, staff_to_register.id)
+        await send_text_view(bot, view, staff_to_register.id)
     else:
         raise StaffAlreadyExistsError
 
@@ -75,6 +75,6 @@ async def on_staff_register_accept(
         show_alert=True,
     )
     view = StaffRegisterAcceptedView()
-    await send_view(bot, view, staff.id)
+    await send_text_view(bot, view, staff.id)
     view = MainMenuView(config.web_app_base_url)
-    await send_view(bot, view, staff.id)
+    await send_text_view(bot, view, staff.id)

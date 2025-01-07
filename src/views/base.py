@@ -14,7 +14,7 @@ __all__ = (
     'answer_text_view',
     'edit_message_by_view',
     'answer_or_edit_message_by_view',
-    'send_view',
+    'send_text_view',
     'answer_media_group_view',
     'MediaGroupView',
     'PhotoView',
@@ -135,7 +135,7 @@ async def answer_or_edit_message_by_view(
     return await edit_message_by_view(message_or_callback_query.message, view)
 
 
-async def send_view(
+async def send_text_view(
         bot: Bot,
         view: TextView,
         *chat_ids: int,
