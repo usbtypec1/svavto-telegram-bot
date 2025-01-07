@@ -7,7 +7,6 @@ from aiogram.exceptions import TelegramAPIError
 from redis.asyncio import Redis
 
 from exceptions import ShiftFinishPhotosCountExceededError
-from models import Shift
 from views.base import send_view
 from views.shifts import ScheduledShiftStartRequestView
 

@@ -9,6 +9,7 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+import ui.markups
 from callback_data import (
     ExtraShiftCreateAcceptCallbackData,
     ExtraShiftCreateRejectCallbackData,
@@ -18,10 +19,6 @@ from callback_data import (
 from enums import ShiftWorkType
 from models import (
     AvailableDate,
-)
-from ui.markups import (
-    create_accept_and_back_markup,
-    create_accept_reject_markup,
 )
 from views.base import TextView
 from views.button_texts import ButtonText
@@ -241,7 +238,7 @@ class ExtraShiftScheduleNotificationView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return create_accept_reject_markup(
+        return ui.markups.create_accept_reject_markup(
             accept_callback_data=ExtraShiftCreateAcceptCallbackData(
                 staff_id=self.__staff_id,
                 date=self.__shift_date.isoformat(),
