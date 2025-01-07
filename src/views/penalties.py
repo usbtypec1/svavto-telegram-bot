@@ -7,6 +7,7 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+import ui.texts
 from callback_data import (
     PenaltyCreateChooseReasonCallbackData,
     PenaltyCreateChooseStaffCallbackData,
@@ -14,6 +15,7 @@ from callback_data import (
 from callback_data.prefixes import CallbackDataPrefix
 from enums import PenaltyConsequence, PenaltyReason
 from models import Penalty, Staff
+from ui.markups import create_accept_reject_markup
 from views.base import PhotoView, TextView
 
 __all__ = (
@@ -44,16 +46,9 @@ class PenaltyCreateInputOtherReasonView(TextView):
 
 
 class PenaltyCreateConfirmView(TextView):
-    __accept_button = InlineKeyboardButton(
-        text='✅ Да',
-        callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
-    )
-    __reject_button = InlineKeyboardButton(
-        text='❌ Нет',
-        callback_data=CallbackDataPrefix.PENALTY_CREATE_REJECT,
-    )
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[[__accept_button, __reject_button]],
+    reply_markup = create_accept_reject_markup(
+        accept_callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
+        reject_callback_data=CallbackDataPrefix.PENALTY_CREATE_REJECT,
     )
 
     def __init__(
@@ -88,7 +83,7 @@ class PenaltyCreateChooseStaffView(TextView):
 
     def get_text(self) -> str:
         if not self.__staff_list:
-            return '😔 Некого штрафовать'
+            return ui.texts.NO_ANY_STAFF
         return '👥 Выберите сотрудника которого хотите оштрафовать'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:

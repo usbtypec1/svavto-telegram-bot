@@ -1,11 +1,13 @@
 from collections.abc import Iterable
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
+from aiogram.types import ForceReply, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+import ui
 from callback_data import SurchargeCreateChooseStaffCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from models import Staff, Surcharge
+from ui.markups import create_accept_reject_markup
 from views.base import TextView
 
 __all__ = (
@@ -24,7 +26,7 @@ class SurchargeCreateChooseStaffView(TextView):
 
     def get_text(self) -> str:
         if not self.__staff_list:
-            return 'Некому доплатить'
+            return ui.texts.NO_ANY_STAFF
         return 'Выберите Сотрудника'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
@@ -53,19 +55,9 @@ class SurchargeCreateInputAmountView(TextView):
 
 
 class SurchargeCreateConfirmView(TextView):
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='✅ Да',
-                    callback_data=CallbackDataPrefix.SURCHARGE_CREATE_ACCEPT,
-                ),
-                InlineKeyboardButton(
-                    text='❌ Нет',
-                    callback_data=CallbackDataPrefix.SURCHARGE_CREATE_REJECT,
-                ),
-            ],
-        ],
+    reply_markup = create_accept_reject_markup(
+        accept_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_ACCEPT,
+        reject_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_REJECT,
     )
 
     def __init__(self, staff: Staff, reason: str, amount: int):

@@ -7,6 +7,7 @@ from callback_data import CarWashActionCallbackData, CarWashDetailCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from enums import CarWashAction
 from models import CarWash
+from ui.buttons import create_accept_button
 from views.base import TextView
 
 __all__ = (
@@ -84,8 +85,7 @@ class CarWashCreateConfirmView(TextView):
                     text='🔙 Назад',
                     callback_data=CallbackDataPrefix.CAR_WASH_CREATE,
                 ),
-                InlineKeyboardButton(
-                    text='✅ Да',
+                create_accept_button(
                     callback_data=CallbackDataPrefix.CAR_WASH_CREATE_CONFIRM,
                 ),
             ],
@@ -128,7 +128,8 @@ class CarWashDetailView(TextView):
         price_list_button = InlineKeyboardButton(
             text='💰 Прайс-лист',
             web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/car-washes/{self.__car_wash.id}',
+                url=f'{self.__web_app_base_url}/car-washes/'
+                    f'{self.__car_wash.id}',
             ),
         )
         delete_button = InlineKeyboardButton(
@@ -173,8 +174,7 @@ class CarWashRenameConfirmView(TextView):
                 action=CarWashAction.RENAME,
             ).pack(),
         )
-        confirm_button = InlineKeyboardButton(
-            text='✅ Да',
+        confirm_button = create_accept_button(
             callback_data=CallbackDataPrefix.CAR_WASH_UPDATE_CONFIRM,
         )
 
@@ -198,8 +198,7 @@ class CarWashDeleteConfirmView(TextView):
                 car_wash_id=self.__car_wash_id,
             ).pack(),
         )
-        confirm_button = InlineKeyboardButton(
-            text='✅ Да',
+        confirm_button = create_accept_button(
             callback_data=CallbackDataPrefix.CAR_WASH_DELETE_CONFIRM,
         )
         return InlineKeyboardMarkup(

@@ -11,6 +11,7 @@ from aiogram.utils.media_group import MediaType
 
 from callback_data.prefixes import CallbackDataPrefix
 from models import ShiftFinishResult
+from ui.markups import create_accept_reject_markup
 from views.base import MediaGroupView, TextView, PhotoView
 from views.button_texts import ButtonText
 
@@ -28,18 +29,10 @@ __all__ = (
 
 
 class ShiftFinishConfirmView(TextView):
-    __accept_button = InlineKeyboardButton(
-        text='✅ Да',
-        callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
-    )
-    __reject_button = InlineKeyboardButton(
-        text='❌ Нет',
-        callback_data=CallbackDataPrefix
-        .SHIFT_FINISH_FLOW_START_REJECT,
-    )
     text = 'Подтверждаете завершение смены?'
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[[__accept_button, __reject_button]],
+    reply_markup = create_accept_reject_markup(
+        accept_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
+        reject_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_REJECT,
     )
 
 
