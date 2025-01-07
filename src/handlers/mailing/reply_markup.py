@@ -8,9 +8,9 @@ from models import MailingParams
 from services.mailing import render_message_for_mailing
 from services.telegram_events import parse_web_app_data_buttons
 from states import MailingStates
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.mailing import MailingConfirmView
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import MailingConfirmView
 
 __all__ = ('router',)
 

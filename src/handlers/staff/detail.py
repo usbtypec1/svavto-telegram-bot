@@ -8,8 +8,8 @@ from config import Config
 from dependencies.repositories import get_staff_repository
 from filters import admins_filter
 from repositories import StaffRepository
-from views.base import edit_message_by_view
-from views.staff import StaffDetailView
+from ui.views import edit_message_by_view
+from ui.views.staff import StaffDetailView
 
 __all__ = ('router',)
 

@@ -11,7 +11,7 @@ from exceptions import (
 from filters import admins_filter
 from models import CarToWashWebAppData
 from repositories import CarToWashRepository
-from views.button_texts import ButtonText
+from ui.views import ButtonText
 
 __all__ = ('router',)
 

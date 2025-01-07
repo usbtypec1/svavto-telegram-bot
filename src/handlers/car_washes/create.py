@@ -9,8 +9,8 @@ from dependencies.repositories import get_car_wash_repository
 from filters import admins_filter
 from repositories import CarWashRepository
 from states import CarWashCreateStates
-from views.base import edit_message_by_view, answer_text_view
-from views.car_washes import CarWashCreateNameInputView, CarWashCreateConfirmView, \
+from ui.views import edit_message_by_view, answer_text_view
+from ui.views import CarWashCreateNameInputView, CarWashCreateConfirmView, \
     CarWashListView
 
 __all__ = ('router',)

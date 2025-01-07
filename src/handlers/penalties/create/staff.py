@@ -11,10 +11,10 @@ from enums import StaffOrderBy
 from filters import admins_filter
 from repositories import StaffRepository
 from states import PenaltyCreateStates
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.penalties import PenaltyCreateChooseStaffView
-from views.shifts import SpecificShiftPickerView
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import PenaltyCreateChooseStaffView
+from ui.views import SpecificShiftPickerView
 
 __all__ = ('router',)
 

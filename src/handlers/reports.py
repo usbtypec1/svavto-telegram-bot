@@ -4,10 +4,10 @@ from aiogram.types import Message
 
 from config import Config
 from filters import admins_filter
-from views.admins import AdminOtherMenuView
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.reports import ReportsMenuView
+from ui.views import AdminOtherMenuView
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import ReportsMenuView
 
 __all__ = ('router',)
 

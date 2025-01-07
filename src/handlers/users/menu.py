@@ -13,14 +13,14 @@ from exceptions import StaffHasNoActiveShiftError, StaffNotFoundError
 from filters import admins_filter
 from models import Staff
 from repositories import ShiftRepository
-from views.admins import AdminMenuView
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.menu import MainMenuView, RegisterView, ShiftMenuView
+from ui.views import AdminMenuView
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import MainMenuView, RegisterView, ShiftMenuView
 
 __all__ = ('router',)
 
-from views.register import StaffRegisterView
+from ui.views import StaffRegisterView
 
 router = Router(name=__name__)
 

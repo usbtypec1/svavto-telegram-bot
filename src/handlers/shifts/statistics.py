@@ -8,9 +8,9 @@ from dependencies.repositories import get_car_to_wash_repository
 from filters import admins_filter
 from repositories import CarToWashRepository
 from services.shifts import get_current_shift_date
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.shifts import (
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import (
     ShiftCarsCountByStaffView,
     ShiftCarsWithoutWindshieldWasherView,
 )

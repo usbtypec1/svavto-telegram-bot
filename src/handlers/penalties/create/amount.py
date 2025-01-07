@@ -6,8 +6,8 @@ from aiogram.types import Message
 from filters import admins_filter
 from services.validators import parse_integer_number
 from states import PenaltyCreateStates
-from views.base import answer_text_view
-from views.penalties import PenaltyPhotoInputView
+from ui.views import answer_text_view
+from ui.views import PenaltyPhotoInputView
 
 __all__ = ('router',)
 

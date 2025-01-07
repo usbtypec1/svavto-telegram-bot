@@ -16,7 +16,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from enums import PenaltyConsequence, PenaltyReason
 from models import Penalty, Staff
 from ui.markups import create_accept_reject_markup
-from views.base import PhotoView, TextView
+from ui.views.base import PhotoView, TextView
 
 __all__ = (
     'PenaltyCreateChooseStaffView',

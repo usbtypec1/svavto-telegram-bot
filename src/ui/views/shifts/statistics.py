@@ -1,5 +1,5 @@
 from models import ShiftCarsCountByStaff, ShiftCarsWithoutWindshieldWasher
-from views.base import TextView
+from ui.views.base import TextView
 
 __all__ = (
     'ShiftCarsWithoutWindshieldWasherView',

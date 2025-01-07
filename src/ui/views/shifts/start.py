@@ -13,7 +13,7 @@ from callback_data import (
     ShiftStartRequestRejectCallbackData,
 )
 from models import ShiftListItem, Staff
-from views.base import TextView
+from ui.views.base import TextView
 
 __all__ = (
     'StaffReadyToStartShiftRequestView',

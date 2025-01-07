@@ -19,8 +19,8 @@ from services.mailing import (
 from services.notifications import MailingService
 from services.telegram_events import format_accept_text
 from states import MailingStates
-from views.admins import AdminMenuView
-from views.base import answer_text_view
+from ui.views import AdminMenuView
+from ui.views import answer_text_view
 
 __all__ = ('router',)
 

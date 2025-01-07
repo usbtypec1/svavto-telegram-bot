@@ -8,8 +8,8 @@ from config import Config
 from filters import admins_filter
 from services.telegram_events import format_reject_text
 from states import MailingStates
-from views.admins import AdminMenuView
-from views.base import answer_text_view
+from ui.views import AdminMenuView
+from ui.views import answer_text_view
 
 __all__ = ('router',)
 

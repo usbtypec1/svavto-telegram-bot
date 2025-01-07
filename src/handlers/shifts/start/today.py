@@ -18,9 +18,9 @@ from models import Staff
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
 from services.shifts import ShiftStartRequestSender, get_current_shift_date
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.shifts import (
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import (
     ShiftWorkTypeChoiceView,
     StaffReadyToStartShiftRequestView,
 )

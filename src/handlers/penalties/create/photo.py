@@ -9,8 +9,8 @@ from dependencies.repositories import get_staff_repository
 from filters import admins_filter
 from repositories import StaffRepository
 from states import PenaltyCreateStates
-from views.base import answer_text_view
-from views.penalties import PenaltyCreateConfirmView
+from ui.views import answer_text_view
+from ui.views import PenaltyCreateConfirmView
 
 __all__ = ('router',)
 

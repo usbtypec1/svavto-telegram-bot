@@ -8,7 +8,7 @@ from callback_data import (
     ShiftStartCarWashCallbackData,
 )
 from models import CarWash
-from views.base import TextView
+from ui.views.base import TextView
 
 __all__ = ('ShiftCarWashUpdateView', 'ShiftStartCarWashChooseView')
 

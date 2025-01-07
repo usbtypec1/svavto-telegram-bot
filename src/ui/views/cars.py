@@ -9,8 +9,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callback_data import CarDetailForAdditionalServicesCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from models import Car
-from views.base import TextView
-from views.button_texts import ButtonText
+from ui.views.base import TextView
+from ui.views.button_texts import ButtonText
 
 __all__ = (
     'CarsListView',

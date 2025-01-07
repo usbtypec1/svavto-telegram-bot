@@ -6,7 +6,7 @@ from aiogram.exceptions import TelegramAPIError
 from aiogram.types import InlineKeyboardMarkup, InputMediaPhoto
 from aiogram.utils.media_group import MediaGroupBuilder, MediaType
 
-from views.base import TextView
+from ui.views import TextView
 
 __all__ = (
     'NotificationService',

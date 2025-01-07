@@ -6,9 +6,9 @@ from aiogram.types import CallbackQuery, Message
 from callback_data import MailingTypeChooseCallbackData
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_text_view, edit_message_by_view
-from views.button_texts import ButtonText
-from views.mailing import MailingTextInputView, MailingTypeChooseView
+from ui.views import answer_text_view, edit_message_by_view
+from ui.views import ButtonText
+from ui.views import MailingTextInputView, MailingTypeChooseView
 
 __all__ = ('router',)
 

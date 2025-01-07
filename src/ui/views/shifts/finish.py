@@ -12,8 +12,8 @@ from aiogram.utils.media_group import MediaType
 import ui.markups
 from callback_data.prefixes import CallbackDataPrefix
 from models import ShiftFinishResult
-from views.base import MediaGroupView, TextView, PhotoView
-from views.button_texts import ButtonText
+from ui.views.base import MediaGroupView, TextView, PhotoView
+from ui.views.button_texts import ButtonText
 
 __all__ = (
     'ShiftFinishConfirmView',

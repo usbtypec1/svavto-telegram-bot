@@ -7,12 +7,12 @@ from dependencies.repositories import get_shift_repository
 from exceptions import StaffHasNoAnyShiftError
 from filters import admins_filter
 from repositories import ShiftRepository
-from views.base import answer_text_view
-from views.button_texts import ButtonText
+from ui.views import answer_text_view
+from ui.views import ButtonText
 
 __all__ = ('router',)
 
-from views.shifts import (
+from ui.views import (
     StaffHasNoAnyCreatedShiftView,
     StaffScheduleCreatedShiftView,
 )

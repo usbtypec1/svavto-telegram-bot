@@ -12,8 +12,8 @@ from enums import CarWashAction
 from filters import admins_filter
 from repositories import CarWashRepository
 from states import CarWashRenameStates
-from views.base import edit_message_by_view, answer_text_view
-from views.car_washes import (
+from ui.views import edit_message_by_view, answer_text_view
+from ui.views import (
     CarWashUpdateNameInputView,
     CarWashRenameConfirmView,
     CarWashDetailView,

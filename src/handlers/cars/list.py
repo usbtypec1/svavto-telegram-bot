@@ -10,16 +10,16 @@ from exceptions import AdditionalServicesCouldNotBeProvidedError
 from filters import admins_filter
 from models import CarAdditionalServices
 from repositories import CarToWashRepository
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.cars import (
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views.cars import (
     CarAdditionalServicesUpdateView,
     CarsListForAdditionalServicesView,
 )
 
 __all__ = ('router',)
 
-from views.menu import ShiftMenuView
+from ui.views import ShiftMenuView
 
 router = Router(name=__name__)
 

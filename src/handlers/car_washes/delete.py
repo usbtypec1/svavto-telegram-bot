@@ -11,8 +11,8 @@ from enums import CarWashAction
 from filters import admins_filter
 from repositories import CarWashRepository
 from states import CarWashDeleteStates
-from views.base import answer_text_view, edit_message_by_view
-from views.car_washes import CarWashListView, CarWashDeleteConfirmView
+from ui.views import answer_text_view, edit_message_by_view
+from ui.views import CarWashListView, CarWashDeleteConfirmView
 
 __all__ = ('router',)
 

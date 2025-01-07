@@ -15,9 +15,9 @@ from dependencies.repositories import (
 from filters import admins_filter
 from repositories import CarWashRepository, ShiftRepository
 from states import ShiftStartStates
-from views.base import answer_text_view, edit_message_by_view
-from views.menu import ShiftMenuView
-from views.shifts import ShiftStartCarWashChooseView
+from ui.views import answer_text_view, edit_message_by_view
+from ui.views import ShiftMenuView
+from ui.views import ShiftStartCarWashChooseView
 
 __all__ = ('router',)
 

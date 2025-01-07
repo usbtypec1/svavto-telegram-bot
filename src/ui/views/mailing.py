@@ -6,8 +6,8 @@ from aiogram.types import (
 from callback_data import MailingTypeChooseCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from enums import MailingType
-from views.base import TextView
-from views.button_texts import ButtonText
+from ui.views.base import TextView
+from ui.views.button_texts import ButtonText
 
 __all__ = (
     'MailingTypeChooseView',
@@ -129,7 +129,8 @@ class MailingPhotoAcceptedView(TextView):
             [
                 InlineKeyboardButton(
                     text='✅ Завершить добавление фото',
-                    callback_data=CallbackDataPrefix.MAILING_PHOTO_ACCEPT_FINISH,
+                    callback_data=CallbackDataPrefix
+                    .MAILING_PHOTO_ACCEPT_FINISH,
                 ),
             ],
         ],
@@ -146,7 +147,8 @@ class MailingPhotoAlreadyAcceptedView(TextView):
             [
                 InlineKeyboardButton(
                     text='✅ Завершить добавление фото',
-                    callback_data=CallbackDataPrefix.MAILING_PHOTO_ACCEPT_FINISH,
+                    callback_data=CallbackDataPrefix
+                    .MAILING_PHOTO_ACCEPT_FINISH,
                 ),
             ],
         ],
@@ -160,7 +162,8 @@ class MailingPhotoInputView(TextView):
             [
                 InlineKeyboardButton(
                     text='🔜 Пропустить',
-                    callback_data=CallbackDataPrefix.MAILING_PHOTO_ACCEPT_FINISH,
+                    callback_data=CallbackDataPrefix
+                    .MAILING_PHOTO_ACCEPT_FINISH,
                 )
             ]
         ]

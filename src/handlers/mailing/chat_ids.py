@@ -7,9 +7,9 @@ from aiogram.types import Message
 
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.mailing import MailingPhotoInputView
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views import MailingPhotoInputView
 
 __all__ = ('router',)
 

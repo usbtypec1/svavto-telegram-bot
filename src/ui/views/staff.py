@@ -10,7 +10,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from enums import StaffUpdateAction
 from models import Staff, StaffListPage
 from ui.buttons import create_back_button
-from views.base import TextView
+from ui.views.base import TextView
 
 __all__ = ('StaffListView', 'StaffDetailView', 'StaffMenuView')
 

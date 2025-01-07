@@ -9,8 +9,8 @@ from dependencies.repositories import get_staff_repository
 from exceptions import StaffNotFoundError
 from repositories import StaffRepository
 from services.telegram_events import get_user_id_from_update
-from views.base import send_text_view
-from views.menu import StaffBannedView
+from ui.views import send_text_view
+from ui.views import StaffBannedView
 
 __all__ = ('banned_staff_middleware',)
 

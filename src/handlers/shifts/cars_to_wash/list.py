@@ -6,9 +6,9 @@ from fast_depends import Depends, inject
 from dependencies.repositories import get_car_to_wash_repository
 from filters import admins_filter
 from repositories import CarToWashRepository
-from views.base import answer_text_view
-from views.button_texts import ButtonText
-from views.cars import CarsListView
+from ui.views import answer_text_view
+from ui.views import ButtonText
+from ui.views.cars import CarsListView
 
 __all__ = ('router',)
 

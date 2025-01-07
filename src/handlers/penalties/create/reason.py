@@ -10,8 +10,8 @@ from enums import PenaltyReason
 from filters import admins_filter
 from repositories import StaffRepository
 from states import PenaltyCreateStates
-from views.base import edit_message_by_view
-from views.penalties import PenaltyCreateConfirmView, penalty_reason_to_name
+from ui.views import edit_message_by_view
+from ui.views import PenaltyCreateConfirmView, penalty_reason_to_name
 
 __all__ = ('router',)
 

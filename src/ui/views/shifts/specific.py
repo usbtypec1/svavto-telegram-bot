@@ -1,10 +1,10 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
 
-from views.base import TextView
+from ui.views.base import TextView
 
 __all__ = ('SpecificShiftPickerView',)
 
-from views.button_texts import ButtonText
+from ui.views.button_texts import ButtonText
 
 
 class SpecificShiftPickerView(TextView):

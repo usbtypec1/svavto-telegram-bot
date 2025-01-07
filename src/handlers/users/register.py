@@ -17,8 +17,8 @@ from services.telegram_events import answer_appropriate_event
 
 __all__ = ('router',)
 
-from views.button_texts import ButtonText
-from views.register import StaffRegisterNotificationView
+from ui.views import ButtonText
+from ui.views import StaffRegisterNotificationView
 
 router = Router(name=__name__)
 

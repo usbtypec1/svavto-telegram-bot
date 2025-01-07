@@ -10,9 +10,9 @@ from exceptions import StaffNotFoundError, StaffAlreadyExistsError
 from filters import admins_filter
 from repositories import StaffRepository
 from services.staff import parse_staff_register_text
-from views.base import send_text_view
-from views.menu import MainMenuView
-from views.register import StaffRegisterAcceptedView, StaffRegisterRejectedView
+from ui.views import send_text_view
+from ui.views import MainMenuView
+from ui.views import StaffRegisterAcceptedView, StaffRegisterRejectedView
 
 __all__ = ('router',)
 

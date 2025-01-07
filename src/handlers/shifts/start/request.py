@@ -7,9 +7,9 @@ from dependencies.repositories import get_shift_repository
 from filters import admins_filter
 from models import ShiftsConfirmation
 from repositories import ShiftRepository
-from views.base import send_text_view
-from views.button_texts import ButtonText
-from views.shifts import ShiftImmediateStartRequestView, ShiftStartConfirmView
+from ui.views import send_text_view
+from ui.views import ButtonText
+from ui.views import ShiftImmediateStartRequestView, ShiftStartConfirmView
 
 __all__ = ('router',)
 

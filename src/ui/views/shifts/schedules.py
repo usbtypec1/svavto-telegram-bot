@@ -20,8 +20,8 @@ from enums import ShiftWorkType
 from models import (
     AvailableDate,
 )
-from views.base import TextView
-from views.button_texts import ButtonText
+from ui.views.base import TextView
+from ui.views.button_texts import ButtonText
 
 __all__ = (
     'ShiftWorkTypeChoiceView',

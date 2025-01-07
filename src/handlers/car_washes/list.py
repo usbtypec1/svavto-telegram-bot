@@ -7,9 +7,9 @@ from callback_data.prefixes import CallbackDataPrefix
 from dependencies.repositories import get_car_wash_repository
 from filters import admins_filter
 from repositories import CarWashRepository
-from views.base import answer_text_view, edit_message_by_view
-from views.button_texts import ButtonText
-from views.car_washes import CarWashListView
+from ui.views import answer_text_view, edit_message_by_view
+from ui.views import ButtonText
+from ui.views import CarWashListView
 
 __all__ = ('router',)
 

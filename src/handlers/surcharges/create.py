@@ -19,11 +19,11 @@ from repositories import EconomicsRepository, StaffRepository
 from services.surcharges import parse_money_amount
 from services.telegram_events import format_reject_text
 from states import SurchargeCreateStates
-from views.admins import AdminMenuView
-from views.base import answer_text_view, edit_message_by_view
-from views.button_texts import ButtonText
-from views.shifts import SpecificShiftPickerView
-from views.surcharges import (
+from ui.views import AdminMenuView
+from ui.views import answer_text_view, edit_message_by_view
+from ui.views import ButtonText
+from ui.views import SpecificShiftPickerView
+from ui.views import (
     SurchargeCreateChooseStaffView,
     SurchargeCreateConfirmView,
     SurchargeCreateInputAmountView,

@@ -14,12 +14,12 @@ from filters import admins_filter
 from repositories import EconomicsRepository, StaffRepository
 from services.telegram_events import format_reject_text
 from states import PenaltyCreateStates
-from views.admins import AdminMenuView
-from views.base import (
+from ui.views import AdminMenuView
+from ui.views import (
     answer_text_view, edit_message_by_view, send_photo_view,
     send_text_view,
 )
-from views.penalties import (
+from ui.views import (
     PenaltyCreateNotificationView,
     PenaltyCreateSuccessView, PhotoCreateWithPhotoNotificationView,
 )

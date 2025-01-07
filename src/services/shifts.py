@@ -7,8 +7,8 @@ from aiogram.exceptions import TelegramAPIError
 from redis.asyncio import Redis
 
 from exceptions import ShiftFinishPhotosCountExceededError
-from views.base import send_text_view
-from views.shifts import ScheduledShiftStartRequestView
+from ui.views import send_text_view
+from ui.views import ScheduledShiftStartRequestView
 
 __all__ = (
     'get_current_shift_date',

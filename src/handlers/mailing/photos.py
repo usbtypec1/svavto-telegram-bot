@@ -7,8 +7,8 @@ from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_text_view
-from views.mailing import (
+from ui.views import answer_text_view
+from ui.views import (
     MailingConfirmView,
     MailingPhotoAcceptedView,
     MailingPhotoAlreadyAcceptedView,

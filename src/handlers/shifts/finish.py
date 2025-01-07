@@ -15,10 +15,10 @@ from services.notifications import SpecificChatsNotificationService
 from services.shifts import ShiftFinishPhotosState
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
-from views.base import answer_media_group_view, answer_photo_view, answer_text_view
-from views.button_texts import ButtonText
-from views.menu import MainMenuView, ShiftMenuView
-from views.shifts import (
+from ui.views import answer_media_group_view, answer_photo_view, answer_text_view
+from ui.views import ButtonText
+from ui.views import MainMenuView, ShiftMenuView
+from ui.views import (
     ShiftFinishConfirmAllView,
     ShiftFinishConfirmView,
     ShiftFinishPhotoConfirmView,

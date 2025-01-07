@@ -21,10 +21,10 @@ from repositories import CarWashRepository, StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftStartStates
-from views.base import answer_text_view, send_text_view
-from views.button_texts import ButtonText
-from views.menu import MainMenuView
-from views.shifts import (
+from ui.views import answer_text_view, send_text_view
+from ui.views import ButtonText
+from ui.views import MainMenuView
+from ui.views import (
     ExtraShiftScheduleNotificationView,
     ExtraShiftScheduleWebAppView,
     ExtraShiftStartView,
