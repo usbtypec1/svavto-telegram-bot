@@ -6,7 +6,7 @@ from aiogram.types import CallbackQuery, Message
 from callback_data import MailingTypeChooseCallbackData
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_text_view, edit_message_by_view
 from views.button_texts import ButtonText
 from views.mailing import MailingTextInputView, MailingTypeChooseView
 
@@ -43,4 +43,4 @@ async def on_show_mailing_types(
 ) -> None:
     view = MailingTypeChooseView()
     await state.set_state(MailingStates.type)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

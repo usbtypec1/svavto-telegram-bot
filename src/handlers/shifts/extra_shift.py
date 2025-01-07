@@ -21,7 +21,7 @@ from repositories import CarWashRepository, StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftStartStates
-from views.base import answer_view, send_view
+from views.base import answer_text_view, send_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView
 from views.shifts import (
@@ -77,7 +77,7 @@ async def on_extra_shift_start(
             )
             return
         view = ShiftStartCarWashChooseView(car_washes)
-        await answer_view(callback_query.message, view)
+        await answer_text_view(callback_query.message, view)
 
 
 @router.callback_query(
@@ -174,7 +174,7 @@ async def on_extra_shift_calendar(
         f' {shift_date:%d.%m.%Y} отправлен на проверку'
     )
     view = MainMenuView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.message(
@@ -184,4 +184,4 @@ async def on_extra_shift_calendar(
 )
 async def on_start_extra_shift(message, config: Config):
     view = ExtraShiftScheduleWebAppView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

@@ -20,7 +20,7 @@ from services.surcharges import parse_money_amount
 from services.telegram_events import format_reject_text
 from states import SurchargeCreateStates
 from views.admins import AdminMenuView
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_text_view, edit_message_by_view
 from views.button_texts import ButtonText
 from views.shifts import SpecificShiftPickerView
 from views.surcharges import (
@@ -51,7 +51,7 @@ async def on_reject_surcharge_creation(
         format_reject_text(callback_query.message),
     )
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.callback_query(
@@ -90,7 +90,7 @@ async def on_accept_surcharge_creation(
     view = SurchargeCreateSuccessView(surcharge, staff)
     await edit_message_by_view(callback_query.message, view)
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -120,7 +120,7 @@ async def on_input_amount_for_surcharge(
     reason: str = state_data['reason']
     staff = await staff_repository.get_by_id(staff_id)
     view = SurchargeCreateConfirmView(staff=staff, reason=reason, amount=amount)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.message(
@@ -136,7 +136,7 @@ async def on_input_reason_for_surcharge(
     await state.update_data(reason=reason)
     await state.set_state(SurchargeCreateStates.amount)
     view = SurchargeCreateInputAmountView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.message(
@@ -158,7 +158,7 @@ async def on_pick_specific_shift(
         text='✅ Смена выбрана',
         reply_markup=ReplyKeyboardRemove(),
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.callback_query(
@@ -178,7 +178,7 @@ async def on_choose_staff_for_surcharge(
         web_app_base_url=config.web_app_base_url,
         staff_id=callback_data.staff_id,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -200,4 +200,4 @@ async def on_start_surcharge_create_flow(
     )
     view = SurchargeCreateChooseStaffView(staff_list.staff)
     await state.set_state(SurchargeCreateStates.staff)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

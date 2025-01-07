@@ -15,7 +15,7 @@ from services.notifications import SpecificChatsNotificationService
 from services.shifts import ShiftFinishPhotosState
 from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
-from views.base import answer_media_group_view, answer_photo_view, answer_view
+from views.base import answer_media_group_view, answer_photo_view, answer_text_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView, ShiftMenuView
 from views.shifts import (
@@ -44,7 +44,7 @@ async def on_new_shift_later(
 ) -> None:
     await message.answer('Хорошо! Возвращаюсь к главному меню.')
     view = MainMenuView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.callback_query(
@@ -104,12 +104,12 @@ async def on_shift_finish_accept(
 
     if shift_finish_result.is_first_shift:
         view = StaffFirstShiftFinishedView()
-        await answer_view(callback_query.message, view)
+        await answer_text_view(callback_query.message, view)
     else:
         view = StaffShiftFinishedView()
-        await answer_view(callback_query.message, view)
+        await answer_text_view(callback_query.message, view)
         view = MainMenuView(config.web_app_base_url)
-        await answer_view(callback_query.message, view)
+        await answer_text_view(callback_query.message, view)
     await callback_query.message.edit_text(
         format_accept_text(callback_query.message),
     )
@@ -182,7 +182,7 @@ async def on_next_step(
         view,
     )
     view = ShiftFinishConfirmAllView()
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -269,7 +269,7 @@ async def on_shift_finish_reject(
         staff_id=callback_query.from_user.id,
         web_app_base_url=config.web_app_base_url,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
     await callback_query.answer(
         text='❗️ Вы отменили завершение смены',
         show_alert=True,
@@ -298,4 +298,4 @@ async def on_shift_finish_confirm(
     await shift_finish_photos_state.clear()
     await shift_repository.get_active(message.from_user.id)
     view = ShiftFinishConfirmView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)

@@ -7,7 +7,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from dependencies.repositories import get_car_wash_repository
 from filters import admins_filter
 from repositories import CarWashRepository
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_text_view, edit_message_by_view
 from views.button_texts import ButtonText
 from views.car_washes import CarWashListView
 
@@ -37,6 +37,6 @@ async def on_show_car_washes_list(
     car_washes = await car_wash_repository.get_all()
     view = CarWashListView(car_washes)
     if isinstance(message_or_callback_query, Message):
-        await answer_view(message_or_callback_query, view)
+        await answer_text_view(message_or_callback_query, view)
     else:
         await edit_message_by_view(message_or_callback_query.message, view)

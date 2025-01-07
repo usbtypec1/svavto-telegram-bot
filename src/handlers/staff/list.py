@@ -9,7 +9,7 @@ from dependencies.repositories import get_staff_repository
 from enums import StaffOrderBy
 from filters import admins_filter
 from repositories import StaffRepository
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_text_view, edit_message_by_view
 from views.button_texts import ButtonText
 from views.staff import StaffListView, StaffMenuView
 
@@ -62,6 +62,6 @@ async def on_show_staff_list(
 ) -> None:
     view = StaffMenuView()
     if isinstance(message_or_callback_query, Message):
-        await answer_view(message_or_callback_query, view)
+        await answer_text_view(message_or_callback_query, view)
     else:
         await edit_message_by_view(message_or_callback_query.message, view)

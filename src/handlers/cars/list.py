@@ -10,7 +10,7 @@ from exceptions import AdditionalServicesCouldNotBeProvidedError
 from filters import admins_filter
 from models import CarAdditionalServices
 from repositories import CarToWashRepository
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.cars import (
     CarAdditionalServicesUpdateView,
@@ -56,7 +56,7 @@ async def on_car_additional_services_edit(
         staff_id=message.from_user.id,
         web_app_base_url=config.web_app_base_url,
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.callback_query(
@@ -73,7 +73,7 @@ async def on_shift_added_car_additional_services_edit(
         car_id=callback_data.car_id,
         web_app_base_url=config.web_app_base_url,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -91,4 +91,4 @@ async def on_shift_added_cars_list(
 ) -> None:
     cars = await car_to_wash_repository.get_all(message.from_user.id)
     view = CarsListForAdditionalServicesView(cars)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

@@ -6,7 +6,7 @@ from fast_depends import Depends, inject
 from dependencies.repositories import get_car_to_wash_repository
 from filters import admins_filter
 from repositories import CarToWashRepository
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.cars import CarsListView
 
@@ -30,4 +30,4 @@ async def on_show_cars_added_on_shift(
 ) -> None:
     cars = await car_to_wash_repository.get_all(message.from_user.id)
     view = CarsListView(cars)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

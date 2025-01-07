@@ -14,7 +14,7 @@ from filters import admins_filter
 from models import Staff
 from repositories import ShiftRepository
 from views.admins import AdminMenuView
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView, RegisterView, ShiftMenuView
 
@@ -29,9 +29,9 @@ router = Router(name=__name__)
 async def on_performer_not_found_error(event: ErrorEvent) -> None:
     view = RegisterView()
     if event.update.message is not None:
-        await answer_view(event.update.message, view)
+        await answer_text_view(event.update.message, view)
     elif event.update.callback_query is not None:
-        await answer_view(event.update.callback_query.message, view)
+        await answer_text_view(event.update.callback_query.message, view)
     else:
         raise event.exception
 
@@ -76,9 +76,9 @@ async def on_show_menu(
                 web_app_base_url=config.web_app_base_url,
             )
     if isinstance(message_or_callback_query, Message):
-        await answer_view(message_or_callback_query, view)
+        await answer_text_view(message_or_callback_query, view)
     else:
-        await answer_view(message_or_callback_query.message, view)
+        await answer_text_view(message_or_callback_query.message, view)
         await message_or_callback_query.message.delete()
 
 
@@ -99,4 +99,4 @@ async def on_show_admin_menu(
 ) -> None:
     await state.clear()
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

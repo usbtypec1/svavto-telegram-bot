@@ -12,7 +12,7 @@ from dependencies.repositories import (
 from exceptions import CarWashSameAsCurrentError
 from filters import admins_filter
 from repositories import CarWashRepository, ShiftRepository
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.menu import ShiftMenuView
 from views.shifts import ShiftCarWashUpdateView
@@ -56,7 +56,7 @@ async def on_shift_car_wash_update(
         staff_id=callback_query.from_user.id,
         web_app_base_url=config.web_app_base_url,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -74,4 +74,4 @@ async def on_show_car_washes_list(
 ) -> None:
     car_washes = await car_wash_repository.get_all()
     view = ShiftCarWashUpdateView(car_washes)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

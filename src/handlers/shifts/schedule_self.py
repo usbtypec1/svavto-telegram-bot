@@ -7,7 +7,7 @@ from dependencies.repositories import get_shift_repository
 from exceptions import StaffHasNoAnyShiftError
 from filters import admins_filter
 from repositories import ShiftRepository
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 
 __all__ = ('router',)
@@ -41,4 +41,4 @@ async def on_show_schedule_self(
         view = StaffHasNoAnyCreatedShiftView()
     else:
         view = StaffScheduleCreatedShiftView(shift_dates)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

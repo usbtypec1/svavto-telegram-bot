@@ -12,7 +12,7 @@ from enums import CarWashAction
 from filters import admins_filter
 from repositories import CarWashRepository
 from states import CarWashRenameStates
-from views.base import edit_message_by_view, answer_view
+from views.base import edit_message_by_view, answer_text_view
 from views.car_washes import (
     CarWashUpdateNameInputView,
     CarWashRenameConfirmView,
@@ -50,7 +50,7 @@ async def on_car_wash_rename_confirmed(
     await callback_query.message.edit_text('✅ Название мойки обновлено')
     car_wash = await car_wash_repository.get_by_id(car_wash_id)
     view = CarWashDetailView(car_wash, config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -71,7 +71,7 @@ async def on_car_wash_name_entered(
         car_wash_id=car_wash_id,
         car_wash_name=car_wash_name,
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.callback_query(

@@ -6,7 +6,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from filters import admins_filter
 from models import SpecificShiftPickResult
 from states import PenaltyCreateStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.penalties import PenaltyCreateChooseReasonView
 
@@ -34,4 +34,4 @@ async def on_pick_specific_shift(
         text='✅ Смена выбрана',
         reply_markup=ReplyKeyboardRemove(),
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)

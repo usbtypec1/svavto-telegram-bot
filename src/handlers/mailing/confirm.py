@@ -20,7 +20,7 @@ from services.notifications import MailingService
 from services.telegram_events import format_accept_text
 from states import MailingStates
 from views.admins import AdminMenuView
-from views.base import answer_view
+from views.base import answer_text_view
 
 __all__ = ('router',)
 
@@ -94,4 +94,4 @@ async def on_confirm_mailing(
         format_accept_text(callback_query.message),
     )
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)

@@ -15,7 +15,7 @@ from dependencies.repositories import (
 from filters import admins_filter
 from repositories import CarWashRepository, ShiftRepository
 from states import ShiftStartStates
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_text_view, edit_message_by_view
 from views.menu import ShiftMenuView
 from views.shifts import ShiftStartCarWashChooseView
 
@@ -91,4 +91,4 @@ async def on_start_shift_car_wash(
         staff_id=callback_query.from_user.id,
         web_app_base_url=config.web_app_base_url,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)

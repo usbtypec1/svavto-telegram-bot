@@ -15,7 +15,7 @@ from dependencies.repositories import (
 from filters import admins_filter
 from repositories import AvailableDateRepository, ShiftRepository
 from services.notifications import SpecificChatsNotificationService
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.menu import MainMenuView
 from views.shifts import (
@@ -59,7 +59,7 @@ async def on_shift_schedule_month_calendar_input(
     )
     await message.answer('✅ График успешно отправлен')
     view = MainMenuView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
     view = StaffShiftScheduleCreatedNotificationView(
         staff_full_name=shift_create_result.staff_full_name,
     )
@@ -102,7 +102,7 @@ async def on_choose_month_apply_to_shift(
         year=callback_data.year,
         month=callback_data.month,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
     await callback_query.message.delete()
 
 
@@ -125,4 +125,4 @@ async def on_shift_apply(
         available_dates=available_dates,
         timezone=config.timezone,
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)

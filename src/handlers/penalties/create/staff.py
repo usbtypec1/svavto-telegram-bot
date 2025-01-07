@@ -11,7 +11,7 @@ from enums import StaffOrderBy
 from filters import admins_filter
 from repositories import StaffRepository
 from states import PenaltyCreateStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.penalties import PenaltyCreateChooseStaffView
 from views.shifts import SpecificShiftPickerView
@@ -38,7 +38,7 @@ async def on_choose_staff_for_penalty(
         web_app_base_url=config.web_app_base_url,
         staff_id=callback_data.staff_id,
     )
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -60,4 +60,4 @@ async def on_start_penalty_create_flow(
     )
     view = PenaltyCreateChooseStaffView(staff_list.staff)
     await state.set_state(PenaltyCreateStates.staff)
-    await answer_view(message, view)
+    await answer_text_view(message, view)

@@ -5,7 +5,7 @@ from aiogram.types import Message
 from config import Config
 from filters import admins_filter
 from views.admins import AdminOtherMenuView
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.reports import ReportsMenuView
 
@@ -24,7 +24,7 @@ async def on_other(
         config: Config,
 ) -> None:
     view = AdminOtherMenuView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.message(
@@ -37,4 +37,4 @@ async def on_show_reports(message: Message, config: Config) -> None:
         staff_revenue_report_table_url=config.staff_revenue_report_table_url,
         service_costs_report_table_url=config.service_costs_report_table_url,
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)

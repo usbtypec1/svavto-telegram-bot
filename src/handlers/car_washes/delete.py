@@ -11,7 +11,7 @@ from enums import CarWashAction
 from filters import admins_filter
 from repositories import CarWashRepository
 from states import CarWashDeleteStates
-from views.base import answer_view, edit_message_by_view
+from views.base import answer_text_view, edit_message_by_view
 from views.car_washes import CarWashListView, CarWashDeleteConfirmView
 
 __all__ = ('router',)
@@ -40,7 +40,7 @@ async def on_car_wash_delete_confirm(
     await callback_query.message.edit_text('❗️ Мойка удалена')
     car_washes = await car_wash_repository.get_all()
     view = CarWashListView(car_washes)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.callback_query(

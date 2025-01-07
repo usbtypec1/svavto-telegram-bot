@@ -9,7 +9,7 @@ from dependencies.repositories import get_staff_repository
 from filters import admins_filter
 from repositories import StaffRepository
 from states import PenaltyCreateStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.penalties import PenaltyCreateConfirmView
 
 __all__ = ('router',)
@@ -46,7 +46,7 @@ async def on_skip_penalty_photo(
         amount=amount,
     )
     await callback_query.message.edit_text('📸 Фото штрафа пропущено')
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -79,4 +79,4 @@ async def on_input_penalty_photo(
         reason=reason,
         amount=amount,
     )
-    await answer_view(message, view)
+    await answer_text_view(message, view)

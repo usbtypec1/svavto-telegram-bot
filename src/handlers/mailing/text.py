@@ -7,7 +7,7 @@ from config import Config
 from enums import MailingType
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.mailing import (
     MailingPhotoInputView,
@@ -39,7 +39,7 @@ async def on_input_text(
     else:
         await state.set_state(MailingStates.photos)
         view = MailingPhotoInputView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.callback_query(
@@ -53,4 +53,4 @@ async def on_start_mailing_to_all_flow(
 ) -> None:
     await state.set_state(MailingStates.text)
     view = MailingTextInputView()
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)

@@ -9,7 +9,7 @@ from dependencies.repositories import get_car_wash_repository
 from filters import admins_filter
 from repositories import CarWashRepository
 from states import CarWashCreateStates
-from views.base import edit_message_by_view, answer_view
+from views.base import edit_message_by_view, answer_text_view
 from views.car_washes import CarWashCreateNameInputView, CarWashCreateConfirmView, \
     CarWashListView
 
@@ -39,7 +39,7 @@ async def on_car_wash_create_confirmed(
     await callback_query.message.edit_text('✅ Мойка добавлена')
     car_washes = await car_wash_repository.get_all()
     view = CarWashListView(car_washes)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.message(
@@ -54,7 +54,7 @@ async def on_car_wash_name_entered(
     await state.set_state(CarWashCreateStates.confirm)
     await state.update_data(car_wash_name=car_wash_name)
     view = CarWashCreateConfirmView(car_wash_name)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.callback_query(

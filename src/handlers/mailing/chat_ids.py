@@ -7,7 +7,7 @@ from aiogram.types import Message
 
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.mailing import MailingPhotoInputView
 
@@ -29,4 +29,4 @@ async def on_show_chat_ids(
     await state.update_data(chat_ids=chat_ids)
     await state.set_state(MailingStates.photos)
     view = MailingPhotoInputView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)

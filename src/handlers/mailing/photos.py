@@ -7,7 +7,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from filters import admins_filter
 from states import MailingStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.mailing import (
     MailingConfirmView,
     MailingPhotoAcceptedView,
@@ -47,7 +47,7 @@ async def on_mailing_photo_accept_finish(
     else:
         await state.set_state(MailingStates.reply_markup)
         view = MailingReplyMarkupWebAppView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
     if message_ids_to_remove:
         await bot.delete_messages(
@@ -77,7 +77,7 @@ async def on_input_photo(
         view = MailingPhotoAcceptedView()
     else:
         view = MailingPhotoAlreadyAcceptedView()
-    sent_message = await answer_view(message, view)
+    sent_message = await answer_text_view(message, view)
     message_ids_to_remove.append(sent_message.message_id)
     await state.update_data(
         photo_file_ids=photo_file_ids,

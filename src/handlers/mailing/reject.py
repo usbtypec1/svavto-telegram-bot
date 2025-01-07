@@ -9,7 +9,7 @@ from filters import admins_filter
 from services.telegram_events import format_reject_text
 from states import MailingStates
 from views.admins import AdminMenuView
-from views.base import answer_view
+from views.base import answer_text_view
 
 __all__ = ('router',)
 
@@ -31,4 +31,4 @@ async def on_reject_mailing(
         format_reject_text(callback_query.message),
     )
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)

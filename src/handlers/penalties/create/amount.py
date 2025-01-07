@@ -6,7 +6,7 @@ from aiogram.types import Message
 from filters import admins_filter
 from services.validators import parse_integer_number
 from states import PenaltyCreateStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.penalties import PenaltyPhotoInputView
 
 __all__ = ('router',)
@@ -27,4 +27,4 @@ async def on_input_amount_for_penalty(
     await state.update_data(amount=amount)
     await state.set_state(PenaltyCreateStates.photo)
     view = PenaltyPhotoInputView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)

@@ -18,7 +18,7 @@ from models import Staff
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
 from services.shifts import ShiftStartRequestSender, get_current_shift_date
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.shifts import (
     ShiftWorkTypeChoiceView,
@@ -117,4 +117,4 @@ async def on_shift_work_type_choice(callback_query: CallbackQuery) -> None:
 async def on_show_shift_work_types_list(
         message: Message,
 ) -> None:
-    await answer_view(message, ShiftWorkTypeChoiceView())
+    await answer_text_view(message, ShiftWorkTypeChoiceView())

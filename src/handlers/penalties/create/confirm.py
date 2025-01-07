@@ -16,7 +16,7 @@ from services.telegram_events import format_reject_text
 from states import PenaltyCreateStates
 from views.admins import AdminMenuView
 from views.base import (
-    answer_view, edit_message_by_view, send_photo_view,
+    answer_text_view, edit_message_by_view, send_photo_view,
     send_view,
 )
 from views.penalties import (
@@ -44,7 +44,7 @@ async def on_reject_penalty_creation(
         format_reject_text(callback_query.message),
     )
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
 
 @router.callback_query(
@@ -86,7 +86,7 @@ async def on_accept_penalty_creation(
     await edit_message_by_view(callback_query.message, view)
 
     view = AdminMenuView(config.web_app_base_url)
-    await answer_view(callback_query.message, view)
+    await answer_text_view(callback_query.message, view)
 
     if photo_file_id is None:
         view = PenaltyCreateNotificationView(

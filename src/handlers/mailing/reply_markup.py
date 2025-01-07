@@ -8,7 +8,7 @@ from models import MailingParams
 from services.mailing import render_message_for_mailing
 from services.telegram_events import parse_web_app_data_buttons
 from states import MailingStates
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 from views.mailing import MailingConfirmView
 
@@ -38,7 +38,7 @@ async def on_skip_reply_markup(
     await state.update_data(reply_markup=None)
     await state.set_state(MailingStates.confirm)
     view = MailingConfirmView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)
 
 
 @router.message(
@@ -62,4 +62,4 @@ async def on_input_reply_markup(
     await state.update_data(reply_markup=markup.model_dump_json())
     await state.set_state(MailingStates.confirm)
     view = MailingConfirmView()
-    await answer_view(message, view)
+    await answer_text_view(message, view)

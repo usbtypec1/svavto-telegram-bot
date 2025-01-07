@@ -11,7 +11,7 @@ from aiogram.utils.media_group import MediaGroupBuilder, MediaType
 __all__ = (
     'ReplyMarkup',
     'TextView',
-    'answer_view',
+    'answer_text_view',
     'edit_message_by_view',
     'answer_or_edit_message_by_view',
     'send_view',
@@ -78,7 +78,7 @@ class MediaGroupView:
         return self.reply_markup
 
 
-async def answer_view(message: Message, view: TextView) -> Message:
+async def answer_text_view(message: Message, view: TextView) -> Message:
     return await message.answer(
         text=view.get_text(),
         reply_markup=view.get_reply_markup(),
@@ -114,7 +114,7 @@ async def answer_or_edit_message_by_view(
         view: TextView,
 ) -> Message:
     if isinstance(message_or_callback_query, Message):
-        return await answer_view(message_or_callback_query, view)
+        return await answer_text_view(message_or_callback_query, view)
     return await edit_message_by_view(message_or_callback_query.message, view)
 
 

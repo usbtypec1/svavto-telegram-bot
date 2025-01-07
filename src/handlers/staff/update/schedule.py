@@ -5,7 +5,7 @@ from aiogram.types import Message
 from config import Config
 from filters import admins_filter
 from views.admins import AdminShiftsMenuView
-from views.base import answer_view
+from views.base import answer_text_view
 from views.button_texts import ButtonText
 
 __all__ = ('router',)
@@ -23,4 +23,4 @@ async def on_show_staff_list(
         config: Config,
 ) -> None:
     view = AdminShiftsMenuView(config.web_app_base_url)
-    await answer_view(message, view)
+    await answer_text_view(message, view)
