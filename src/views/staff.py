@@ -9,6 +9,7 @@ from callback_data import (
 from callback_data.prefixes import CallbackDataPrefix
 from enums import StaffUpdateAction
 from models import Staff, StaffListPage
+from ui.buttons import create_back_button
 from views.base import TextView
 
 __all__ = ('StaffListView', 'StaffDetailView', 'StaffMenuView')
@@ -103,12 +104,10 @@ class StaffListView(TextView):
             keyboard.row(*pagination_buttons_row)
 
         keyboard.row(
-            InlineKeyboardButton(
-                text='🔙 Назад',
+            create_back_button(
                 callback_data=CallbackDataPrefix.STAFF_LIST,
             ),
         )
-
         return keyboard.as_markup()
 
 
@@ -178,13 +177,14 @@ class StaffDetailView(TextView):
                 url=f'{self.__web_app_base_url}/penalties/{self.__staff.id}',
             ),
         )
-        keyboard.button(
-            text='🔙 Назад',
-            callback_data=StaffListCallbackData(
-                include_banned=self.__include_banned,
-                limit=self.__limit,
-                offset=self.__offset,
-            ),
+        keyboard.row(
+            create_back_button(
+                callback_data=StaffListCallbackData(
+                    include_banned=self.__include_banned,
+                    limit=self.__limit,
+                    offset=self.__offset,
+                ),
+            )
         )
 
         return keyboard.as_markup()

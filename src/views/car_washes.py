@@ -7,7 +7,8 @@ from callback_data import CarWashActionCallbackData, CarWashDetailCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from enums import CarWashAction
 from models import CarWash
-from ui.buttons import create_accept_button
+from ui.buttons import create_accept_button, create_back_button
+from ui.markups import create_accept_and_back_markup
 from views.base import TextView
 
 __all__ = (
@@ -54,8 +55,7 @@ class CarWashCreateNameInputView(TextView):
     text = '✍️ Введите название мойки'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        back_button = InlineKeyboardButton(
-            text='🔙 Назад',
+        back_button = create_back_button(
             callback_data=CallbackDataPrefix.CAR_WASH_LIST,
         )
         return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
@@ -68,28 +68,18 @@ class CarWashUpdateNameInputView(TextView):
         self.__car_wash_id = car_wash_id
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        back_button = InlineKeyboardButton(
-            text='🔙 Назад',
+        back_button = create_back_button(
             callback_data=CarWashDetailCallbackData(
                 car_wash_id=self.__car_wash_id,
-            ).pack(),
+            ),
         )
         return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
 
 
 class CarWashCreateConfirmView(TextView):
-    reply_markup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='🔙 Назад',
-                    callback_data=CallbackDataPrefix.CAR_WASH_CREATE,
-                ),
-                create_accept_button(
-                    callback_data=CallbackDataPrefix.CAR_WASH_CREATE_CONFIRM,
-                ),
-            ],
-        ]
+    reply_markup = create_accept_and_back_markup(
+        accept_callback_data=CallbackDataPrefix.CAR_WASH_CREATE_CONFIRM,
+        back_callback_data=CallbackDataPrefix.CAR_WASH_CREATE,
     )
 
     def __init__(self, car_wash_name: str):
@@ -114,8 +104,7 @@ class CarWashDetailView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        car_washes_list_button = InlineKeyboardButton(
-            text='🔙 Назад',
+        car_washes_list_button = create_back_button(
             callback_data=CallbackDataPrefix.CAR_WASH_LIST,
         )
         rename_button = InlineKeyboardButton(
@@ -167,21 +156,12 @@ class CarWashRenameConfirmView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        back_button = InlineKeyboardButton(
-            text='🔙 Назад',
-            callback_data=CarWashActionCallbackData(
+        return create_accept_and_back_markup(
+            accept_callback_data=CallbackDataPrefix.CAR_WASH_UPDATE_CONFIRM,
+            back_callback_data=CarWashActionCallbackData(
                 car_wash_id=self.__car_wash_id,
                 action=CarWashAction.RENAME,
-            ).pack(),
-        )
-        confirm_button = create_accept_button(
-            callback_data=CallbackDataPrefix.CAR_WASH_UPDATE_CONFIRM,
-        )
-
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [back_button, confirm_button],
-            ],
+            ),
         )
 
 
@@ -192,15 +172,9 @@ class CarWashDeleteConfirmView(TextView):
         self.__car_wash_id = car_wash_id
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        back_button = InlineKeyboardButton(
-            text='🔙 Назад',
-            callback_data=CarWashDetailCallbackData(
+        return create_accept_and_back_markup(
+            accept_callback_data=CallbackDataPrefix.CAR_WASH_DELETE_CONFIRM,
+            back_callback_data=CarWashDetailCallbackData(
                 car_wash_id=self.__car_wash_id,
-            ).pack(),
-        )
-        confirm_button = create_accept_button(
-            callback_data=CallbackDataPrefix.CAR_WASH_DELETE_CONFIRM,
-        )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[back_button, confirm_button]],
+            ),
         )
