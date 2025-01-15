@@ -20,34 +20,12 @@ __all__ = (
     'ShiftImmediateStartRequestView',
     'ExtraShiftStartView',
     'ShiftStartConfirmView',
-    'ScheduledShiftStartRequestView',
 )
 
 
 class HasIdAndDate(Protocol):
     id: int
     date: datetime.date
-
-
-class ScheduledShiftStartRequestView(TextView):
-
-    def __init__(self, *, shift: HasIdAndDate):
-        self.__shift = shift
-
-    def get_text(self) -> str:
-        return f'🚀 Начните смену на дату: {self.__shift.date:%d.%m.%Y}'
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        accept_callback_data = ShiftStartRequestAcceptCallbackData(
-            shift_id=self.__shift.id,
-        )
-        reject_callback_data = ShiftStartRequestRejectCallbackData(
-            shift_id=self.__shift.id,
-        )
-        return ui.markups.create_accept_reject_markup(
-            accept_callback_data=accept_callback_data,
-            reject_callback_data=reject_callback_data,
-        )
 
 
 class StaffReadyToStartShiftRequestView(TextView):
