@@ -56,6 +56,18 @@ class Pagination(BaseModel):
     def next_offset(self) -> int:
         return self.offset + self.limit
 
+    @property
+    def page_number(self) -> int:
+        return self.offset // self.limit + 1
+
+    @property
+    def next_page_number(self) -> int:
+        return self.page_number + 1
+
+    @property
+    def previous_page_number(self) -> int:
+        return self.page_number - 1
+
 
 class StaffListPage(BaseModel):
     staff: list[Staff]

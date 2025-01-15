@@ -21,7 +21,7 @@ class StaffMenuView(TextView):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text='Все сотрудники',
+                    text='👥 Все сотрудники',
                     callback_data=StaffListCallbackData(
                         include_banned=True,
                         limit=10,
@@ -31,7 +31,7 @@ class StaffMenuView(TextView):
             ],
             [
                 InlineKeyboardButton(
-                    text='Только активные',
+                    text='🌟 Только активные',
                     callback_data=StaffListCallbackData(
                         include_banned=False,
                         limit=10,
@@ -79,11 +79,11 @@ class StaffListView(TextView):
         if not pagination.is_first_page:
             pagination_buttons_row.append(
                 InlineKeyboardButton(
-                    text='Предыдущая',
+                    text=f'← Страница {pagination.previous_page_number}',
                     callback_data=StaffListCallbackData(
                         include_banned=self.__include_banned,
                         limit=pagination.limit,
-                        offset=pagination.next_offset,
+                        offset=pagination.previous_offset,
                     ).pack(),
                 ),
             )
@@ -91,11 +91,11 @@ class StaffListView(TextView):
         if not pagination.is_last_page:
             pagination_buttons_row.append(
                 InlineKeyboardButton(
-                    text='Следующая',
+                    text=f'Страница {pagination.next_page_number} →',
                     callback_data=StaffListCallbackData(
                         include_banned=self.__include_banned,
                         limit=pagination.limit,
-                        offset=pagination.previous_offset,
+                        offset=pagination.next_offset,
                     ).pack(),
                 ),
             )
