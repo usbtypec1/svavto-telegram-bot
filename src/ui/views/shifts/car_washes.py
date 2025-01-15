@@ -35,7 +35,7 @@ class ShiftCarWashUpdateView(TextView):
 
 
 class ShiftStartCarWashChooseView(TextView):
-    text = 'Выберите мойку'
+    text = '🚗 Для начала работы выберите мойку'
 
     def __init__(self, car_washes: Iterable[CarWash]):
         self.__car_washes = tuple(car_washes)

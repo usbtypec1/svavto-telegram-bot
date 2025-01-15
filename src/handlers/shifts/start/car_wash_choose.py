@@ -12,7 +12,7 @@ from dependencies.repositories import (
     get_car_wash_repository,
     get_shift_repository,
 )
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from repositories import CarWashRepository, ShiftRepository
 from states import ShiftStartStates
 from ui.views import answer_text_view, edit_message_by_view
@@ -26,7 +26,7 @@ router = Router(name=__name__)
 
 @router.callback_query(
     ShiftStartCallbackData.filter(),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
@@ -54,7 +54,7 @@ async def on_start_shift(
 
 @router.callback_query(
     ShiftStartCarWashCallbackData.filter(),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter(ShiftStartStates.car_wash),
 )
 @inject
