@@ -14,7 +14,7 @@ class ShiftCarsWithoutWindshieldWasherView(TextView):
 
     def get_text(self) -> str:
         lines: list[str] = [
-            f'<b>Смена {self.__shift_cars.date:%d.%m.%Y}</b>',
+            f'<b>💧 Недоливы. Смена {self.__shift_cars.date:%d.%m.%Y}</b>',
         ]
         if not self.__shift_cars.cars:
             lines.append('Пока нет авто с недоливами')
