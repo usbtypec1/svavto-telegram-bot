@@ -1,10 +1,23 @@
 [telegram_bot]
-token = "your bot token"
+token = ""
 
 [app]
-main_chat_id = -1002413313371
+main_chat_id = -1002345234324
 api_base_url = "http://127.0.0.1:8000"
-timezone = "Asia/Bishkek"
+timezone = "Europe/Moscow"
+admin_user_ids_ttl_in_seconds = 300
 
 [web_app]
-base_url = "web app base url"
+base_url = ""
+
+[reports]
+staff_revenue_report_table_url = ""
+service_costs_report_table_url = ""
+
+[sentry]
+is_enabled = false
+dsn = ""
+traces_sample_rate = 1.0
+
+[redis]
+url = "redis://127.0.0.1:6379/0"
