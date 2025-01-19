@@ -102,13 +102,6 @@ def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
         f'Долив: {shift_summary.refilled_cars_count}',
         f'Недолив: {shift_summary.not_refilled_cars_count}',
     ]
-
-    if shift_summary.car_numbers:
-        lines.append('🚗 Список добавленных машин:')
-
-    for car_number in shift_summary.car_numbers:
-        lines.append(car_number)
-
     return '\n'.join(lines)
 
 
