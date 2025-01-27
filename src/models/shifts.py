@@ -2,8 +2,8 @@ import datetime
 
 from pydantic import BaseModel
 
-from models.staff import Staff
 from models.car_washes import CarWash
+from models.staff import Staff
 
 __all__ = (
     'ShiftFinishResult',
@@ -15,15 +15,13 @@ __all__ = (
     'DirectShiftWebAppData',
     'SpecificShiftPickResult',
     'ShiftWithCarWashAndStaff',
+    'ShiftFinishCarWashSummary',
 )
 
 
-class ShiftFinishResult(BaseModel):
-    shift_id: int
-    is_first_shift: bool
-    staff_full_name: str
-    car_numbers: list[str]
-    car_wash_name: str | None
+class ShiftFinishCarWashSummary(BaseModel):
+    car_wash_id: int
+    car_wash_name: str
     comfort_cars_count: int
     business_cars_count: int
     vans_count: int
@@ -33,6 +31,14 @@ class ShiftFinishResult(BaseModel):
     total_cars_count: int
     refilled_cars_count: int
     not_refilled_cars_count: int
+
+
+class ShiftFinishResult(BaseModel):
+    shift_id: int
+    is_first_shift: bool
+    staff_id: int
+    staff_full_name: str
+    car_washes: list[ShiftFinishCarWashSummary]
     finish_photo_file_ids: list[str]
 
 

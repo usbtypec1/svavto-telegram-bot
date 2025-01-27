@@ -11,7 +11,7 @@ from aiogram.utils.media_group import MediaType
 
 import ui.markups
 from callback_data.prefixes import CallbackDataPrefix
-from models import ShiftFinishResult
+from models import ShiftFinishCarWashSummary, ShiftFinishResult
 from ui.views.base import MediaGroupView, TextView, PhotoView
 from ui.views.button_texts import ButtonText
 
@@ -25,6 +25,7 @@ __all__ = (
     'StaffFirstShiftFinishedView',
     'ShiftFinishedWithoutPhotosView',
     'format_shift_finish_text',
+    'format_shift_car_wash_finish_summary',
 )
 
 
@@ -88,20 +89,27 @@ class ShiftFinishConfirmAllView(TextView):
     )
 
 
+def format_shift_car_wash_finish_summary(
+        car_wash_summary: ShiftFinishCarWashSummary,
+) -> str:
+    return (
+        f'\nМойка: {car_wash_summary.car_wash_name}'
+        f'\nВсего: {car_wash_summary.total_cars_count}'
+        f'\nПлановая мойка: {car_wash_summary.planned_cars_count}'
+        f'\n🔶 Комфорт: {car_wash_summary.comfort_cars_count}'
+        f'\n🔶 Бизнес: {car_wash_summary.business_cars_count}'
+        f'\n🔶 Фургон: {car_wash_summary.vans_count}'
+        f'\nСрочная мойка: {car_wash_summary.urgent_cars_count}'
+        f'\nХимчистки: {car_wash_summary.dry_cleaning_count}'
+        f'\nДолив: {car_wash_summary.refilled_cars_count}'
+        f'\nНедолив: {car_wash_summary.not_refilled_cars_count}'
+    )
+
+
 def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
-    lines: list[str] = [
-        f'Перегонщик: {shift_summary.staff_full_name}',
-        f'Мойка: {shift_summary.car_wash_name or "неизвестно"}',
-        f'Всего: {shift_summary.total_cars_count}',
-        f'Плановая мойка: {shift_summary.planned_cars_count}',
-        f'🔶 Комфорт: {shift_summary.planned_cars_count}',
-        f'🔶 Бизнес: {shift_summary.business_cars_count}',
-        f'🔶 Фургон: {shift_summary.vans_count}',
-        f'Срочная мойка: {shift_summary.urgent_cars_count}',
-        f'Химчистки: {shift_summary.dry_cleaning_count}',
-        f'Долив: {shift_summary.refilled_cars_count}',
-        f'Недолив: {shift_summary.not_refilled_cars_count}',
-    ]
+    lines: list[str] = [f'Перегонщик: {shift_summary.staff_full_name}']
+    for car_wash_summary in shift_summary.car_washes:
+        lines.append(format_shift_car_wash_finish_summary(car_wash_summary))
     return '\n'.join(lines)
 
 
