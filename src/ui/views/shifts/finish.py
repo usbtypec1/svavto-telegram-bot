@@ -95,10 +95,10 @@ def format_shift_car_wash_finish_summary(
     return (
         f'\nМойка: {car_wash_summary.car_wash_name}'
         f'\nВсего: {car_wash_summary.total_cars_count}'
-        f'\nПлановая мойка: {car_wash_summary.planned_cars_count}'
         f'\n🔶 Комфорт: {car_wash_summary.comfort_cars_count}'
         f'\n🔶 Бизнес: {car_wash_summary.business_cars_count}'
         f'\n🔶 Фургон: {car_wash_summary.vans_count}'
+        f'\nПлановая мойка: {car_wash_summary.planned_cars_count}'
         f'\nСрочная мойка: {car_wash_summary.urgent_cars_count}'
         f'\nХимчистки: {car_wash_summary.dry_cleaning_count}'
         f'\nДолив: {car_wash_summary.refilled_cars_count}'
