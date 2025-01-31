@@ -110,6 +110,8 @@ def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
     lines: list[str] = [f'Перегонщик: {shift_summary.staff_full_name}']
     for car_wash_summary in shift_summary.car_washes:
         lines.append(format_shift_car_wash_finish_summary(car_wash_summary))
+    if not shift_summary.car_washes:
+        lines.append('\nНет добавленных авто')
     return '\n'.join(lines)
 
 
