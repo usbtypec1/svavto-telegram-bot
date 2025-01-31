@@ -5,6 +5,7 @@ import redis.asyncio as redis
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (
     BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat,
@@ -54,15 +55,19 @@ async def setup_commands(bot: Bot, admin_chat_ids: Iterable[int]) -> None:
     )
 
     for chat_id in admin_chat_ids:
-        await bot.set_my_commands(
-            commands=[
-                BotCommand(
-                    command='start',
-                    description='Меню старшего смены',
-                ),
-            ],
-            scope=BotCommandScopeChat(chat_id=chat_id)
-        )
+        try:
+            await bot.set_my_commands(
+                commands=[
+                    BotCommand(
+                        command='start',
+                        description='Меню старшего смены',
+                    ),
+                ],
+                scope=BotCommandScopeChat(chat_id=chat_id)
+            )
+        except TelegramAPIError as error:
+            if 'Bad Request: chat not found' in error.message:
+                pass
 
 
 @inject
