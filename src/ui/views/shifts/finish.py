@@ -32,7 +32,7 @@ __all__ = (
 class ShiftFinishConfirmView(TextView):
     text = 'Подтверждаете завершение смены?'
     reply_markup = ui.markups.create_confirm_reject_markup(
-        accept_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
+        confirm_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
         reject_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_REJECT,
     )
 
@@ -84,7 +84,7 @@ class ShiftFinishPhotosView(MediaGroupView):
 class ShiftFinishConfirmAllView(TextView):
     text = 'Подтверждаете завершение смены?'
     reply_markup = ui.markups.create_confirm_reject_markup(
-        accept_callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
+        confirm_callback_data=CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
         reject_callback_data=CallbackDataPrefix.SHIFT_FINISH_REJECT,
     )
 

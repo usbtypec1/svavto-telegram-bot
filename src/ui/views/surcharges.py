@@ -56,7 +56,7 @@ class SurchargeCreateInputAmountView(TextView):
 
 class SurchargeCreateConfirmView(TextView):
     reply_markup = create_confirm_reject_markup(
-        accept_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_ACCEPT,
+        confirm_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_ACCEPT,
         reject_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_REJECT,
     )
 

@@ -239,7 +239,7 @@ class ExtraShiftScheduleNotificationView(TextView):
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         return ui.markups.create_confirm_reject_markup(
-            accept_callback_data=ExtraShiftCreateAcceptCallbackData(
+            confirm_callback_data=ExtraShiftCreateAcceptCallbackData(
                 staff_id=self.__staff_id,
                 date=self.__shift_date.isoformat(),
             ),

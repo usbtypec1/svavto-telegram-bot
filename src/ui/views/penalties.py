@@ -47,7 +47,7 @@ class PenaltyCreateInputOtherReasonView(TextView):
 
 class PenaltyCreateConfirmView(TextView):
     reply_markup = create_confirm_reject_markup(
-        accept_callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
+        confirm_callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
         reject_callback_data=CallbackDataPrefix.PENALTY_CREATE_REJECT,
     )
 
