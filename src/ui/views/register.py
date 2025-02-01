@@ -5,7 +5,7 @@ from aiogram.types import (
 
 from callback_data.prefixes import CallbackDataPrefix
 from models import StaffToRegister
-from ui.markups import create_confirm_reject_markup
+from ui.markups import create_accept_reject_markup
 from ui.views.base import TextView
 from ui.views.button_texts import ButtonText
 
@@ -35,6 +35,10 @@ class StaffRegisterView(TextView):
 
 
 class StaffRegisterNotificationView(TextView):
+    reply_markup = create_accept_reject_markup(
+        accept_callback_data=CallbackDataPrefix.STAFF_REGISTER_ACCEPT,
+        reject_callback_data=CallbackDataPrefix.STAFF_REGISTER_REJECT,
+    )
 
     def __init__(self, staff: StaffToRegister, staff_id: int):
         self.__staff = staff
@@ -49,21 +53,6 @@ class StaffRegisterNotificationView(TextView):
             f' {self.__staff.car_sharing_phone_number}\n'
             '<b>📲 Номер телефона в компании Консоль:</b>'
             f' {self.__staff.console_phone_number}'
-        )
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        accept_button = InlineKeyboardButton(
-            text='✅ Зарегистрировать',
-            callback_data=CallbackDataPrefix.STAFF_REGISTER_ACCEPT,
-        )
-        reject_button = InlineKeyboardButton(
-            text='❌ Отклонить',
-            callback_data=CallbackDataPrefix.STAFF_REGISTER_REJECT,
-        )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [reject_button, accept_button],
-            ],
         )
 
 
