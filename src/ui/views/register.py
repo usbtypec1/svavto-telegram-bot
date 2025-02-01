@@ -5,6 +5,7 @@ from aiogram.types import (
 
 from callback_data.prefixes import CallbackDataPrefix
 from models import StaffToRegister
+from ui.markups import create_confirm_reject_markup
 from ui.views.base import TextView
 from ui.views.button_texts import ButtonText
 

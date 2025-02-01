@@ -77,7 +77,7 @@ class CarWashUpdateNameInputView(TextView):
 
 
 class CarWashCreateConfirmView(TextView):
-    reply_markup = ui.markups.create_accept_and_back_markup(
+    reply_markup = ui.markups.create_confirm_and_back_markup(
         accept_callback_data=CallbackDataPrefix.CAR_WASH_CREATE_CONFIRM,
         back_callback_data=CallbackDataPrefix.CAR_WASH_CREATE,
     )
@@ -156,7 +156,7 @@ class CarWashRenameConfirmView(TextView):
         )
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return ui.markups.create_accept_and_back_markup(
+        return ui.markups.create_confirm_and_back_markup(
             accept_callback_data=CallbackDataPrefix.CAR_WASH_UPDATE_CONFIRM,
             back_callback_data=CarWashActionCallbackData(
                 car_wash_id=self.__car_wash_id,
@@ -172,7 +172,7 @@ class CarWashDeleteConfirmView(TextView):
         self.__car_wash_id = car_wash_id
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return ui.markups.create_accept_and_back_markup(
+        return ui.markups.create_confirm_and_back_markup(
             accept_callback_data=CallbackDataPrefix.CAR_WASH_DELETE_CONFIRM,
             back_callback_data=CarWashDetailCallbackData(
                 car_wash_id=self.__car_wash_id,

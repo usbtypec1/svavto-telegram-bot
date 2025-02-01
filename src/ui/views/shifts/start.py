@@ -47,7 +47,7 @@ class StaffReadyToStartShiftRequestView(TextView):
         reject_callback_data = ShiftStartRequestRejectCallbackData(
             shift_id=self.__shift.id,
         )
-        return ui.markups.create_accept_reject_markup(
+        return ui.markups.create_confirm_reject_markup(
             accept_callback_data=accept_callback_data,
             reject_callback_data=reject_callback_data,
         )
@@ -109,7 +109,7 @@ class ShiftStartConfirmView(TextView):
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         accept_callback_data = ShiftStartCallbackData(shift_id=self.__shift_id)
         reject_callback_data = ShiftRejectCallbackData(shift_id=self.__shift_id)
-        return ui.markups.create_accept_reject_markup(
+        return ui.markups.create_confirm_reject_markup(
             accept_callback_data=accept_callback_data,
             reject_callback_data=reject_callback_data,
         )

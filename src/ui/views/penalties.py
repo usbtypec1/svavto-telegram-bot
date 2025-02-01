@@ -15,7 +15,7 @@ from callback_data import (
 from callback_data.prefixes import CallbackDataPrefix
 from enums import PenaltyConsequence, PenaltyReason
 from models import Penalty, Staff
-from ui.markups import create_accept_reject_markup
+from ui.markups import create_confirm_reject_markup
 from ui.views.base import PhotoView, TextView
 
 __all__ = (
@@ -46,7 +46,7 @@ class PenaltyCreateInputOtherReasonView(TextView):
 
 
 class PenaltyCreateConfirmView(TextView):
-    reply_markup = create_accept_reject_markup(
+    reply_markup = create_confirm_reject_markup(
         accept_callback_data=CallbackDataPrefix.PENALTY_CREATE_ACCEPT,
         reject_callback_data=CallbackDataPrefix.PENALTY_CREATE_REJECT,
     )

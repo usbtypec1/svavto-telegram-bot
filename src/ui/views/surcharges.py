@@ -7,7 +7,7 @@ import ui
 from callback_data import SurchargeCreateChooseStaffCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from models import Staff, Surcharge
-from ui.markups import create_accept_reject_markup
+from ui.markups import create_confirm_reject_markup
 from ui.views.base import TextView
 
 __all__ = (
@@ -55,7 +55,7 @@ class SurchargeCreateInputAmountView(TextView):
 
 
 class SurchargeCreateConfirmView(TextView):
-    reply_markup = create_accept_reject_markup(
+    reply_markup = create_confirm_reject_markup(
         accept_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_ACCEPT,
         reject_callback_data=CallbackDataPrefix.SURCHARGE_CREATE_REJECT,
     )
