@@ -72,14 +72,6 @@ class AdminShiftsMenuView(TextView):
                 url=f'{self.__web_app_base_url}/shifts/available-dates',
             ),
         )
-        shifts_table_url = (
-            'https://docs.google.com/spreadsheets/d/'
-            '1ktxCfMcepMwsZvP9r5BcvMSPNA2NTcYb'
-        )
-        shifts_table_button = InlineKeyboardButton(
-            text='📊 Таблица',
-            url=shifts_table_url,
-        )
         shifts_edit_button = InlineKeyboardButton(
             text='✏️ Редактировать смены',
             web_app=WebAppInfo(
@@ -90,7 +82,6 @@ class AdminShiftsMenuView(TextView):
             inline_keyboard=[
                 [available_dates_button],
                 [shifts_edit_button],
-                [shifts_table_button],
             ]
         )
 
