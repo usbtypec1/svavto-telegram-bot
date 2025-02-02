@@ -88,7 +88,7 @@ async def on_direct_shift_dates(
     )
     view = ShiftImmediateStartRequestView(date=direct_shift_web_app_data.date)
     sent_message = await message.answer(
-        text='🚀 Отправляются запросы на начало смены',
+        text='🚀 Отправляются запросы на тестовый доступ',
     )
     await notification_service.send_view(view=view)
-    await sent_message.edit_text('✅ Запросы на начало смены отправлены')
+    await sent_message.edit_text('✅ Выданы тестовые доступы')
