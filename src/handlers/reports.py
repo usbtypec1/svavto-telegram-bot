@@ -7,7 +7,7 @@ from filters import admins_filter
 from ui.views import AdminOtherMenuView
 from ui.views import answer_text_view
 from ui.views import ButtonText
-from ui.views import ReportsMenuView
+from ui.views import ReportTablesView
 
 __all__ = ('router',)
 
@@ -33,8 +33,5 @@ async def on_other(
     StateFilter('*'),
 )
 async def on_show_reports(message: Message, config: Config) -> None:
-    view = ReportsMenuView(
-        staff_revenue_report_table_url=config.staff_revenue_report_table_url,
-        service_costs_report_table_url=config.service_costs_report_table_url,
-    )
+    view = ReportTablesView(config.report_tables)
     await answer_text_view(message, view)

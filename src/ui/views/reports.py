@@ -1,34 +1,35 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from typing import Iterable, Protocol
+
+from aiogram.types import InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from ui.views.base import TextView
 
-__all__ = ('ReportsMenuView',)
+__all__ = ('ReportTablesView',)
 
 
-class ReportsMenuView(TextView):
+class HasNameAndUrl(Protocol):
+    name: str
+    url: str
+
+
+class ReportTablesView(TextView):
     text = '📊 Отчеты'
 
     def __init__(
             self,
-            *,
-            staff_revenue_report_table_url: str,
-            service_costs_report_table_url: str,
-    ):
-        self.__staff_revenue_report_table_url = staff_revenue_report_table_url
-        self.__service_costs_report_table_url = service_costs_report_table_url
+            report_tables: Iterable[HasNameAndUrl],
+    ) -> None:
+        self.__report_tables = report_tables
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        staff_revenue_report_table_button = InlineKeyboardButton(
-            text='📊 Таблица 1',
-            url=self.__staff_revenue_report_table_url,
-        )
-        service_costs_report_table_button = InlineKeyboardButton(
-            text='📊 Таблица 2',
-            url=self.__service_costs_report_table_url,
-        )
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [staff_revenue_report_table_button],
-                [service_costs_report_table_button],
-            ],
-        )
+        keyboard = InlineKeyboardBuilder()
+        keyboard.max_width = 1
+
+        for report_table in self.__report_tables:
+            keyboard.button(
+                text=report_table.name,
+                url=report_table.url,
+            )
+
+        return keyboard.as_markup()

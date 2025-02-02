@@ -20,6 +20,12 @@ class SentryConfig:
     traces_sample_rate: float
 
 
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ReportTable:
+    name: str
+    url: str
+
+
 @dataclass(frozen=True, slots=True)
 class Config:
     telegram_bot_token: str
@@ -28,8 +34,7 @@ class Config:
     web_app_base_url: str
     timezone: ZoneInfo
     admin_user_ids_ttl_in_seconds: int
-    staff_revenue_report_table_url: str
-    service_costs_report_table_url: str
+    report_tables: list[ReportTable]
     sentry: SentryConfig
     redis_url: str
 
@@ -39,6 +44,15 @@ def load_config_from_file(
 ) -> Config:
     config_toml = config_file_path.read_text(encoding='utf-8')
     config = tomllib.loads(config_toml)
+
+    report_tables = [
+        ReportTable(
+            name=report_table['name'],
+            url=report_table['url'],
+        )
+        for report_table in config['report_tables']
+    ]
+
     return Config(
         telegram_bot_token=config['telegram_bot']['token'],
         api_base_url=config['app']['api_base_url'],
@@ -48,12 +62,7 @@ def load_config_from_file(
         admin_user_ids_ttl_in_seconds=(
             config['app']['admin_user_ids_ttl_in_seconds']
         ),
-        staff_revenue_report_table_url=(
-            config['reports']['staff_revenue_report_table_url']
-        ),
-        service_costs_report_table_url=(
-            config['reports']['service_costs_report_table_url']
-        ),
+        report_tables=report_tables,
         sentry=SentryConfig(
             dsn=config['sentry']['dsn'],
             is_enabled=config['sentry']['is_enabled'],
