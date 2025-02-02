@@ -18,9 +18,7 @@ LOGGING_CONFIG_FILE_PATH: Final[pathlib.Path] = (
 
 
 def create_logger(name: str) -> logging.Logger:
-    logger = logging.getLogger(name)
-    logger.propagate = False
-    return logger
+    return logging.getLogger('app')
 
 
 def load_logging_config_from_file(

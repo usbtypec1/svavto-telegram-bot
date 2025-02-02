@@ -32,16 +32,11 @@ async def on_ban_or_unban_staff(
             use_cache=False,
         ),
 ) -> None:
-    if callback_data.action == StaffUpdateAction.BAN:
-        await staff_repository.update_by_telegram_id(
-            telegram_id=callback_data.staff_id,
-            is_banned=True,
-        )
-    else:
-        await staff_repository.update_by_telegram_id(
-            telegram_id=callback_data.staff_id,
-            is_banned=False,
-        )
+    is_banned = callback_data.action == StaffUpdateAction.BAN
+    await staff_repository.update_by_id(
+        staff_id=callback_data.staff_id,
+        is_banned=is_banned,
+    )
     staff = await staff_repository.get_by_id(callback_data.staff_id)
     view = StaffDetailView(
         staff=staff,

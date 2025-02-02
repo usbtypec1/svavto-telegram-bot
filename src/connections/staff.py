@@ -11,8 +11,15 @@ logger = create_logger('connections')
 class StaffConnection(ApiConnection):
 
     async def get_by_id(self, user_id: int) -> httpx.Response:
+        logger.debug('Retrieving staff by id %d', user_id)
         url = f'/staff/{user_id}/'
-        return await self._http_client.get(url)
+        response = await self._http_client.get(url)
+        logger.debug(
+            'Retrieved staff by id %d. Status code:',
+            user_id,
+            response.status_code,
+        )
+        return response
 
     async def create(
             self,
@@ -28,13 +35,15 @@ class StaffConnection(ApiConnection):
             'car_sharing_phone_number': car_sharing_phone_number,
             'console_phone_number': console_phone_number,
         }
+        logger.debug(
+            'Creating staff with id %d',
+            telegram_id,
+        )
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
-            'Retrieved staff create response',
-            extra={
-                'status_code': response.status_code,
-                'body': response.text,
-            },
+            'Created staff with id %d. Status code:',
+            telegram_id,
+            response.status_code,
         )
         return response
 
@@ -55,18 +64,47 @@ class StaffConnection(ApiConnection):
             query_params['limit'] = limit
         if offset is not None:
             query_params['offset'] = offset
-        return await self._http_client.get(url, params=query_params)
+        logger.debug(
+            'Retrieving all staff. Order by: %s, include banned: %s, limit: '
+            '%s, offset: %s',
+            order_by,
+            include_banned,
+            limit,
+            offset,
+        )
+        response = await self._http_client.get(url, params=query_params)
+        logger.debug(
+            'Retrieved all staff. Status code: %d',
+            response.status_code,
+        )
+        return response
 
-    async def update_by_telegram_id(
+    async def update_by_id(
             self,
             *,
-            telegram_id: int,
+            staff_id: int,
             is_banned: bool,
     ) -> httpx.Response:
-        url = f'/staff/{telegram_id}/'
+        url = f'/staff/{staff_id}/'
         request_data = {'is_banned': is_banned}
-        return await self._http_client.put(url, json=request_data)
+        logger.debug(
+            'Updating staff with telegram id %d',
+            staff_id,
+        )
+        response = await self._http_client.put(url, json=request_data)
+        logger.debug(
+            'Updated staff with telegram id %d. Status code:',
+            staff_id,
+            response.status_code,
+        )
+        return response
 
     async def get_all_admin_staff(self) -> httpx.Response:
         url = '/staff/admins/'
-        return await self._http_client.get(url)
+        logger.debug('Retrieving all admins')
+        response = await self._http_client.get(url)
+        logger.debug(
+            'Retrieved all admins. Status code: %d',
+            response.status_code,
+        )
+        return response

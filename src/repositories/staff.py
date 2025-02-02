@@ -50,14 +50,14 @@ class StaffRepository:
         )
         handle_errors(response)
 
-    async def update_by_telegram_id(
+    async def update_by_id(
             self,
             *,
-            telegram_id: int,
+            staff_id: int,
             is_banned: bool,
     ) -> None:
-        response = await self.__connection.update_by_telegram_id(
-            telegram_id=telegram_id,
+        response = await self.__connection.update_by_id(
+            staff_id=staff_id,
             is_banned=is_banned,
         )
         handle_errors(response)
