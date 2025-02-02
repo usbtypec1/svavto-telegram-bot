@@ -1,7 +1,7 @@
 import datetime
 
 from aiogram import Router
-from aiogram.filters import StateFilter, invert_f
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from fast_depends import Depends, inject
@@ -12,12 +12,13 @@ from dependencies.repositories import (
     get_car_wash_repository,
     get_shift_repository,
 )
-from filters import admins_filter, staff_filter
+from filters import staff_filter
 from repositories import CarWashRepository, ShiftRepository
 from states import ShiftStartStates
-from ui.views import answer_text_view, edit_message_by_view
-from ui.views import ShiftMenuView
-from ui.views import ShiftStartCarWashChooseView
+from ui.views import (
+    ShiftMenuView, ShiftStartCarWashChooseView,
+    answer_text_view, edit_message_by_view,
+)
 
 __all__ = ('router',)
 

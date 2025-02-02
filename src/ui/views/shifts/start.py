@@ -8,10 +8,7 @@ from callback_data import (
     ShiftImmediateStartCallbackData,
     ShiftRejectCallbackData,
     ShiftStartCallbackData,
-    ShiftStartRequestAcceptCallbackData,
-    ShiftStartRequestRejectCallbackData,
 )
-from models import ShiftListItem, Staff
 from ui.views.base import TextView
 
 __all__ = (

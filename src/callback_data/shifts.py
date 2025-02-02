@@ -13,11 +13,7 @@ __all__ = (
     'ExtraShiftCreateAcceptCallbackData',
     'ExtraShiftCreateRejectCallbackData',
     'ExtraShiftStartCallbackData',
-    'ShiftStartRequestAcceptCallbackData',
-    'ShiftStartRequestRejectCallbackData',
     'ShiftImmediateStartCallbackData',
-    'ScheduledShiftStartAcceptCallbackData',
-    'ScheduledShiftStartRejectCallbackData',
 )
 
 
@@ -87,36 +83,8 @@ class ExtraShiftStartCallbackData(
     date: str
 
 
-class ShiftStartRequestAcceptCallbackData(
-    CallbackData,
-    prefix=CallbackDataPrefix.SHIFT_START_REQUEST_ACCEPT,
-):
-    shift_id: int
-
-
-class ShiftStartRequestRejectCallbackData(
-    CallbackData,
-    prefix=CallbackDataPrefix.SHIFT_START_REQUEST_REJECT,
-):
-    shift_id: int
-
-
 class ShiftImmediateStartCallbackData(
     CallbackData,
     prefix=CallbackDataPrefix.SHIFT_IMMEDIATE_START,
 ):
     date: str
-
-
-class ScheduledShiftStartAcceptCallbackData(
-    CallbackData,
-    prefix=CallbackDataPrefix.SCHEDULED_SHIFT_START_ACCEPT,
-):
-    shift_id: int
-
-
-class ScheduledShiftStartRejectCallbackData(
-    CallbackData,
-    prefix=CallbackDataPrefix.SCHEDULED_SHIFT_START_REJECT,
-):
-    shift_id: int
