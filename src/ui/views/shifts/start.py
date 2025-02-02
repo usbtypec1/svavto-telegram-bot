@@ -1,5 +1,4 @@
 import datetime
-from typing import Protocol
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -22,9 +21,6 @@ __all__ = (
 )
 
 
-class HasIdAndDate(Protocol):
-    id: int
-    date: datetime.date
 
 
 class ShiftImmediateStartRequestView(TextView):
