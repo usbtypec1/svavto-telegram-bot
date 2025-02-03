@@ -110,6 +110,8 @@ async def on_send_shift_start_request_for_specific_date(
     )
     shifts_page = await shift_repository.get_list(
         staff_ids=shifts_confirmation.staff_ids,
+        date_from=shifts_confirmation.date,
+        date_to=shifts_confirmation.date,
         limit=1000,
     )
     shifts = shifts_page.shifts
