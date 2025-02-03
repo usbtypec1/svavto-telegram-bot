@@ -11,7 +11,6 @@ router = Router(name=__name__)
 router.include_routers(
     errors.router,
     today_shift.router,
-    request.router,
     test_shift.router,
     extra_shift.router,
 )
