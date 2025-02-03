@@ -44,8 +44,13 @@ async def on_car_wash_choose(
 ) -> None:
     state_data: dict = await state.get_data()
     shift_id: int = state_data['shift_id']
+
     car_wash_id = callback_data.car_wash_id
 
+    shift_create_result = await shift_repository.create_test(
+        staff_id=callback_query.from_user.id,
+        shift_date=shift_date,
+    )
     await shift_repository.start(
         shift_id=shift_id,
         car_wash_id=car_wash_id,
@@ -72,15 +77,12 @@ async def on_extra_shift_start(
         callback_data: TestShiftStartCallbackData,
         config: Config,
         state: FSMContext,
-        shift_repository: ShiftRepositoryDependency,
         car_wash_repository: CarWashRepositoryDependency,
 ) -> None:
-    shift_date = datetime.date.fromisoformat(callback_data.date)
-
     validate_shift_date(shift_date=callback_data.date, timezone=config.timezone)
 
     await state.set_state(ShiftTestStartStates.car_wash)
-    await state.update_data(date=callback_data.date, is_extra=True)
+    await state.update_data(shift_date=callback_data.date)
     car_washes = await car_wash_repository.get_all()
     if not car_washes:
         await callback_query.answer(
@@ -89,11 +91,6 @@ async def on_extra_shift_start(
         )
         return
 
-    shift_create_result = await shift_repository.create_test(
-        staff_id=callback_query.from_user.id,
-        shift_date=shift_date,
-    )
-    await state.update_data(shift_id=shift_create_result.shift_id)
     await state.set_state(ShiftTestStartStates.car_wash)
     view = ShiftStartCarWashChooseView(car_washes)
     await edit_message_by_view(callback_query.message, view)
