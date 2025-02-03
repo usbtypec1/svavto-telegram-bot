@@ -13,6 +13,9 @@ __all__ = (
     'TestShiftStartRequestView',
     'ShiftExtraStartRequestConfirmedView',
     'ShiftRegularStartRequestView',
+    'ShiftExtraStartRequestRejectedView',
+    'ShiftExtraStartRequestSentView',
+    'ShiftTodayStartInvalidTimeView',
 )
 
 
@@ -98,3 +101,41 @@ class ShiftRegularStartRequestView(TextView):
             confirm_callback_data=accept_callback_data,
             reject_callback_data=reject_callback_data,
         )
+
+
+class ShiftExtraStartRequestRejectedView(TextView):
+    """
+    Staff receives this view after their request for an extra shift is rejected.
+    """
+
+    def __init__(self, shift_date: datetime.date):
+        self.__shift_date = shift_date
+
+    def get_text(self) -> str:
+        return (
+            f'❌ Ваш запрос на доп.смену'
+            f' {self.__shift_date:%d.%m.%Y} отклонен'
+        )
+
+
+class ShiftExtraStartRequestSentView(TextView):
+    """
+    Staff receives this view after they request for an extra shift
+    """
+
+    def __init__(self, shift_date: datetime.date):
+        self.__shift_date = shift_date
+
+    def get_text(self) -> str:
+        return (
+            '✅ Ваш запрос на доп.смену в'
+            f' {self.__shift_date:%d.%m.%Y} отправлен на проверку'
+        )
+
+
+class ShiftTodayStartInvalidTimeView(TextView):
+    text = (
+        'До 21:30 Вам придет уведомление в этот бот с запросом'
+        ' <b>подтвердить или отклонить</b> выход на смену.'
+        '\nПосле подтверждения, смена автоматически начнется.'
+    )

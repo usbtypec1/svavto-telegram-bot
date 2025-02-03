@@ -23,7 +23,8 @@ from services.shifts import (
 from states import ShiftTodayStartStates
 from ui.views import (
     ButtonText, ShiftMenuView, ShiftStartCarWashChooseView,
-    ShiftWorkTypeChoiceView, answer_text_view, edit_message_by_view,
+    ShiftTodayStartInvalidTimeView, ShiftWorkTypeChoiceView, answer_text_view,
+    edit_message_by_view,
 )
 
 __all__ = ('router',)
@@ -100,13 +101,8 @@ async def on_move_to_wash_shift_work_type_choice(
         return
 
     if not is_time_to_start_shift(config.timezone):
-        await callback_query.message.answer(
-            text=(
-                'До 21:30 Вам придет уведомление в этот бот с запросом'
-                ' <b>подтвердить или отклонить</b> выход на смену.'
-                '\nПосле подтверждения, смена автоматически начнется.'
-            ),
-        )
+        view = ShiftTodayStartInvalidTimeView()
+        await answer_text_view(callback_query.message, view)
         return
 
     shift = shifts_page.shifts[0]

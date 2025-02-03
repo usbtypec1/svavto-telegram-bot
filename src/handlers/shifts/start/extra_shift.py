@@ -14,8 +14,8 @@ from callback_data import (
 )
 from config import Config
 from dependencies.repositories import (
-    CarWashRepositoryDependency, ShiftRepositoryDependency,
-    get_staff_repository,
+    CarWashRepositoryDependency, get_staff_repository,
+    ShiftRepositoryDependency,
 )
 from filters import admins_filter, staff_filter
 from repositories import StaffRepository
@@ -23,17 +23,15 @@ from services.notifications import SpecificChatsNotificationService
 from services.validators import validate_shift_date
 from states import ShiftExtraStartStates
 from ui.views import (
-    ButtonText, ExtraShiftScheduleNotificationView,
-    ExtraShiftScheduleWebAppView, MainMenuView,
-    ShiftExtraStartRequestConfirmedView, ShiftMenuView,
-    ShiftStartCarWashChooseView, answer_text_view, edit_as_rejected,
-    edit_message_by_view,
-    send_text_view,
+    answer_text_view, ButtonText, edit_as_rejected, edit_message_by_view,
+    ExtraShiftScheduleNotificationView, ExtraShiftScheduleWebAppView,
+    MainMenuView, send_text_view, ShiftExtraStartRequestConfirmedView,
+    ShiftExtraStartRequestSentView, ShiftMenuView, ShiftStartCarWashChooseView,
 )
+from ui.views.base import answer_view, edit_as_accepted
+from ui.views.shifts.start import ShiftExtraStartRequestRejectedView
 
 __all__ = ('router',)
-
-from ui.views.base import edit_as_accepted
 
 router = Router(name=__name__)
 
@@ -148,14 +146,10 @@ async def on_extra_shift_create_reject(
         callback_data: ExtraShiftCreateRejectCallbackData,
         bot: Bot,
 ) -> None:
+    shift_date = datetime.date.fromisoformat(callback_data.date)
+    view = ShiftExtraStartRequestRejectedView(shift_date=shift_date)
     try:
-        await bot.send_message(
-            chat_id=callback_data.staff_id,
-            text=(
-                f'❌ Ваш запрос на доп.смену'
-                f' {callback_data.date:%d.%m.%Y} отклонен'
-            ),
-        )
+        await send_text_view(bot, view, callback_data.staff_id)
     except TelegramAPIError:
         await callback_query.answer(
             text='❌ Не удалось отправить сообщение сотруднику',
@@ -193,12 +187,10 @@ async def on_extra_shift_calendar(
         shift_date=shift_date,
     )
     await admins_notification_service.send_view(view)
-    await message.answer(
-        '✅ Ваш запрос на доп.смену в'
-        f' {shift_date:%d.%m.%Y} отправлен на проверку'
-    )
+    view = ShiftExtraStartRequestSentView(shift_date)
+    await answer_view(message, view)
     view = MainMenuView(config.web_app_base_url)
-    await answer_text_view(message, view)
+    await answer_view(message, view)
 
 
 @router.message(
@@ -208,4 +200,4 @@ async def on_extra_shift_calendar(
 )
 async def on_start_extra_shift(message, config: Config):
     view = ExtraShiftScheduleWebAppView(config.web_app_base_url)
-    await answer_text_view(message, view)
+    await answer_view(message, view)

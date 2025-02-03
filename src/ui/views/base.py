@@ -26,6 +26,7 @@ __all__ = (
     'View',
     'send_view',
     'edit_as_rejected',
+    'edit_as_accepted',
 )
 
 ReplyMarkup: TypeAlias = (
