@@ -26,7 +26,7 @@ async def on_shift_already_exists_error(event: ErrorEvent) -> None:
         )
     else:
         text = ['❌ У вас уже есть смена на даты']
-        for date in exception.conflict_dates:
+        for date in sorted(exception.conflict_dates):
             text.append(f'• {date:%d.%m.%Y}')
 
         await answer_appropriate_event(
