@@ -17,10 +17,22 @@ logger = create_logger('global_errors')
 
 @router.error(ExceptionTypeFilter(ShiftAlreadyExistsError))
 async def on_shift_already_exists_error(event: ErrorEvent) -> None:
-    await answer_appropriate_event(
-        event=event,
-        text='❌ У вас уже есть смена на эту дату',
-    )
+    exception: ShiftAlreadyExistsError = event.exception
+    if not exception.conflict_dates:
+
+        await answer_appropriate_event(
+            event=event,
+            text='❌ У вас уже есть смена на эту дату',
+        )
+    else:
+        text = ['❌ У вас уже есть смена на даты']
+        for date in exception.conflict_dates:
+            text.append(f'• {date:%d.%m.%Y}')
+
+        await answer_appropriate_event(
+            event=event,
+            text='\n'.join(text),
+        )
 
 
 @router.error(ExceptionTypeFilter(httpx.ConnectError))
