@@ -1,5 +1,5 @@
 from aiogram import F, Router
-from aiogram.filters import StateFilter, invert_f
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
@@ -13,14 +13,14 @@ from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
 from enums import ShiftWorkType
-from filters import admins_filter
+from filters import staff_filter
 from logger import create_logger
 from models import Staff
 from services.shifts import (
     get_current_shift_date,
     is_time_to_start_shift,
 )
-from states import ShiftRegularStartStates
+from states import ShiftTodayStartStates
 from ui.views import (
     ButtonText, ShiftMenuView, ShiftStartCarWashChooseView,
     ShiftWorkTypeChoiceView, answer_text_view, edit_message_by_view,
@@ -35,7 +35,8 @@ router = Router(name=__name__)
 
 @router.callback_query(
     ShiftStartCarWashCallbackData.filter(),
-    StateFilter(ShiftRegularStartStates.car_wash),
+    staff_filter,
+    StateFilter(ShiftTodayStartStates.car_wash),
 )
 @inject
 async def on_car_wash_choose(
@@ -68,7 +69,7 @@ async def on_car_wash_choose(
     ShiftWorkTypeChoiceCallbackData.filter(
         rule=F.work_type == ShiftWorkType.MOVE_TO_WASH,
     ),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
@@ -118,14 +119,14 @@ async def on_move_to_wash_shift_work_type_choice(
         )
         return
     await state.update_data(shift_id=shift.id)
-    await state.set_state(ShiftRegularStartStates.car_wash)
+    await state.set_state(ShiftTodayStartStates.car_wash)
     view = ShiftStartCarWashChooseView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
 
 @router.callback_query(
     ShiftWorkTypeChoiceCallbackData.filter(),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 async def on_shift_work_type_choice(callback_query: CallbackQuery) -> None:
@@ -134,7 +135,7 @@ async def on_shift_work_type_choice(callback_query: CallbackQuery) -> None:
 
 @router.message(
     F.text == ButtonText.SHIFT_START,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 async def on_show_shift_work_types_list(

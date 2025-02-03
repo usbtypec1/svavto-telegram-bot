@@ -28,7 +28,7 @@ class AdminMenuView(TextView):
                 ],
                 [
                     KeyboardButton(
-                        text=ButtonText.SHIFTS_TODAY,
+                        text=ButtonText.SHIFTS_FOR_SPECIFIC_DATE,
                         web_app=WebAppInfo(
                             url=f'{self.__web_app_base_url}/shifts/confirm',
                         ),

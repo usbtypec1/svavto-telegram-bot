@@ -1,7 +1,7 @@
 import datetime
 
 from aiogram import Bot, F, Router
-from aiogram.filters import StateFilter, invert_f
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
@@ -14,7 +14,7 @@ from config import Config
 from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from models import DirectShiftWebAppData
 from services.notifications import SpecificChatsNotificationService
 from services.validators import validate_shift_date
@@ -31,6 +31,7 @@ router = Router(name=__name__)
 
 @router.callback_query(
     ShiftStartCarWashCallbackData.filter(),
+    staff_filter,
     StateFilter(ShiftTestStartStates.car_wash),
 )
 @inject
@@ -62,7 +63,7 @@ async def on_car_wash_choose(
 
 @router.callback_query(
     TestShiftStartCallbackData.filter(),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject

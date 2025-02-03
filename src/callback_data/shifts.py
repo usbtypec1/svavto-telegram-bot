@@ -6,8 +6,8 @@ from enums import ShiftWorkType
 __all__ = (
     'ShiftWorkTypeChoiceCallbackData',
     'ShiftCarWashUpdateCallbackData',
-    'ShiftRejectCallbackData',
-    'ShiftStartCallbackData',
+    'ShiftRegularRejectCallbackData',
+    'ShiftRegularStartCallbackData',
     'ShiftStartCarWashCallbackData',
     'ShiftApplyCallbackData',
     'ExtraShiftCreateAcceptCallbackData',
@@ -31,16 +31,16 @@ class ShiftCarWashUpdateCallbackData(
     car_wash_id: int
 
 
-class ShiftStartCallbackData(
+class ShiftRegularStartCallbackData(
     CallbackData,
-    prefix=CallbackDataPrefix.SHIFT_START_ACCEPT,
+    prefix=CallbackDataPrefix.SHIFT_REGULAR_START_ACCEPT,
 ):
     shift_id: int
 
 
-class ShiftRejectCallbackData(
+class ShiftRegularRejectCallbackData(
     CallbackData,
-    prefix=CallbackDataPrefix.SHIFT_FINISH_REJECT,
+    prefix=CallbackDataPrefix.SHIFT_REGULAR_START_REJECT,
 ):
     shift_id: int
 

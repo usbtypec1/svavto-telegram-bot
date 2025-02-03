@@ -2,7 +2,7 @@ import datetime
 
 from aiogram import Bot, F, Router
 from aiogram.exceptions import TelegramAPIError
-from aiogram.filters import StateFilter, invert_f
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import Depends, inject
@@ -10,31 +10,25 @@ from fast_depends import Depends, inject
 from callback_data import (
     ExtraShiftCreateAcceptCallbackData,
     ExtraShiftCreateRejectCallbackData, ExtraShiftStartCallbackData,
-    ShiftStartCallbackData, ShiftStartCarWashCallbackData,
+    ShiftStartCarWashCallbackData,
 )
 from config import Config
 from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
-    get_car_wash_repository,
     get_staff_repository,
 )
 from filters import admins_filter, staff_filter
-from repositories import CarWashRepository, StaffRepository
+from repositories import StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
 from services.validators import validate_shift_date
 from states import ShiftExtraStartStates
 from ui.views import (
-    ShiftMenuView, answer_text_view, edit_message_by_view,
+    ButtonText, ExtraShiftScheduleNotificationView,
+    ExtraShiftScheduleWebAppView, MainMenuView,
+    ShiftExtraStartRequestConfirmedView, ShiftMenuView,
+    ShiftStartCarWashChooseView, answer_text_view, edit_message_by_view,
     send_text_view,
-)
-from ui.views import ButtonText
-from ui.views import MainMenuView
-from ui.views import (
-    ExtraShiftScheduleNotificationView,
-    ExtraShiftScheduleWebAppView,
-    ExtraShiftStartView,
-    ShiftStartCarWashChooseView,
 )
 
 __all__ = ('router',)
@@ -44,6 +38,7 @@ router = Router(name=__name__)
 
 @router.callback_query(
     ShiftStartCarWashCallbackData.filter(),
+    staff_filter,
     StateFilter(ShiftExtraStartStates.car_wash),
 )
 @inject
@@ -75,7 +70,7 @@ async def on_car_wash_choose(
 
 @router.callback_query(
     ExtraShiftStartCallbackData.filter(),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
@@ -127,7 +122,7 @@ async def on_extra_shift_create_accept(
         ),
 ) -> None:
     staff = await staff_repository.get_by_id(callback_data.staff_id)
-    view = ExtraShiftStartView(
+    view = ShiftExtraStartRequestConfirmedView(
         staff_full_name=staff.full_name,
         shift_date=datetime.date.fromisoformat(callback_data.date),
     )
@@ -174,7 +169,7 @@ async def on_extra_shift_create_reject(
 
 @router.message(
     F.web_app_data.button_text == ButtonText.EXTRA_SHIFT_CALENDAR,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
@@ -210,7 +205,7 @@ async def on_extra_shift_calendar(
 
 @router.message(
     F.text == ButtonText.SHIFT_START_EXTRA,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 async def on_start_extra_shift(message, config: Config):

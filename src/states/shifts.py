@@ -3,8 +3,9 @@ from aiogram.fsm.state import StatesGroup, State
 __all__ = (
     'ShiftFinishStates',
     'ShiftTestStartStates',
-    'ShiftRegularStartStates',
+    'ShiftTodayStartStates',
     'ShiftExtraStartStates',
+    'ShiftRegularStartStates',
 )
 
 
@@ -19,6 +20,10 @@ class ShiftTestStartStates(StatesGroup):
 
 
 class ShiftExtraStartStates(StatesGroup):
+    car_wash = State()
+
+
+class ShiftTodayStartStates(StatesGroup):
     car_wash = State()
 
 
