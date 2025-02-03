@@ -53,7 +53,7 @@ async def on_shift_schedule_month_calendar_input(
     shift_dates: list[datetime.date] = type_adapter.validate_json(
         message.web_app_data.data,
     )
-    shift_create_result = await shift_repository.create(
+    shift_create_result = await shift_repository.create_regular(
         staff_id=message.from_user.id,
         dates=shift_dates,
     )

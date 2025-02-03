@@ -10,7 +10,6 @@ from . import (
     finish,
     apply,
     schedule_self,
-    extra_shift,
 )
 
 __all__ = ('router',)
@@ -26,5 +25,4 @@ router.include_routers(
     change_car_wash.router,
     finish.router,
     schedule_self.router,
-    extra_shift.router,
 )

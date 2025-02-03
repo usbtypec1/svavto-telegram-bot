@@ -154,28 +154,83 @@ class ShiftConnection(ApiConnection):
         )
         return response
 
-    async def create(
+    async def create_regular(
             self,
             *,
             staff_id: int,
             dates: Iterable[datetime.date],
-            immediate_start: bool,
-            car_wash_id: int | None,
-            is_extra: bool,
     ) -> httpx.Response:
         url = '/shifts/create/'
-        logger.debug(f'Creating shifts for staff {staff_id}')
         request_data = {
             'staff_id': staff_id,
             'dates': [f'{date:%Y-%m-%d}' for date in dates],
-            'immediate_start': immediate_start,
-            'car_wash_id': car_wash_id,
-            'is_extra': is_extra,
+        }
+        logger.debug(f'Creating regular shifts for staff %d', staff_id)
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            f'Created shifts for staff %d. Status code: %d',
+            staff_id,
+            response.status_code,
+        )
+        return response
+
+    async def create_extra(
+            self,
+            *,
+            staff_id: int,
+            shift_date: datetime.date,
+    ) -> httpx.Response:
+        """
+        Create extra shift for staff.
+
+        Keyword Args:
+            staff_id: Staff Telegram ID.
+            shift_date: Date of the shift.
+
+        Returns:
+            Response from the API.
+        """
+        url = '/shifts/create/extra/'
+        logger.debug(f'Creating extra shift for staff %d', staff_id)
+        request_data = {
+            'staff_id': staff_id,
+            'date': f'{shift_date:%Y-%m-%d}',
         }
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
-            f'Created shifts for staff {staff_id}',
-            extra={'status_code': response.status_code},
+            f'Created extra shift for staff %d. Status code: %d',
+            staff_id,
+            response.status_code,
+        )
+        return response
+
+    async def create_test(
+            self,
+            *,
+            staff_id: int,
+            shift_date: datetime.date,
+    ) -> httpx.Response:
+        """
+        Create test shift for staff.
+
+        Keyword Args:
+            staff_id: Staff Telegram ID.
+            shift_date: Date of the shift.
+
+        Returns:
+            Response from the API.
+        """
+        url = '/shifts/create/test/'
+        logger.debug(f'Creating test shift for staff %d', staff_id)
+        request_data = {
+            'staff_id': staff_id,
+            'date': f'{shift_date:%Y-%m-%d}',
+        }
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            f'Created test shift for staff %d. Status code: %d',
+            staff_id,
+            response.status_code,
         )
         return response
 

@@ -10,18 +10,24 @@ from fast_depends import Depends, inject
 from callback_data import (
     ExtraShiftCreateAcceptCallbackData,
     ExtraShiftCreateRejectCallbackData, ExtraShiftStartCallbackData,
+    ShiftStartCallbackData, ShiftStartCarWashCallbackData,
 )
 from config import Config
 from dependencies.repositories import (
+    CarWashRepositoryDependency, ShiftRepositoryDependency,
     get_car_wash_repository,
     get_staff_repository,
 )
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from repositories import CarWashRepository, StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import format_accept_text, format_reject_text
-from states import ShiftStartStates
-from ui.views import answer_text_view, send_text_view
+from services.validators import validate_shift_date
+from states import ShiftExtraStartStates
+from ui.views import (
+    ShiftMenuView, answer_text_view, edit_message_by_view,
+    send_text_view,
+)
 from ui.views import ButtonText
 from ui.views import MainMenuView
 from ui.views import (
@@ -37,6 +43,37 @@ router = Router(name=__name__)
 
 
 @router.callback_query(
+    ShiftStartCarWashCallbackData.filter(),
+    StateFilter(ShiftExtraStartStates.car_wash),
+)
+@inject
+async def on_car_wash_choose(
+        callback_query: CallbackQuery,
+        callback_data: ShiftStartCarWashCallbackData,
+        state: FSMContext,
+        config: Config,
+        shift_repository: ShiftRepositoryDependency,
+) -> None:
+    state_data: dict = await state.get_data()
+    shift_id: int = state_data['shift_id']
+    car_wash_id = callback_data.car_wash_id
+
+    await shift_repository.start(
+        shift_id=shift_id,
+        car_wash_id=car_wash_id,
+    )
+    await callback_query.message.edit_text(
+        text='✅ Вы начали доп.смену водителя перегонщика на мойку',
+    )
+    view = ShiftMenuView(
+        staff_id=callback_query.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
+    await answer_text_view(callback_query.message, view)
+    await callback_query.answer()
+
+
+@router.callback_query(
     ExtraShiftStartCallbackData.filter(),
     invert_f(admins_filter),
     StateFilter('*'),
@@ -47,37 +84,31 @@ async def on_extra_shift_start(
         callback_data: ExtraShiftStartCallbackData,
         config: Config,
         state: FSMContext,
-        car_wash_repository: CarWashRepository = Depends(
-            dependency=get_car_wash_repository,
-            use_cache=False,
-        ),
+        shift_repository: ShiftRepositoryDependency,
+        car_wash_repository: CarWashRepositoryDependency,
 ) -> None:
-    now_date = datetime.datetime.now(config.timezone).date()
     shift_date = datetime.date.fromisoformat(callback_data.date)
-    if now_date > shift_date:
+
+    validate_shift_date(shift_date=callback_data.date, timezone=config.timezone)
+
+    await state.set_state(ShiftExtraStartStates.car_wash)
+    await state.update_data(date=callback_data.date, is_extra=True)
+    car_washes = await car_wash_repository.get_all()
+    if not car_washes:
         await callback_query.answer(
-            text='❌ Вы не можете начать запланированную в прошлом доп.смену',
+            text='❌ Нет доступных моек',
             show_alert=True,
         )
-    elif now_date < shift_date:
-        await callback_query.answer(
-            text=(
-                f'❌ Вы сможете начать доп.смену только в {shift_date:%d.%m.%Y}'
-            ),
-            show_alert=True,
-        )
-    else:
-        await state.set_state(ShiftStartStates.car_wash)
-        await state.update_data(is_extra=True, date=shift_date.isoformat())
-        car_washes = await car_wash_repository.get_all()
-        if not car_washes:
-            await callback_query.answer(
-                text='❌ Нет доступных моек',
-                show_alert=True,
-            )
-            return
-        view = ShiftStartCarWashChooseView(car_washes)
-        await answer_text_view(callback_query.message, view)
+        return
+
+    shift_create_result = await shift_repository.create_extra(
+        staff_id=callback_query.from_user.id,
+        shift_date=shift_date,
+    )
+    await state.update_data(shift_id=shift_create_result.shift_id)
+    await state.set_state(ShiftExtraStartStates.car_wash)
+    view = ShiftStartCarWashChooseView(car_washes)
+    await edit_message_by_view(callback_query.message, view)
 
 
 @router.callback_query(

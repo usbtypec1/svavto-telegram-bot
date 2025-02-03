@@ -13,7 +13,7 @@ __all__ = (
     'ExtraShiftCreateAcceptCallbackData',
     'ExtraShiftCreateRejectCallbackData',
     'ExtraShiftStartCallbackData',
-    'ShiftImmediateStartCallbackData',
+    'TestShiftStartCallbackData',
 )
 
 
@@ -83,8 +83,8 @@ class ExtraShiftStartCallbackData(
     date: str
 
 
-class ShiftImmediateStartCallbackData(
+class TestShiftStartCallbackData(
     CallbackData,
-    prefix=CallbackDataPrefix.SHIFT_IMMEDIATE_START,
+    prefix=CallbackDataPrefix.TEST_SHIFT_START,
 ):
     date: str

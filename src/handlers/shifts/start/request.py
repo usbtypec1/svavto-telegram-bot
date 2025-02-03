@@ -9,7 +9,7 @@ from models import ShiftsConfirmation
 from repositories import ShiftRepository
 from ui.views import send_text_view
 from ui.views import ButtonText
-from ui.views import ShiftImmediateStartRequestView, ShiftStartConfirmView
+from ui.views import TestShiftStartRequestView, ShiftStartConfirmView
 
 __all__ = ('router',)
 
@@ -48,7 +48,7 @@ async def on_send_confirmation_to_staff(
         try:
             shift = staff_id_to_shift[staff_id]
         except KeyError:
-            view = ShiftImmediateStartRequestView(date=shifts_confirmation.date)
+            view = TestShiftStartRequestView(date=shifts_confirmation.date)
         else:
             view = ShiftStartConfirmView(
                 shift_id=shift.id,

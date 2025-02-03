@@ -1,6 +1,11 @@
 from aiogram.fsm.state import StatesGroup, State
 
-__all__ = ('ShiftFinishStates', 'ShiftStartStates')
+__all__ = (
+    'ShiftFinishStates',
+    'ShiftTestStartStates',
+    'ShiftRegularStartStates',
+    'ShiftExtraStartStates',
+)
 
 
 class ShiftFinishStates(StatesGroup):
@@ -9,5 +14,13 @@ class ShiftFinishStates(StatesGroup):
     confirm = State()
 
 
-class ShiftStartStates(StatesGroup):
+class ShiftTestStartStates(StatesGroup):
+    car_wash = State()
+
+
+class ShiftExtraStartStates(StatesGroup):
+    car_wash = State()
+
+
+class ShiftRegularStartStates(StatesGroup):
     car_wash = State()

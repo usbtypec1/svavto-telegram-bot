@@ -5,8 +5,8 @@ from pydantic import TypeAdapter
 
 from connections import ShiftConnection
 from models import (
-    CarWash, Shift, ShiftCreateResult, ShiftFinishResult,
-    ShiftListPage, ShiftWithCarWashAndStaff,
+    CarWash, Shift, ShiftExtraCreateResult, ShiftFinishResult, ShiftListPage,
+    ShiftRegularCreateResult, ShiftTestCreateResult, ShiftWithCarWashAndStaff,
 )
 from repositories.errors import handle_errors
 
@@ -114,25 +114,47 @@ class ShiftRepository:
         type_adapter = TypeAdapter(list[Shift])
         return type_adapter.validate_python(response_data['shifts'])
 
-    async def create(
+    async def create_regular(
             self,
             *,
             staff_id: int,
             dates: list[datetime.date],
-            immediate_start: bool = False,
-            car_wash_id: int | None = None,
-            is_extra: bool = False,
-    ) -> ShiftCreateResult:
-        response = await self.__connection.create(
+    ) -> ShiftRegularCreateResult:
+        response = await self.__connection.create_regular(
             staff_id=staff_id,
             dates=dates,
-            immediate_start=immediate_start,
-            car_wash_id=car_wash_id,
-            is_extra=is_extra,
         )
         handle_errors(response)
         response_data = response.json()
-        return ShiftCreateResult.model_validate(response_data)
+        return ShiftRegularCreateResult.model_validate(response_data)
+
+    async def create_extra(
+            self,
+            *,
+            staff_id: int,
+            shift_date: datetime.date,
+    ) -> ShiftExtraCreateResult:
+        response = await self.__connection.create_extra(
+            staff_id=staff_id,
+            shift_date=shift_date,
+        )
+        handle_errors(response)
+        response_data = response.json()
+        return ShiftExtraCreateResult.model_validate(response_data)
+
+    async def create_test(
+            self,
+            *,
+            staff_id: int,
+            shift_date: datetime.date,
+    ) -> ShiftTestCreateResult:
+        response = await self.__connection.create_test(
+            staff_id=staff_id,
+            shift_date=shift_date,
+        )
+        handle_errors(response)
+        response_data = response.json()
+        return ShiftTestCreateResult.model_validate(response_data)
 
     async def get_last_created_shift_dates(
             self,

@@ -9,13 +9,15 @@ __all__ = (
     'ShiftFinishResult',
     'ShiftsConfirmation',
     'Shift',
-    'ShiftCreateResult',
+    'ShiftRegularCreateResult',
     'ShiftListItem',
     'ShiftListPage',
     'DirectShiftWebAppData',
     'SpecificShiftPickResult',
     'ShiftWithCarWashAndStaff',
     'ShiftFinishCarWashSummary',
+    'ShiftExtraCreateResult',
+    'ShiftTestCreateResult',
 )
 
 
@@ -67,10 +69,24 @@ class ShiftWithCarWashAndStaff(BaseModel):
     created_at: datetime.datetime
 
 
-class ShiftCreateResult(BaseModel):
+class ShiftRegularCreateResult(BaseModel):
     staff_id: int
     staff_full_name: str
     dates: list[datetime.date]
+
+
+class ShiftExtraCreateResult(BaseModel):
+    staff_id: int
+    staff_full_name: str
+    shift_id: int
+    shift_date: datetime.date
+
+
+class ShiftTestCreateResult(BaseModel):
+    staff_id: int
+    staff_full_name: str
+    shift_id: int
+    shift_date: datetime.date
 
 
 class ShiftListItem(BaseModel):

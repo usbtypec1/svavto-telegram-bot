@@ -94,7 +94,7 @@ class AdminOtherMenuView(TextView):
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         direct_shift = KeyboardButton(
-            text=ButtonText.DIRECT_SHIFT,
+            text=ButtonText.TEST_SHIFT_REQUEST,
             web_app=WebAppInfo(
                 url=f'{self.__web_app_base_url}/shifts/direct',
             ),

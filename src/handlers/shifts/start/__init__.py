@@ -1,13 +1,16 @@
 from aiogram import Router
 
-from . import car_wash_choose, request, today, immediate
+from . import (
+    errors, extra_shift, test_shift,
+    today_shift,
+)
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
 router.include_routers(
-    car_wash_choose.router,
-    request.router,
-    today.router,
-    immediate.router,
+    errors.router,
+    today_shift.router,
+    test_shift.router,
+    extra_shift.router,
 )

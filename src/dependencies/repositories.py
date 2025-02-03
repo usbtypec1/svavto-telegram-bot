@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fast_depends import Depends
 
 from connections import (
@@ -32,6 +34,8 @@ __all__ = (
     'get_shift_repository',
     'get_car_to_wash_repository',
     'get_available_date_repository',
+    'ShiftRepositoryDependency',
+    'CarWashRepositoryDependency',
 )
 
 
@@ -71,3 +75,16 @@ def get_economics_repository(
         connection: EconomicsConnection = Depends(get_economics_connection),
 ) -> EconomicsRepository:
     return EconomicsRepository(connection)
+
+
+ShiftRepositoryDependency = Annotated[
+    ShiftRepository,
+    Depends(get_shift_repository),
+]
+
+CarWashRepositoryDependency = Annotated[
+    CarWashRepository,
+    Depends(get_car_wash_repository),
+]
+
+

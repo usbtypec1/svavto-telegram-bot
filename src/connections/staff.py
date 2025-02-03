@@ -15,7 +15,7 @@ class StaffConnection(ApiConnection):
         url = f'/staff/{user_id}/'
         response = await self._http_client.get(url)
         logger.debug(
-            'Retrieved staff by id %d. Status code:',
+            'Retrieved staff by id %d. Status code: %d',
             user_id,
             response.status_code,
         )

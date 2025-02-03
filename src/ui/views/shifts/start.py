@@ -5,33 +5,31 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import ui
 from callback_data import (
     ExtraShiftStartCallbackData,
-    ShiftImmediateStartCallbackData,
+    TestShiftStartCallbackData,
     ShiftRejectCallbackData,
     ShiftStartCallbackData,
 )
 from ui.views.base import TextView
 
 __all__ = (
-    'ShiftImmediateStartRequestView',
+    'TestShiftStartRequestView',
     'ExtraShiftStartView',
     'ShiftStartConfirmView',
 )
 
 
-
-
-class ShiftImmediateStartRequestView(TextView):
+class TestShiftStartRequestView(TextView):
 
     def __init__(self, *, date: datetime.date):
         self.__date = date
 
     def get_text(self) -> str:
-        return f'📆 Начните смену на дату {self.__date:%d.%m.%Y}'
+        return f'📆 Начните тестовую смену на дату {self.__date:%d.%m.%Y}'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         button = InlineKeyboardButton(
-            text='🚀 Начать смену',
-            callback_data=ShiftImmediateStartCallbackData(
+            text='🚀 Начать тестовую смену',
+            callback_data=TestShiftStartCallbackData(
                 date=self.__date.isoformat(),
             ).pack()
         )
