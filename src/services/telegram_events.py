@@ -2,7 +2,7 @@ import json
 
 from aiogram.types import (
     ErrorEvent, InlineKeyboardButton,
-    InlineKeyboardMarkup, Message, Update,
+    InlineKeyboardMarkup, Update,
 )
 from pydantic import TypeAdapter
 
@@ -12,8 +12,6 @@ __all__ = (
     'answer_appropriate_event',
     'parse_web_app_data_buttons',
     'parse_chat_ids_json',
-    'format_accept_text',
-    'format_reject_text',
     'reply_markup_to_buttons',
     'get_user_id_from_update',
     'answer_to_update',
@@ -49,14 +47,6 @@ def reply_markup_to_buttons(
 
 def parse_chat_ids_json(data: str) -> list[int]:
     return json.loads(data)
-
-
-def format_accept_text(message: Message) -> str:
-    return f'{message.text}\n\n<i>✅ Подтверждено</i>'
-
-
-def format_reject_text(message: Message) -> str:
-    return f'{message.text}\n\n<i>❌ Отменено</i>'
 
 
 def get_user_id_from_update(update: Update) -> int:

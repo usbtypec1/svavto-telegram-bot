@@ -6,9 +6,8 @@ from aiogram.types import CallbackQuery
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from filters import admins_filter
-from services.telegram_events import format_reject_text
 from states import MailingStates
-from ui.views import AdminMenuView
+from ui.views import AdminMenuView, edit_as_rejected
 from ui.views import answer_text_view
 
 __all__ = ('router',)
@@ -27,8 +26,6 @@ async def on_reject_mailing(
         config: Config,
 ) -> None:
     await state.clear()
-    await callback_query.message.edit_text(
-        format_reject_text(callback_query.message),
-    )
+    await edit_as_rejected(callback_query.message)
     view = AdminMenuView(config.web_app_base_url)
     await answer_text_view(callback_query.message, view)

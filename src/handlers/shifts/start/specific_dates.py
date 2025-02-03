@@ -5,7 +5,7 @@ from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
 
 from callback_data import (
-    ShiftRegularStartCallbackData,
+    ShiftRegularRejectCallbackData, ShiftRegularStartCallbackData,
     ShiftStartCarWashCallbackData,
 )
 from config import Config
@@ -18,12 +18,23 @@ from states import ShiftRegularStartStates
 from ui.views import (
     ButtonText, ShiftMenuView, ShiftRegularStartRequestView,
     ShiftStartCarWashChooseView, TestShiftStartRequestView,
-    answer_text_view, edit_message_by_view, send_text_view,
+    answer_text_view, edit_as_rejected, edit_message_by_view, send_text_view,
 )
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.callback_query(
+    ShiftRegularRejectCallbackData.filter(),
+    staff_filter,
+)
+async def on_shift_regular_start_reject(
+        callback_query: CallbackQuery,
+) -> None:
+    await callback_query.answer('Вы отменили начало смены', show_alert=True)
+    await edit_as_rejected(callback_query.message)
 
 
 @router.callback_query(

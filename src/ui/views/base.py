@@ -8,6 +8,8 @@ from aiogram.types import (
 )
 from aiogram.utils.media_group import MediaGroupBuilder, MediaType
 
+from ui.texts import format_accept_text, format_reject_text
+
 __all__ = (
     'ReplyMarkup',
     'TextView',
@@ -23,6 +25,7 @@ __all__ = (
     'answer_view',
     'View',
     'send_view',
+    'edit_as_rejected',
 )
 
 ReplyMarkup: TypeAlias = (
@@ -190,3 +193,13 @@ async def send_view(
             return await send_photo_view(bot, view, *chat_ids)
         case _:
             assert_never(view)
+
+
+async def edit_as_rejected(message: Message) -> None:
+    if message.text is not None:
+        await message.edit_text(text=format_reject_text(message.text))
+
+
+async def edit_as_accepted(message: Message) -> None:
+    if message.text is not None:
+        await message.edit_text(text=format_accept_text(message.text))

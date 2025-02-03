@@ -13,9 +13,11 @@ from filters import admins_filter, staff_filter
 from repositories import ShiftRepository
 from services.notifications import SpecificChatsNotificationService
 from services.shifts import ShiftFinishPhotosState
-from services.telegram_events import format_accept_text, format_reject_text
 from states import ShiftFinishStates
-from ui.views import answer_media_group_view, answer_photo_view, answer_text_view
+from ui.views import (
+    answer_media_group_view, answer_photo_view,
+    answer_text_view, edit_as_rejected,
+)
 from ui.views import ButtonText
 from ui.views import MainMenuView, ShiftMenuView
 from ui.views import (
@@ -29,6 +31,8 @@ from ui.views import (
 )
 
 __all__ = ('router',)
+
+from ui.views.base import edit_as_accepted
 
 router = Router(name=__name__)
 
@@ -68,8 +72,7 @@ async def on_shift_finish_reject(
         text='❗️ Вы отменили завершение смены',
         show_alert=True,
     )
-    text = format_reject_text(callback_query.message)
-    await callback_query.message.edit_text(text)
+    await edit_as_rejected(callback_query.message)
 
 
 @router.callback_query(
@@ -110,9 +113,7 @@ async def on_shift_finish_accept(
         await answer_text_view(callback_query.message, view)
         view = MainMenuView(config.web_app_base_url)
         await answer_text_view(callback_query.message, view)
-    await callback_query.message.edit_text(
-        format_accept_text(callback_query.message),
-    )
+    await edit_as_accepted(callback_query.message)
     if shift_finish_result.finish_photo_file_ids:
         view = ShiftFinishedWithPhotosView(shift_finish_result)
         await main_chat_notification_service.send_media_group(

@@ -17,9 +17,8 @@ from filters import admins_filter
 from models import SpecificShiftPickResult
 from repositories import EconomicsRepository, StaffRepository
 from services.surcharges import parse_money_amount
-from services.telegram_events import format_reject_text
 from states import SurchargeCreateStates
-from ui.views import AdminMenuView
+from ui.views import AdminMenuView, edit_as_rejected
 from ui.views import answer_text_view, edit_message_by_view
 from ui.views import ButtonText
 from ui.views import SpecificShiftPickerView
@@ -47,9 +46,7 @@ async def on_reject_surcharge_creation(
         state: FSMContext,
 ) -> None:
     await state.clear()
-    await callback_query.message.edit_text(
-        format_reject_text(callback_query.message),
-    )
+    await edit_as_rejected(callback_query.message)
     view = AdminMenuView(config.web_app_base_url)
     await answer_text_view(callback_query.message, view)
 

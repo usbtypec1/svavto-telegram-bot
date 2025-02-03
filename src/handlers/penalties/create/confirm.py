@@ -12,16 +12,12 @@ from dependencies.repositories import (
 )
 from filters import admins_filter
 from repositories import EconomicsRepository, StaffRepository
-from services.telegram_events import format_reject_text
 from states import PenaltyCreateStates
-from ui.views import AdminMenuView
 from ui.views import (
-    answer_text_view, edit_message_by_view, send_photo_view,
-    send_text_view,
-)
-from ui.views import (
-    PenaltyCreateNotificationView,
+    AdminMenuView, PenaltyCreateNotificationView,
     PenaltyCreateSuccessView, PhotoCreateWithPhotoNotificationView,
+    answer_text_view, edit_as_rejected, edit_message_by_view, send_photo_view,
+    send_text_view,
 )
 
 __all__ = ('router',)
@@ -40,9 +36,7 @@ async def on_reject_penalty_creation(
         config: Config,
 ) -> None:
     await state.clear()
-    await callback_query.message.edit_text(
-        format_reject_text(callback_query.message),
-    )
+    await edit_as_rejected(callback_query.message)
     view = AdminMenuView(config.web_app_base_url)
     await answer_text_view(callback_query.message, view)
 

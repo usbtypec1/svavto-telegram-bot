@@ -17,8 +17,8 @@ from services.mailing import (
     filter_staff_by_chat_ids,
 )
 from services.notifications import MailingService
-from services.telegram_events import format_accept_text
 from states import MailingStates
+from ui.texts import format_accept_text
 from ui.views import AdminMenuView
 from ui.views import answer_text_view
 

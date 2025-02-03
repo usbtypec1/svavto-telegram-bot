@@ -20,18 +20,20 @@ from dependencies.repositories import (
 from filters import admins_filter, staff_filter
 from repositories import StaffRepository
 from services.notifications import SpecificChatsNotificationService
-from services.telegram_events import format_accept_text, format_reject_text
 from services.validators import validate_shift_date
 from states import ShiftExtraStartStates
 from ui.views import (
     ButtonText, ExtraShiftScheduleNotificationView,
     ExtraShiftScheduleWebAppView, MainMenuView,
     ShiftExtraStartRequestConfirmedView, ShiftMenuView,
-    ShiftStartCarWashChooseView, answer_text_view, edit_message_by_view,
+    ShiftStartCarWashChooseView, answer_text_view, edit_as_rejected,
+    edit_message_by_view,
     send_text_view,
 )
 
 __all__ = ('router',)
+
+from ui.views.base import edit_as_accepted
 
 router = Router(name=__name__)
 
@@ -133,9 +135,7 @@ async def on_extra_shift_create_accept(
             show_alert=True,
         )
     else:
-        await callback_query.message.edit_text(
-            format_accept_text(callback_query.message),
-        )
+        await edit_as_accepted(callback_query.message)
 
 
 @router.callback_query(
@@ -162,9 +162,7 @@ async def on_extra_shift_create_reject(
             show_alert=True,
         )
     else:
-        await callback_query.message.edit_text(
-            format_reject_text(callback_query.message),
-        )
+        await edit_as_rejected(callback_query.message)
 
 
 @router.message(
