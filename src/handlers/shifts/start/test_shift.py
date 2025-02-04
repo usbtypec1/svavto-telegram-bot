@@ -15,6 +15,7 @@ from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
 from filters import admins_filter, staff_filter
+from logger import create_logger
 from models import DirectShiftWebAppData
 from services.notifications import SpecificChatsNotificationService
 from services.validators import validate_shift_date
@@ -25,6 +26,8 @@ from ui.views import (
 )
 
 __all__ = ('router',)
+
+logger = create_logger('test_shifts')
 
 router = Router(name=__name__)
 
@@ -43,7 +46,7 @@ async def on_car_wash_choose(
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
     state_data: dict = await state.get_data()
-    shift_date: datetime.date = state_data['shift_date']
+    shift_date = datetime.date.fromisoformat(state_data['shift_date'])
 
     car_wash_id = callback_data.car_wash_id
 
@@ -54,6 +57,12 @@ async def on_car_wash_choose(
     await shift_repository.start(
         shift_id=shift_create_result.shift_id,
         car_wash_id=car_wash_id,
+    )
+    logger.info(
+        'Test shift started. Staff ID: %s, Shift ID: %s, Car wash ID: %s',
+        callback_query.from_user.id,
+        shift_create_result.shift_id,
+        car_wash_id,
     )
     await callback_query.message.edit_text(
         text='✅ Вы начали тестовую смену водителя перегонщика на мойку',
@@ -81,8 +90,6 @@ async def on_extra_shift_start(
 ) -> None:
     validate_shift_date(shift_date=callback_data.date, timezone=config.timezone)
 
-    await state.set_state(ShiftTestStartStates.car_wash)
-    await state.update_data(shift_date=callback_data.date)
     car_washes = await car_wash_repository.get_all()
     if not car_washes:
         await callback_query.answer(
@@ -92,6 +99,7 @@ async def on_extra_shift_start(
         return
 
     await state.set_state(ShiftTestStartStates.car_wash)
+    await state.update_data(shift_date=callback_data.date)
     view = ShiftStartCarWashChooseView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
