@@ -33,6 +33,7 @@ class ShiftFinishCarWashSummary(BaseModel):
     total_cars_count: int
     refilled_cars_count: int
     not_refilled_cars_count: int
+    trunk_vacuum_count: int
 
 
 class ShiftFinishResult(BaseModel):

@@ -101,6 +101,7 @@ def format_shift_car_wash_finish_summary(
         f'\nПлановая мойка: {car_wash_summary.planned_cars_count}'
         f'\nСрочная мойка: {car_wash_summary.urgent_cars_count}'
         f'\nХимчистки: {car_wash_summary.dry_cleaning_count}'
+        f'\nПБ: {car_wash_summary.trunk_vacuum_count}'
         f'\nДолив: {car_wash_summary.refilled_cars_count}'
         f'\nНедолив: {car_wash_summary.not_refilled_cars_count}'
     )
