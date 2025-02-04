@@ -95,7 +95,7 @@ async def on_move_to_wash_shift_work_type_choice(
     logger.info('Shifts for date %s: %s', shift_date, shifts_page.shifts)
     if not shifts_page.shifts:
         await callback_query.answer(
-            text='❌У вас нет на сегодня смены',
+            text=f'❌У вас нет на сегодня смены ({shift_date:%d.%m.%Y})',
             show_alert=True
         )
         return
