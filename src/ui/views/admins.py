@@ -33,7 +33,7 @@ class AdminMenuView(TextView):
                             url=f'{self.__web_app_base_url}/shifts/confirm',
                         ),
                     ),
-                    KeyboardButton(text=ButtonText.SHIFTS),
+                    KeyboardButton(text=ButtonText.SHIFTS_ADMIN_MENU),
                     KeyboardButton(
                         text=ButtonText.CAR_WASH_LIST,
                         web_app=WebAppInfo(
@@ -62,8 +62,9 @@ class AdminMenuView(TextView):
 class AdminShiftsMenuView(TextView):
     text = '📆 Меню графиков'
 
-    def __init__(self, web_app_base_url: str):
+    def __init__(self, web_app_base_url: str, shifts_table_url: str):
         self.__web_app_base_url = web_app_base_url
+        self.__shifts_table_url = shifts_table_url
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         available_dates_button = InlineKeyboardButton(
@@ -78,10 +79,15 @@ class AdminShiftsMenuView(TextView):
                 url=f'{self.__web_app_base_url}/shifts/schedules',
             ),
         )
+        shifts_table_url = InlineKeyboardButton(
+            text='📊 Таблица',
+            url=self.__shifts_table_url,
+        )
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [available_dates_button],
                 [shifts_edit_button],
+                [shifts_table_url],
             ]
         )
 

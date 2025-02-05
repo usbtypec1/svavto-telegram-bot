@@ -37,6 +37,7 @@ class Config:
     report_tables: list[ReportTable]
     sentry: SentryConfig
     redis_url: str
+    shifts_table_url: str
 
 
 def load_config_from_file(
@@ -62,6 +63,7 @@ def load_config_from_file(
         admin_user_ids_ttl_in_seconds=(
             config['app']['admin_user_ids_ttl_in_seconds']
         ),
+        shifts_table_url=config['shifts_table']['url'],
         report_tables=report_tables,
         sentry=SentryConfig(
             dsn=config['sentry']['dsn'],

@@ -14,7 +14,7 @@ router = Router(name=__name__)
 
 
 @router.message(
-    F.text == ButtonText.SHIFTS,
+    F.text == ButtonText.SHIFTS_ADMIN_MENU,
     admins_filter,
     StateFilter('*'),
 )
@@ -22,5 +22,8 @@ async def on_show_staff_list(
         message: Message,
         config: Config,
 ) -> None:
-    view = AdminShiftsMenuView(config.web_app_base_url)
+    view = AdminShiftsMenuView(
+        web_app_base_url=config.web_app_base_url,
+        shifts_table_url=config.shifts_table_url,
+    )
     await answer_text_view(message, view)
