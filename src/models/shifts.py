@@ -2,8 +2,9 @@ import datetime
 
 from pydantic import BaseModel
 
+from enums import ShiftType
 from models.car_washes import CarWash
-from models.staff import Staff
+from models.staff import Staff, StaffIdAndName
 
 __all__ = (
     'ShiftFinishResult',
@@ -47,7 +48,7 @@ class ShiftFinishResult(BaseModel):
 
 class ShiftsConfirmation(BaseModel):
     date: datetime.date
-    staff_ids: list[int]
+    staff_list: list[StaffIdAndName]
 
 
 class Shift(BaseModel):
@@ -93,11 +94,14 @@ class ShiftTestCreateResult(BaseModel):
 class ShiftListItem(BaseModel):
     id: int
     date: datetime.date
-    car_wash: CarWash | None
-    staff: Staff
-    is_started: bool
-    is_finished: bool
+    car_wash_id: int | None
+    car_wash_name: str | None
+    staff_id: int | None
+    staff_full_name: str | None
+    started_at: datetime.datetime | None
+    finished_at: datetime.datetime | None
     created_at: datetime.datetime
+    type: ShiftType
 
 
 class ShiftListPage(BaseModel):

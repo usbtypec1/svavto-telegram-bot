@@ -4,11 +4,17 @@ from pydantic import BaseModel
 
 __all__ = (
     'Staff',
+    'StaffIdAndName',
     'StaffToRegister',
     'StaffToRegisterWithId',
     'StaffListPage',
     'Pagination',
 )
+
+
+class StaffIdAndName(BaseModel):
+    id: int
+    full_name: str
 
 
 class StaffToRegister(BaseModel):

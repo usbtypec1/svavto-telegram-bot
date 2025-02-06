@@ -12,7 +12,7 @@ from config import Config
 from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
-from enums import ShiftWorkType
+from enums import ShiftType, ShiftWorkType
 from filters import staff_filter
 from logger import create_logger
 from models import Staff
@@ -88,9 +88,10 @@ async def on_move_to_wash_shift_work_type_choice(
         shift_date,
     )
     shifts_page = await shift_repository.get_list(
-        date_from=shift_date,
-        date_to=shift_date,
+        from_date=shift_date,
+        to_date=shift_date,
         staff_ids=[staff.id],
+        shift_types=(ShiftType.REGULAR,),
     )
     logger.info('Shifts for date %s: %s', shift_date, shifts_page.shifts)
     if not shifts_page.shifts:

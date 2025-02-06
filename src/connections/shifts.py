@@ -4,6 +4,7 @@ from collections.abc import Iterable
 import httpx
 
 from connections.base import ApiConnection
+from enums import ShiftType
 from logger import create_logger
 
 __all__ = ('ShiftConnection',)
@@ -26,29 +27,32 @@ class ShiftConnection(ApiConnection):
     async def get_list(
             self,
             *,
-            date_from: datetime.date | None = None,
-            date_to: datetime.date | None = None,
+            from_date: datetime.date | None = None,
+            to_date: datetime.date | None = None,
             staff_ids: Iterable[int] | None = None,
             limit: int | None = None,
             offset: int | None = None,
+            shift_types: Iterable[ShiftType] | None = None,
     ) -> httpx.Response:
-        url = '/shifts/'
+        url = '/shifts/v2/'
         query_params = {}
-        if date_from is not None:
-            query_params['date_from'] = f'{date_from:%Y-%m-%d}'
-        if date_to is not None:
-            query_params['date_to'] = f'{date_to:%Y-%m-%d}'
+        if from_date is not None:
+            query_params['date_from'] = f'{from_date:%Y-%m-%d}'
+        if to_date is not None:
+            query_params['date_to'] = f'{to_date:%Y-%m-%d}'
         if staff_ids is not None:
             query_params['staff_ids'] = tuple(staff_ids)
         if limit is not None:
             query_params['limit'] = limit
         if offset is not None:
             query_params['offset'] = offset
-        logger.debug('Retrieving shifts list')
+        if shift_types is not None:
+            query_params['types'] = tuple(shift_types)
+        logger.debug('Retrieving shifts list. Query params: %s', query_params)
         response = await self._http_client.get(url, params=query_params)
         logger.debug(
-            'Received shifts list',
-            extra={'status_code': response.status_code},
+            'Received shifts list with status code %d',
+            response.status_code,
         )
         return response
 

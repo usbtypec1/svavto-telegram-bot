@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
@@ -12,12 +14,14 @@ from config import Config
 from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
+from enums import ShiftType
 from filters import admins_filter, staff_filter
 from models import ShiftsConfirmation
 from states import ShiftRegularStartStates
 from ui.views import (
     ButtonText, ShiftMenuView, ShiftRegularStartRequestView,
-    ShiftStartCarWashChooseView, TestShiftStartRequestView,
+    ShiftStartCarWashChooseView, ShiftStartForSpecificDateRequestSentView,
+    TestShiftStartRequestView,
     answer_text_view, edit_as_rejected, edit_message_by_view, send_text_view,
 )
 
@@ -108,11 +112,13 @@ async def on_send_shift_start_request_for_specific_date(
     shifts_confirmation = ShiftsConfirmation.model_validate_json(
         json_data=message.web_app_data.data,
     )
+    staff_ids = [staff.id for staff in shifts_confirmation.staff_list]
     shifts_page = await shift_repository.get_list(
-        staff_ids=shifts_confirmation.staff_ids,
-        date_from=shifts_confirmation.date,
-        date_to=shifts_confirmation.date,
+        staff_ids=staff_ids,
+        from_date=shifts_confirmation.date,
+        to_date=shifts_confirmation.date,
         limit=1000,
+        shift_types=(ShiftType.REGULAR,),
     )
     shifts = shifts_page.shifts
 
@@ -120,10 +126,9 @@ async def on_send_shift_start_request_for_specific_date(
 
     sent_message = await message.answer('Отправляю запросы на начало смены')
 
-    count = 0
-    for staff_id in shifts_confirmation.staff_ids:
+    for staff in shifts_confirmation.staff_list:
         try:
-            shift = staff_id_to_shift[staff_id]
+            shift = staff_id_to_shift[staff.id]
         except KeyError:
             view = TestShiftStartRequestView(date=shifts_confirmation.date)
         else:
@@ -132,10 +137,10 @@ async def on_send_shift_start_request_for_specific_date(
                 shift_date=shift.date,
                 staff_full_name=shift.staff.full_name,
             )
-        finally:
-            count += 1
-        await send_text_view(bot, view, staff_id)
+        await send_text_view(bot, view, staff.id)
+        await asyncio.sleep(0.1)
 
-    await sent_message.edit_text(
-        f'✅ Запросы на начало смены отправлены {count} сотрудникам',
+    view = ShiftStartForSpecificDateRequestSentView(
+        staff_list=shifts_confirmation.staff_list,
     )
+    await edit_message_by_view(sent_message, view)

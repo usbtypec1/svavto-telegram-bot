@@ -1,10 +1,15 @@
+from collections.abc import Iterable
+
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
 
+from models import StaffIdAndName
 from ui.views.base import TextView
-
-__all__ = ('SpecificShiftPickerView',)
-
 from ui.views.button_texts import ButtonText
+
+__all__ = (
+    'SpecificShiftPickerView',
+    'ShiftStartForSpecificDateRequestSentView',
+)
 
 
 class SpecificShiftPickerView(TextView):
@@ -31,3 +36,19 @@ class SpecificShiftPickerView(TextView):
             resize_keyboard=True,
             keyboard=[[web_app_button]],
         )
+
+
+class ShiftStartForSpecificDateRequestSentView(TextView):
+
+    def __init__(self, staff_list: Iterable[StaffIdAndName]):
+        self.__staff_list = tuple(staff_list)
+
+    def get_text(self) -> str:
+        if not self.__staff_list:
+            return '❗️ Нет сотрудников для отправки запроса на начало смены'
+        lines = [
+            f'✅ Запросы на начало смены отправлены сотрудникам:',
+        ]
+        for i, staff in enumerate(self.__staff_list, start=1):
+            lines.append(f'{i}. {staff.full_name}')
+        return '\n'.join(lines)

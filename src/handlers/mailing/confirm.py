@@ -19,7 +19,7 @@ from services.mailing import (
 from services.notifications import MailingService
 from states import MailingStates
 from ui.texts import format_accept_text
-from ui.views import AdminMenuView
+from ui.views import AdminMenuView, edit_as_accepted
 from ui.views import answer_text_view
 
 __all__ = ('router',)
@@ -90,8 +90,6 @@ async def on_confirm_mailing(
         )
 
     await callback_query.message.answer('✅ Рассылка завершена')
-    await callback_query.message.edit_text(
-        format_accept_text(callback_query.message),
-    )
+    await edit_as_accepted(callback_query.message)
     view = AdminMenuView(config.web_app_base_url)
     await answer_text_view(callback_query.message, view)
