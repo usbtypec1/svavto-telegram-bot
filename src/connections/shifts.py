@@ -37,9 +37,9 @@ class ShiftConnection(ApiConnection):
         url = '/shifts/v2/'
         query_params = {}
         if from_date is not None:
-            query_params['date_from'] = f'{from_date:%Y-%m-%d}'
+            query_params['from_date'] = f'{from_date:%Y-%m-%d}'
         if to_date is not None:
-            query_params['date_to'] = f'{to_date:%Y-%m-%d}'
+            query_params['to_date'] = f'{to_date:%Y-%m-%d}'
         if staff_ids is not None:
             query_params['staff_ids'] = tuple(staff_ids)
         if limit is not None:
