@@ -41,7 +41,7 @@ class StaffConnection(ApiConnection):
         )
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
-            'Created staff with id %d. Status code:',
+            'Created staff with id %d. Status code: %d',
             telegram_id,
             response.status_code,
         )

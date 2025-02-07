@@ -12,12 +12,15 @@ from exceptions import (
     ShiftNotFoundError, StaffAlreadyExistsError, StaffHasActiveShiftError,
     StaffHasNoActiveShiftError, StaffHasNoAnyShiftError, StaffNotFoundError,
 )
+from logger import create_logger
 
 __all__ = (
     'handle_errors',
     'raise_appropriate_error',
     'code_to_exception_class',
 )
+
+logger = create_logger('errors')
 
 code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_NOT_FOUND: StaffNotFoundError,
@@ -51,6 +54,7 @@ def raise_appropriate_error(errors: Iterable[dict]) -> Never:
         if exception_class is not None:
             raise exception_class(error_detail, **error_extra)
 
+    logger.error('Unknown API error. Errors: %s', errors)
     raise ServerApiError
 
 

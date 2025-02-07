@@ -196,9 +196,15 @@ async def send_view(
             assert_never(view)
 
 
-async def edit_as_rejected(message: Message) -> None:
+async def edit_as_rejected(
+        message: Message,
+        detail: str | None = None,
+) -> None:
     if message.text is not None:
-        await message.edit_text(text=format_reject_text(message.text))
+        text = format_reject_text(message.text)
+        if detail is not None:
+            text += f'\n{detail}'
+        await message.edit_text(text=text)
 
 
 async def edit_as_accepted(message: Message) -> None:

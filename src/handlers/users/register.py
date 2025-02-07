@@ -5,28 +5,18 @@ from fast_depends import Depends, inject
 
 from dependencies.repositories import get_staff_repository
 from exceptions import (
-    StaffAlreadyExistsError, StaffNotFoundError,
+    StaffNotFoundError,
     StaffRegisterTextParseError,
 )
 from models import StaffToRegister
 from repositories import StaffRepository
-from services.notifications import (
-    SpecificChatsNotificationService,
-)
+from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import answer_appropriate_event
+from ui.views import ButtonText, StaffRegisterNotificationView
 
 __all__ = ('router',)
 
-from ui.views import ButtonText
-from ui.views import StaffRegisterNotificationView
-
 router = Router(name=__name__)
-
-
-@router.error(ExceptionTypeFilter(StaffAlreadyExistsError))
-async def on_staff_already_exists_error(event: ErrorEvent) -> None:
-    text = 'Сотрудник уже зарегистрирован'
-    await answer_appropriate_event(event, text)
 
 
 @router.error(ExceptionTypeFilter(StaffRegisterTextParseError))

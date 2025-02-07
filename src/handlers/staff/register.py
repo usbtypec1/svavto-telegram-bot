@@ -10,7 +10,7 @@ from exceptions import StaffNotFoundError, StaffAlreadyExistsError
 from filters import admins_filter
 from repositories import StaffRepository
 from services.staff import parse_staff_register_text
-from ui.views import send_text_view
+from ui.views import edit_as_accepted, edit_as_rejected, send_text_view
 from ui.views import MainMenuView
 from ui.views import StaffRegisterAcceptedView, StaffRegisterRejectedView
 
@@ -39,9 +39,7 @@ async def on_staff_register_reject(
         await staff_repository.get_by_id(staff_to_register.id)
     except StaffNotFoundError:
         await callback_query.answer('❌ Отклонено', show_alert=True)
-        await callback_query.message.edit_text(
-            f'{message_text}\n\n❌ Отклонено',
-        )
+        await edit_as_rejected(callback_query.message)
         view = StaffRegisterRejectedView()
         await send_text_view(bot, view, staff_to_register.id)
     else:
@@ -65,11 +63,22 @@ async def on_staff_register_accept(
 ) -> None:
     message_text = callback_query.message.text
     staff_to_register = parse_staff_register_text(message_text)
-    await staff_repository.create(staff_to_register)
+
+    try:
+        await staff_repository.create(staff_to_register)
+    except StaffAlreadyExistsError:
+        await callback_query.answer(
+            '❌ Пользователь уже зарегистрирован',
+            show_alert=True,
+        )
+        await edit_as_rejected(
+            message=callback_query.message,
+            detail='Пользователь уже зарегистрирован',
+        )
+        return
+
     staff = await staff_repository.get_by_id(staff_to_register.id)
-    await callback_query.message.edit_text(
-        f'{message_text}\n\n✅ Заявка на регистрацию принята',
-    )
+    await edit_as_accepted(callback_query.message)
     await callback_query.answer(
         '✅ Заявка на регистрацию принята',
         show_alert=True,
