@@ -13,7 +13,6 @@ class EconomicsRepository:
     async def create_penalty(
             self,
             *,
-            staff_id: int,
             shift_id: int,
             reason: str,
             amount: int | None,
@@ -22,7 +21,6 @@ class EconomicsRepository:
         Give penalty to staff member.
 
         Keyword Args:
-            staff_id: staff member ID
             shift_id: shift ID.
             reason: penalty reason.
             amount: optional penalty amount.
@@ -31,7 +29,6 @@ class EconomicsRepository:
             Penalty: created penalty.
         """
         response = await self.__connection.create_penalty(
-            staff_id=staff_id,
             shift_id=shift_id,
             reason=reason,
             amount=amount,
@@ -43,7 +40,6 @@ class EconomicsRepository:
     async def create_surcharge(
             self,
             *,
-            staff_id: int,
             shift_id: int,
             reason: str,
             amount: int,
@@ -52,7 +48,6 @@ class EconomicsRepository:
         Give surcharge to staff member.
 
         Keyword Args:
-            staff_id: staff member ID
             shift_id: shift ID.
             reason: penalty reason.
             amount: optional penalty amount.
@@ -61,7 +56,6 @@ class EconomicsRepository:
             Surcharge: created surcharge.
         """
         response = await self.__connection.create_surcharge(
-            staff_id=staff_id,
             shift_id=shift_id,
             reason=reason,
             amount=amount,

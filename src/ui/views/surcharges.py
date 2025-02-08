@@ -1,6 +1,9 @@
 from collections.abc import Iterable
 
-from aiogram.types import ForceReply, InlineKeyboardMarkup
+from aiogram.types import (
+    ForceReply, InlineKeyboardButton,
+    InlineKeyboardMarkup, WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 import ui
@@ -8,6 +11,7 @@ from callback_data import SurchargeCreateChooseStaffCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from models import Staff, Surcharge
 from ui.markups import create_confirm_reject_markup
+from ui.views import ReplyMarkup
 from ui.views.base import TextView
 
 __all__ = (
@@ -16,6 +20,7 @@ __all__ = (
     'SurchargeCreateConfirmView',
     'SurchargeCreateSuccessView',
     'SurchargeCreateInputAmountView',
+    'SurchargeNotificationView',
 )
 
 
@@ -76,13 +81,36 @@ class SurchargeCreateConfirmView(TextView):
 
 class SurchargeCreateSuccessView(TextView):
 
-    def __init__(self, surcharge: Surcharge, staff: Staff):
+    def __init__(self, surcharge: Surcharge):
         self.__surcharge = surcharge
-        self.__staff = staff
 
     def get_text(self) -> str:
         return (
-            f'❗️ Сотруднику {self.__staff.full_name}'
+            f'❗️ Сотруднику {self.__surcharge.staff_full_name}'
             f' доплачено <b>{self.__surcharge.amount}</b>'
             f' по причине <i>{self.__surcharge.reason}</i>\n'
         )
+
+
+class SurchargeNotificationView(TextView):
+
+    def __init__(self, surcharge: Surcharge, web_app_base_url: str):
+        self.__surcharge = surcharge
+        self.__web_app_base_url = web_app_base_url
+
+    def get_text(self) -> str:
+        return (
+            f'❗️ {self.__surcharge.staff_full_name}, вы получили новую доплату'
+            f'\nПричина: {self.__surcharge.reason}'
+            f'\nСумма: {self.__surcharge.amount}'
+        )
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        url = (
+            f'{self.__web_app_base_url}/surcharges/{self.__surcharge.staff_id}'
+        )
+        button = InlineKeyboardButton(
+            text='🛑 Все мои штрафы',
+            web_app=WebAppInfo(url=url),
+        )
+        return InlineKeyboardMarkup(inline_keyboard=[[button]])

@@ -171,11 +171,18 @@ class StaffDetailView(TextView):
                     offset=self.__offset,
                 ),
             )
+        penalties_url = f'{self.__web_app_base_url}/penalties/{self.__staff.id}'
         keyboard.button(
             text='🛑 Штрафы',
-            web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/penalties/{self.__staff.id}',
-            ),
+            web_app=WebAppInfo(url=penalties_url),
+        )
+
+        surcharges_url = (
+            f'{self.__web_app_base_url}/surcharges/{self.__staff.id}'
+        )
+        keyboard.button(
+            text='💰 Доплаты',
+            web_app=WebAppInfo(url=surcharges_url),
         )
         keyboard.row(
             create_back_button(

@@ -1,4 +1,4 @@
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
@@ -8,26 +8,22 @@ from callback_data import SurchargeCreateChooseStaffCallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import (
-    get_economics_repository,
-    get_staff_repository,
+    EconomicsRepositoryDependency, get_staff_repository,
+    StaffRepositoryDependency,
 )
 from enums import StaffOrderBy
 from exceptions.surcharges import SurchargeAmountParseError
 from filters import admins_filter
 from models import SpecificShiftPickResult
-from repositories import EconomicsRepository, StaffRepository
+from repositories import StaffRepository
 from services.surcharges import parse_money_amount
 from states import SurchargeCreateStates
-from ui.views import AdminMenuView, edit_as_rejected
-from ui.views import answer_text_view, edit_message_by_view
-from ui.views import ButtonText
-from ui.views import SpecificShiftPickerView
 from ui.views import (
-    SurchargeCreateChooseStaffView,
-    SurchargeCreateConfirmView,
-    SurchargeCreateInputAmountView,
-    SurchargeCreateInputReasonView,
-    SurchargeCreateSuccessView,
+    AdminMenuView, answer_text_view, ButtonText,
+    edit_as_rejected, edit_message_by_view, send_view, SpecificShiftPickerView,
+    SurchargeCreateChooseStaffView, SurchargeCreateConfirmView,
+    SurchargeCreateInputAmountView, SurchargeCreateInputReasonView,
+    SurchargeCreateSuccessView, SurchargeNotificationView,
 )
 
 __all__ = ('router',)
@@ -61,33 +57,29 @@ async def on_accept_surcharge_creation(
         callback_query: CallbackQuery,
         state: FSMContext,
         config: Config,
-        economics_repository: EconomicsRepository = Depends(
-            dependency=get_economics_repository,
-            use_cache=False,
-        ),
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
-            use_cache=False,
-        ),
+        bot: Bot,
+        economics_repository: EconomicsRepositoryDependency,
 ) -> None:
     state_data = await state.get_data()
-    staff_id: int = state_data['staff_id']
     shift_id: int = state_data['shift_id']
     reason: str = state_data['reason']
     amount: int = state_data['amount']
 
     surcharge = await economics_repository.create_surcharge(
-        staff_id=staff_id,
         shift_id=shift_id,
         reason=reason,
         amount=amount,
     )
-    staff = await staff_repository.get_by_id(staff_id)
 
-    view = SurchargeCreateSuccessView(surcharge, staff)
+    view = SurchargeCreateSuccessView(surcharge)
     await edit_message_by_view(callback_query.message, view)
     view = AdminMenuView(config.web_app_base_url)
     await answer_text_view(callback_query.message, view)
+    view = SurchargeNotificationView(
+        surcharge=surcharge,
+        web_app_base_url=config.web_app_base_url,
+    )
+    await send_view(bot, view, surcharge.staff_id)
 
 
 @router.message(
@@ -99,10 +91,7 @@ async def on_accept_surcharge_creation(
 async def on_input_amount_for_surcharge(
         message: Message,
         state: FSMContext,
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
-            use_cache=False,
-        ),
+        staff_repository: StaffRepositoryDependency,
 ) -> None:
     try:
         amount = parse_money_amount(message.text)

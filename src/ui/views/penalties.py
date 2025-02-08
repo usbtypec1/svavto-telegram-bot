@@ -119,9 +119,8 @@ class PenaltyCreateChooseReasonView(TextView):
 
 class PenaltyCreateSuccessView(TextView):
 
-    def __init__(self, penalty: Penalty, staff: Staff):
+    def __init__(self, penalty: Penalty):
         self.__penalty = penalty
-        self.__staff = staff
 
     def get_text(self) -> str:
         reason_name = penalty_reason_to_name.get(
@@ -129,7 +128,7 @@ class PenaltyCreateSuccessView(TextView):
             self.__penalty.reason,
         )
         text = (
-            f'❗️ Сотрудник {self.__staff.full_name} оштрафован'
+            f'❗️ Сотрудник {self.__penalty.staff_full_name} оштрафован'
             f'\nПричина: {reason_name}'
             f'\nСумма: {self.__penalty.amount}'
         )
@@ -160,7 +159,7 @@ def format_penalty_create_notification_text(penalty: Penalty) -> str:
         penalty.reason,
     )
     return (
-        f'❗️ {penalty.staff.full_name}, вы получили новый штраф'
+        f'❗️ {penalty.staff_full_name}, вы получили новый штраф'
         f'\nПричина: {reason_name}'
         f'\nСумма: {penalty.amount}'
     )
@@ -171,7 +170,7 @@ def render_penalty_create_notification_markup(
         penalty: Penalty,
         web_app_base_url: str,
 ) -> InlineKeyboardMarkup:
-    url = f'{web_app_base_url}/penalties/{penalty.staff.id}'
+    url = f'{web_app_base_url}/penalties/{penalty.staff_id}'
     button = InlineKeyboardButton(
         text='🛑 Все мои штрафы',
         web_app=WebAppInfo(url=url),

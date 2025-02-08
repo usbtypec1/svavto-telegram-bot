@@ -8,16 +8,14 @@ from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import (
     get_economics_repository,
-    get_staff_repository,
 )
 from filters import admins_filter
-from repositories import EconomicsRepository, StaffRepository
+from repositories import EconomicsRepository
 from states import PenaltyCreateStates
 from ui.views import (
-    AdminMenuView, PenaltyCreateNotificationView,
-    PenaltyCreateSuccessView, PhotoCreateWithPhotoNotificationView,
-    answer_text_view, edit_as_rejected, edit_message_by_view, send_photo_view,
-    send_text_view,
+    AdminMenuView, answer_text_view, edit_as_rejected, edit_message_by_view,
+    PenaltyCreateNotificationView, PenaltyCreateSuccessView,
+    PhotoCreateWithPhotoNotificationView, send_photo_view, send_text_view,
 )
 
 __all__ = ('router',)
@@ -56,27 +54,20 @@ async def on_accept_penalty_creation(
             dependency=get_economics_repository,
             use_cache=False,
         ),
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
-            use_cache=False,
-        ),
 ) -> None:
     state_data = await state.get_data()
-    staff_id: int = state_data['staff_id']
     shift_id: int = state_data['shift_id']
     reason: str = state_data['reason']
     amount: int | None = state_data.get('amount')
     photo_file_id: str | None = state_data.get('photo_file_id')
 
     penalty = await economics_repository.create_penalty(
-        staff_id=staff_id,
         shift_id=shift_id,
         reason=reason,
         amount=amount,
     )
-    staff = await staff_repository.get_by_id(staff_id)
 
-    view = PenaltyCreateSuccessView(penalty, staff)
+    view = PenaltyCreateSuccessView(penalty)
     await edit_message_by_view(callback_query.message, view)
 
     view = AdminMenuView(config.web_app_base_url)
@@ -87,11 +78,11 @@ async def on_accept_penalty_creation(
             penalty=penalty,
             web_app_base_url=config.web_app_base_url,
         )
-        await send_text_view(bot, view, staff.id)
+        await send_text_view(bot, view, penalty.staff_id)
     else:
         view = PhotoCreateWithPhotoNotificationView(
             penalty=penalty,
             web_app_base_url=config.web_app_base_url,
             photo_file_id=photo_file_id,
         )
-        await send_photo_view(bot, view, staff.id)
+        await send_photo_view(bot, view, penalty.staff_id)

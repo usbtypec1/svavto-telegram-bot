@@ -18,7 +18,6 @@ from services.mailing import (
 )
 from services.notifications import MailingService
 from states import MailingStates
-from ui.texts import format_accept_text
 from ui.views import AdminMenuView, edit_as_accepted
 from ui.views import answer_text_view
 
