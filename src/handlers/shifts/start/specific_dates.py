@@ -122,7 +122,7 @@ async def on_send_shift_start_request_for_specific_date(
     )
     shifts = shifts_page.shifts
 
-    staff_id_to_shift = {shift.staff.id: shift for shift in shifts}
+    staff_id_to_shift = {shift.staff_id: shift for shift in shifts}
 
     sent_message = await message.answer('Отправляю запросы на начало смены')
 
@@ -135,7 +135,7 @@ async def on_send_shift_start_request_for_specific_date(
             view = ShiftRegularStartRequestView(
                 shift_id=shift.id,
                 shift_date=shift.date,
-                staff_full_name=shift.staff.full_name,
+                staff_full_name=shift.staff_full_name,
             )
         await send_text_view(bot, view, staff.id)
         await asyncio.sleep(0.1)
