@@ -5,6 +5,7 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
+from redis.commands.search.reducers import count_distinct
 
 from callback_data import (
     ShiftRegularRejectCallbackData, ShiftRegularStartCallbackData,
@@ -34,11 +35,15 @@ router = Router(name=__name__)
     ShiftRegularRejectCallbackData.filter(),
     staff_filter,
 )
+@inject
 async def on_shift_regular_start_reject(
         callback_query: CallbackQuery,
+        callback_data: ShiftRegularRejectCallbackData,
+        shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    await callback_query.answer('Вы отменили начало смены', show_alert=True)
+    await callback_query.answer('❌ Выход на смену отклонен', show_alert=True)
     await edit_as_rejected(callback_query.message)
+    await shift_repository.reject(callback_data.shift_id)
 
 
 @router.callback_query(
