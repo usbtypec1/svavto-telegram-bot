@@ -22,7 +22,7 @@ class AdminMenuView(TextView):
         staff_register_requests_button = KeyboardButton(
             text=ButtonText.STAFF_REGISTER_REQUESTS,
             web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/staff/register-requests',
+                url=f'{self.__web_app_base_url}/register-requests',
             ),
         )
         return ReplyKeyboardMarkup(
