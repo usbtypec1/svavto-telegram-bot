@@ -42,8 +42,8 @@ class AdminMenuView(TextView):
                     ),
                 ],
                 [
-                    KeyboardButton(text=ButtonText.PENALTY),
-                    KeyboardButton(text=ButtonText.SURCHARGE),
+                    KeyboardButton(text=ButtonText.PENALTY_CREATE),
+                    KeyboardButton(text=ButtonText.SURCHARGE_CREATE),
                 ],
                 [
                     KeyboardButton(text=ButtonText.SUPERVISION_MENU),

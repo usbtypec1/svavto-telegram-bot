@@ -168,7 +168,7 @@ async def on_choose_staff_for_surcharge(
 
 
 @router.message(
-    F.text == ButtonText.SURCHARGE,
+    F.text == ButtonText.SURCHARGE_CREATE,
     admins_filter,
     StateFilter('*'),
 )
