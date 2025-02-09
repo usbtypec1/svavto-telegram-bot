@@ -171,3 +171,7 @@ class ShiftRepository:
             datetime.date.fromisoformat(date)
             for date in response_data['shift_dates']
         ]
+
+    async def reject(self, shift_id: int) -> None:
+        response = await self.__connection.reject(shift_id=shift_id)
+        handle_errors(response)
