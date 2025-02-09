@@ -19,13 +19,19 @@ class AdminMenuView(TextView):
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        staff_register_requests_button = KeyboardButton(
+            text=ButtonText.STAFF_REGISTER_REQUESTS,
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/staff/register-requests',
+            ),
+        )
         return ReplyKeyboardMarkup(
             is_persistent=True,
             resize_keyboard=True,
             keyboard=[
                 [
                     KeyboardButton(text=ButtonText.STAFF_LIST),
-                    KeyboardButton(text=ButtonText.STAFF_REGISTER_REQUESTS),
+                    staff_register_requests_button,
                 ],
                 [
                     KeyboardButton(
