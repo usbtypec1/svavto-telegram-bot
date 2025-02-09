@@ -143,15 +143,8 @@ async def on_extra_shift_create_reject(
 ) -> None:
     shift_date = datetime.date.fromisoformat(callback_data.date)
     view = ShiftExtraStartRequestRejectedView(shift_date=shift_date)
-    try:
-        await send_text_view(bot, view, callback_data.staff_id)
-    except TelegramAPIError:
-        await callback_query.answer(
-            text='❌ Не удалось отправить сообщение сотруднику',
-            show_alert=True,
-        )
-    else:
-        await edit_as_rejected(callback_query.message)
+    await send_text_view(bot, view, callback_data.staff_id)
+    await edit_as_rejected(callback_query.message)
 
 
 @router.message(
