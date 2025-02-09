@@ -5,7 +5,6 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
-from redis.commands.search.reducers import count_distinct
 
 from callback_data import (
     ShiftRegularRejectCallbackData, ShiftRegularStartCallbackData,

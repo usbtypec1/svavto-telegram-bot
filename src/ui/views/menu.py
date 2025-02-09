@@ -12,11 +12,18 @@ __all__ = ('MainMenuView', 'RegisterView', 'ShiftMenuView', 'StaffBannedView')
 class MainMenuView(TextView):
     text = 'Главное меню'
 
-    def __init__(self, web_app_base_url: str):
+    def __init__(self, *, staff_id: int, web_app_base_url: str):
+        self.__staff_id = staff_id
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         report_web_app_url = f'{self.__web_app_base_url}/reports'
+        penalty_web_app_url = (
+            f'{self.__web_app_base_url}/penalties/{self.__staff_id}'
+        )
+        surcharge_web_app_url = (
+            f'{self.__web_app_base_url}/surcharges/{self.__staff_id}'
+        )
         return ReplyKeyboardMarkup(
             resize_keyboard=True,
             keyboard=[
@@ -26,6 +33,16 @@ class MainMenuView(TextView):
                 [
                     KeyboardButton(text=ButtonText.SHIFT_START_EXTRA),
                     KeyboardButton(text=ButtonText.SHIFT_SCHEDULE),
+                ],
+                [
+                    KeyboardButton(
+                        text=ButtonText.PENALTY_LIST,
+                        web_app=WebAppInfo(url=penalty_web_app_url),
+                    ),
+                    KeyboardButton(
+                        text=ButtonText.SURCHARGE_LIST,
+                        web_app=WebAppInfo(url=surcharge_web_app_url),
+                    ),
                 ],
                 [
                     KeyboardButton(

@@ -47,7 +47,10 @@ async def on_new_shift_later(
         config: Config,
 ) -> None:
     await message.answer('Хорошо! Возвращаюсь к главному меню.')
-    view = MainMenuView(config.web_app_base_url)
+    view = MainMenuView(
+        staff_id=message.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await answer_text_view(message, view)
 
 
@@ -111,7 +114,10 @@ async def on_shift_finish_accept(
     else:
         view = StaffShiftFinishedView()
         await answer_text_view(callback_query.message, view)
-        view = MainMenuView(config.web_app_base_url)
+        view = MainMenuView(
+            staff_id=callback_query.from_user.id,
+            web_app_base_url=config.web_app_base_url,
+        )
         await answer_text_view(callback_query.message, view)
     await edit_as_accepted(callback_query.message)
     if shift_finish_result.finish_photo_file_ids:

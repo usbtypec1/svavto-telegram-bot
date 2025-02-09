@@ -85,5 +85,8 @@ async def on_staff_register_accept(
     )
     view = StaffRegisterAcceptedView()
     await send_text_view(bot, view, staff.id)
-    view = MainMenuView(config.web_app_base_url)
+    view = MainMenuView(
+        staff_id=callback_query.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await send_text_view(bot, view, staff.id)

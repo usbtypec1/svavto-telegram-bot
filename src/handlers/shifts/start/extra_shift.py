@@ -1,7 +1,6 @@
 import datetime
 
 from aiogram import Bot, F, Router
-from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -177,7 +176,10 @@ async def on_extra_shift_calendar(
     await admins_notification_service.send_view(view)
     view = ShiftExtraStartRequestSentView(shift_date)
     await answer_view(message, view)
-    view = MainMenuView(config.web_app_base_url)
+    view = MainMenuView(
+        staff_id=message.from_user.id,
+        web_app_base_url=config.web_app_base_url,
+    )
     await answer_view(message, view)
 
 

@@ -1,3 +1,5 @@
+from collections.abc import AsyncGenerator
+
 import httpx
 from fast_depends import Depends
 
@@ -8,7 +10,7 @@ __all__ = ('get_http_client',)
 
 async def get_http_client(
         config: Config = Depends(load_config_from_file),
-) -> httpx.AsyncClient:
+) -> AsyncGenerator[httpx.AsyncClient]:
     async with httpx.AsyncClient(
             base_url=str(config.api_base_url),
     ) as http_client:

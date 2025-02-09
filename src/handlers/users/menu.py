@@ -69,7 +69,10 @@ async def on_show_menu(
                 message_or_callback_query.from_user.id,
             )
         except StaffHasNoActiveShiftError:
-            view = MainMenuView(config.web_app_base_url)
+            view = MainMenuView(
+                staff_id=message_or_callback_query.from_user.id,
+                web_app_base_url=config.web_app_base_url,
+            )
         else:
             view = ShiftMenuView(
                 staff_id=message_or_callback_query.from_user.id,
