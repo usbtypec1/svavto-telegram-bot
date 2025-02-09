@@ -1,6 +1,6 @@
 from aiogram import F, Router
 from aiogram.filters import (
-    CommandStart, ExceptionTypeFilter, StateFilter, invert_f, or_f,
+    CommandStart, ExceptionTypeFilter, or_f, StateFilter,
 )
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, ErrorEvent, Message
@@ -13,10 +13,10 @@ from exceptions import StaffHasNoActiveShiftError, StaffNotFoundError
 from filters import admins_filter, staff_filter
 from models import Staff
 from repositories import ShiftRepository
-from ui.views import AdminMenuView
-from ui.views import answer_text_view
-from ui.views import ButtonText
-from ui.views import MainMenuView, RegisterView, ShiftMenuView
+from ui.views import (
+    AdminMenuView, answer_text_view, ButtonText, MainMenuView,
+    RegisterView, ShiftMenuView,
+)
 
 __all__ = ('router',)
 

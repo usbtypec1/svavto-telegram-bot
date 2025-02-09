@@ -5,10 +5,10 @@ from pydantic import BaseModel
 __all__ = (
     'Staff',
     'StaffIdAndName',
-    'StaffToRegister',
-    'StaffToRegisterWithId',
+    'StaffRegisterRequestData',
     'StaffListPage',
     'Pagination',
+    'StaffRegisterRequest',
 )
 
 
@@ -17,14 +17,10 @@ class StaffIdAndName(BaseModel):
     full_name: str
 
 
-class StaffToRegister(BaseModel):
+class StaffRegisterRequestData(BaseModel):
     full_name: str
     car_sharing_phone_number: str
     console_phone_number: str
-
-
-class StaffToRegisterWithId(StaffToRegister):
-    id: int
 
 
 class Staff(BaseModel):
@@ -78,3 +74,12 @@ class Pagination(BaseModel):
 class StaffListPage(BaseModel):
     staff: list[Staff]
     pagination: Pagination
+
+
+class StaffRegisterRequest(BaseModel):
+    id: int
+    staff_id: int
+    full_name: str
+    car_sharing_phone_number: str
+    console_phone_number: str
+    created_at: datetime

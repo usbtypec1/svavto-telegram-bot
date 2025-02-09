@@ -21,32 +21,6 @@ class StaffConnection(ApiConnection):
         )
         return response
 
-    async def create(
-            self,
-            telegram_id: int,
-            full_name: str,
-            car_sharing_phone_number: str,
-            console_phone_number: str,
-    ) -> httpx.Response:
-        url = '/staff/'
-        request_data = {
-            'id': telegram_id,
-            'full_name': full_name,
-            'car_sharing_phone_number': car_sharing_phone_number,
-            'console_phone_number': console_phone_number,
-        }
-        logger.debug(
-            'Creating staff with id %d',
-            telegram_id,
-        )
-        response = await self._http_client.post(url, json=request_data)
-        logger.debug(
-            'Created staff with id %d. Status code: %d',
-            telegram_id,
-            response.status_code,
-        )
-        return response
-
     async def get_all(
             self,
             *,
@@ -105,6 +79,33 @@ class StaffConnection(ApiConnection):
         response = await self._http_client.get(url)
         logger.debug(
             'Retrieved all admins. Status code: %d',
+            response.status_code,
+        )
+        return response
+
+    async def create_register_request(
+            self,
+            *,
+            staff_id: int,
+            full_name: str,
+            car_sharing_phone_number: str,
+            console_phone_number: str,
+    ) -> httpx.Response:
+        url = '/staff/register-requests/'
+        request_data = {
+            'staff_id': staff_id,
+            'full_name': full_name,
+            'car_sharing_phone_number': car_sharing_phone_number,
+            'console_phone_number': console_phone_number,
+        }
+        logger.debug(
+            'Sending staff register request for staff ID: %d',
+            staff_id,
+        )
+        response = await self._http_client.post(url, json=request_data)
+        logger.debug(
+            'Received staff register request for staff ID %d. Status code: %d',
+            staff_id,
             response.status_code,
         )
         return response

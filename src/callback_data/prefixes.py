@@ -15,8 +15,6 @@ class CallbackDataPrefix(StrEnum):
     STAFF_DETAIL = auto()
     STAFF_UPDATE = auto()
     STAFF_LIST = auto()
-    STAFF_REGISTER_REJECT = auto()
-    STAFF_REGISTER_ACCEPT = auto()
     STAFF_MENU = auto()
     PENALTY_CREATE_CHOOSE_STAFF = auto()
     PENALTY_CREATE_CHOOSE_REASON = auto()

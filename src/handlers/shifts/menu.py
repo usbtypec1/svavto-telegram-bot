@@ -1,11 +1,10 @@
 from aiogram import Router
-from aiogram.filters import StateFilter, Command, invert_f
+from aiogram.filters import Command, StateFilter
 from aiogram.types import Message
 
 from config import Config
-from filters import admins_filter, staff_filter
-from ui.views import answer_text_view
-from ui.views import ShiftMenuView
+from filters import staff_filter
+from ui.views import answer_text_view, ShiftMenuView
 
 __all__ = ('router',)
 

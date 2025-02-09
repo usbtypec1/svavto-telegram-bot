@@ -1,7 +1,7 @@
 from connections import StaffConnection
 from enums import StaffOrderBy
 from logger import create_logger
-from models import Staff, StaffListPage, StaffToRegisterWithId
+from models import Staff, StaffListPage, StaffRegisterRequest
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
@@ -41,15 +41,6 @@ class StaffRepository:
         handle_errors(response)
         return StaffListPage.model_validate_json(response.text)
 
-    async def create(self, staff: StaffToRegisterWithId) -> None:
-        response = await self.__connection.create(
-            telegram_id=staff.id,
-            full_name=staff.full_name,
-            car_sharing_phone_number=staff.car_sharing_phone_number,
-            console_phone_number=staff.console_phone_number,
-        )
-        handle_errors(response)
-
     async def update_by_id(
             self,
             *,
@@ -70,3 +61,20 @@ class StaffRepository:
             staff['id']
             for staff in response_data['admin_staff']
         }
+
+    async def create_register_request(
+            self,
+            *,
+            staff_id: int,
+            full_name: str,
+            car_sharing_phone_number: str,
+            console_phone_number: str,
+    ) -> StaffRegisterRequest:
+        response = await self.__connection.create_register_request(
+            staff_id=staff_id,
+            full_name=full_name,
+            car_sharing_phone_number=car_sharing_phone_number,
+            console_phone_number=console_phone_number,
+        )
+        handle_errors(response)
+        return StaffRegisterRequest.model_validate_json(response.text)
