@@ -46,7 +46,7 @@ class AdminMenuView(TextView):
                     KeyboardButton(text=ButtonText.SURCHARGE),
                 ],
                 [
-                    KeyboardButton(text=ButtonText.SHIFT_CARS_COUNT_BY_STAFF),
+                    KeyboardButton(text=ButtonText.SUPERVISION_MENU),
                     KeyboardButton(
                         text=ButtonText.SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER,
                     ),

@@ -21,7 +21,7 @@ router = Router(name=__name__)
 
 
 @router.message(
-    F.text == ButtonText.SHIFT_CARS_COUNT_BY_STAFF,
+    F.text == ButtonText.SUPERVISION_MENU,
     admins_filter,
     StateFilter('*')
 )
