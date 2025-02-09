@@ -3,7 +3,7 @@ from aiogram.filters import StateFilter, Command, invert_f
 from aiogram.types import Message
 
 from config import Config
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from ui.views import answer_text_view
 from ui.views import ShiftMenuView
 
@@ -14,7 +14,7 @@ router = Router(name=__name__)
 
 @router.message(
     Command('shift'),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 async def on_show_staff_shift_car_wash_menu(

@@ -100,6 +100,7 @@ class ShiftListItem(BaseModel):
     staff_full_name: str | None
     started_at: datetime.datetime | None
     finished_at: datetime.datetime | None
+    rejected_at: datetime.datetime | None
     created_at: datetime.datetime
     type: ShiftType
 

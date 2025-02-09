@@ -10,7 +10,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import get_shift_repository
 from exceptions import StaffHasNoActiveShiftError, StaffNotFoundError
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from models import Staff
 from repositories import ShiftRepository
 from ui.views import AdminMenuView
@@ -38,7 +38,7 @@ async def on_performer_not_found_error(event: ErrorEvent) -> None:
 
 @router.callback_query(
     F.data == CallbackDataPrefix.STAFF_MENU,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @router.message(
@@ -46,7 +46,7 @@ async def on_performer_not_found_error(event: ErrorEvent) -> None:
         CommandStart(),
         F.text == ButtonText.MAIN_MENU,
     ),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject

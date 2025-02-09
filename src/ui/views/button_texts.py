@@ -13,6 +13,8 @@ class ButtonText(StrEnum):
     SURCHARGE_CREATE = '💰 Доплатить'
     SURCHARGE_LIST = '💰 Все мои доплаты'
     SUPERVISION_MENU = '🔍 Контроль'
+    SUPERVISION_CAR_TRANSFERS = '🚗 Добавленные авто'
+    SUPERVISION_SHIFT_CONFIRMATIONS = '📝 Подтверждения смен'
     SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER = '💧 Недоливы'
     MAILING = '📩 Рассылка'
     SHIFT_START = '🚀 Начать смену'
