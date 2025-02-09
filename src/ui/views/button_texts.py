@@ -4,7 +4,8 @@ __all__ = ('ButtonText',)
 
 
 class ButtonText(StrEnum):
-    STAFF_LIST = '👥 Список всех сотрудников'
+    STAFF_LIST = '👥 Список сотрудников'
+    STAFF_REGISTER_REQUESTS = '🚀 Запросы на регистрацию'
     SHIFTS_ADMIN_MENU = '📅 Графики'
     SHIFTS_FOR_SPECIFIC_DATE = '📅 Сегодня в смене'
     CAR_WASH_LIST = '🚿 Меню моек'

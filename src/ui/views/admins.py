@@ -25,6 +25,7 @@ class AdminMenuView(TextView):
             keyboard=[
                 [
                     KeyboardButton(text=ButtonText.STAFF_LIST),
+                    KeyboardButton(text=ButtonText.STAFF_REGISTER_REQUESTS),
                 ],
                 [
                     KeyboardButton(
