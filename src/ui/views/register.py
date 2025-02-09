@@ -36,7 +36,7 @@ class StaffRegisterRequestNotificationView(TextView):
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
-        web_app_url = f'{self.__web_app_base_url}/register-requests/create'
+        web_app_url = f'{self.__web_app_base_url}/register-requests'
         button = InlineKeyboardButton(
             text='📝 Список запросов на регистрацию',
             web_app=WebAppInfo(url=web_app_url)
