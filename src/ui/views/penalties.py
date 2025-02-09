@@ -3,7 +3,7 @@ from typing import Final
 
 from aiogram.types import (
     ForceReply, InlineKeyboardButton,
-    InlineKeyboardMarkup, WebAppInfo,
+    InlineKeyboardMarkup,
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -29,7 +29,6 @@ __all__ = (
     'PenaltyCreateNotificationView',
     'PhotoCreateWithPhotoNotificationView',
     'format_penalty_create_notification_text',
-    'render_penalty_create_notification_markup',
 )
 
 penalty_reason_to_name: Final[dict[PenaltyReason: str]] = {
@@ -165,19 +164,6 @@ def format_penalty_create_notification_text(penalty: Penalty) -> str:
     )
 
 
-def render_penalty_create_notification_markup(
-        *,
-        penalty: Penalty,
-        web_app_base_url: str,
-) -> InlineKeyboardMarkup:
-    url = f'{web_app_base_url}/penalties/{penalty.staff_id}'
-    button = InlineKeyboardButton(
-        text='🛑 Все мои штрафы',
-        web_app=WebAppInfo(url=url),
-    )
-    return InlineKeyboardMarkup(inline_keyboard=[[button]])
-
-
 class PenaltyCreateNotificationView(TextView):
 
     def __init__(self, *, penalty: Penalty, web_app_base_url: str):
@@ -186,12 +172,6 @@ class PenaltyCreateNotificationView(TextView):
 
     def get_text(self) -> str:
         return format_penalty_create_notification_text(self.__penalty)
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return render_penalty_create_notification_markup(
-            penalty=self.__penalty,
-            web_app_base_url=self.__web_app_base_url,
-        )
 
 
 class PhotoCreateWithPhotoNotificationView(PhotoView):
@@ -212,9 +192,3 @@ class PhotoCreateWithPhotoNotificationView(PhotoView):
 
     def get_photo(self) -> str:
         return self.__photo_file_id
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        return render_penalty_create_notification_markup(
-            penalty=self.__penalty,
-            web_app_base_url=self.__web_app_base_url,
-        )

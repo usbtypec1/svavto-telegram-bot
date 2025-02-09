@@ -1,8 +1,7 @@
 from collections.abc import Iterable
 
 from aiogram.types import (
-    ForceReply, InlineKeyboardButton,
-    InlineKeyboardMarkup, WebAppInfo,
+    ForceReply, InlineKeyboardMarkup,
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -103,13 +102,3 @@ class SurchargeNotificationView(TextView):
             f'\nПричина: {self.__surcharge.reason}'
             f'\nСумма: {self.__surcharge.amount}'
         )
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        url = (
-            f'{self.__web_app_base_url}/surcharges/{self.__surcharge.staff_id}'
-        )
-        button = InlineKeyboardButton(
-            text='🛑 Все мои штрафы',
-            web_app=WebAppInfo(url=url),
-        )
-        return InlineKeyboardMarkup(inline_keyboard=[[button]])
