@@ -11,6 +11,7 @@ from exceptions import (
     ShiftAlreadyExistsError, ShiftAlreadyFinishedError, ShiftNotConfirmedError,
     ShiftNotFoundError, StaffAlreadyExistsError, StaffHasActiveShiftError,
     StaffHasNoActiveShiftError, StaffHasNoAnyShiftError, StaffNotFoundError,
+    StaffRegisterRequestAlreadyExistsError,
 )
 from logger import create_logger
 
@@ -40,6 +41,9 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.SHIFT_ALREADY_EXISTS: ShiftAlreadyExistsError,
     ServerApiErrorCode.ADDITIONAL_SERVICE_COULD_NOT_BE_PROVIDED: (
         AdditionalServicesCouldNotBeProvidedError
+    ),
+    ServerApiErrorCode.STAFF_REGISTER_REQUEST_ALREADY_EXISTS: (
+        StaffRegisterRequestAlreadyExistsError
     ),
 }
 

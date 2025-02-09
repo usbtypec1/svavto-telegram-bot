@@ -5,7 +5,10 @@ from fast_depends import inject
 
 from config import Config
 from dependencies.repositories import StaffRepositoryDependency
-from exceptions import StaffAlreadyExistsError
+from exceptions import (
+    StaffAlreadyExistsError,
+    StaffRegisterRequestAlreadyExistsError,
+)
 from models import StaffRegisterRequestData
 from services.notifications import SpecificChatsNotificationService
 from services.telegram_events import answer_appropriate_event
@@ -44,6 +47,10 @@ async def on_register_form_filled(
         )
     except StaffAlreadyExistsError:
         await message.answer('❗️ Вы уже зарегистрированы')
+    except StaffRegisterRequestAlreadyExistsError:
+        await message.answer(
+            '❗️ Вы уже отправили заявку на регистрацию. Ожидайте проверки',
+        )
     else:
         await message.answer(
             '✅ Ваша заявка на регистрацию отправлена на проверку',

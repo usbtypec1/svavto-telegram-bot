@@ -4,3 +4,7 @@ class StaffNotFoundError(Exception):
 
 class StaffAlreadyExistsError(Exception):
     pass
+
+
+class StaffRegisterRequestAlreadyExistsError(Exception):
+    pass
