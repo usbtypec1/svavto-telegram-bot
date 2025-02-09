@@ -19,6 +19,7 @@ __all__ = (
     'ShiftFinishCarWashSummary',
     'ShiftExtraCreateResult',
     'ShiftTestCreateResult',
+    'ShiftIdAndDate',
 )
 
 
@@ -71,10 +72,15 @@ class ShiftWithCarWashAndStaff(BaseModel):
     created_at: datetime.datetime
 
 
+class ShiftIdAndDate(BaseModel):
+    id: int
+    date: datetime.date
+
+
 class ShiftRegularCreateResult(BaseModel):
     staff_id: int
     staff_full_name: str
-    dates: list[datetime.date]
+    shifts: list[ShiftIdAndDate]
 
 
 class ShiftExtraCreateResult(BaseModel):
