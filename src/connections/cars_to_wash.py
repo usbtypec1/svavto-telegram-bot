@@ -64,6 +64,7 @@ class CarToWashConnection(ApiConnection):
             self,
             *,
             car_id: int,
+            windshield_washer_refilled_bottle_percentage: int,
             additional_services: list[dict],
     ) -> httpx.Response:
         url = f'/shifts/cars/{car_id}/'
@@ -75,6 +76,9 @@ class CarToWashConnection(ApiConnection):
                 }
                 for service in additional_services
             ],
+            'windshield_washer_refilled_bottle_percentage': (
+                windshield_washer_refilled_bottle_percentage
+            ),
         }
         return await self._http_client.patch(url, json=request_data)
 

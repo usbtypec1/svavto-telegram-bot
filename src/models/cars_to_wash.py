@@ -46,6 +46,7 @@ class Car(BaseModel):
 
 class CarAdditionalServices(BaseModel):
     id: int
+    windshield_washer_refilled_bottle_percentage: int
     additional_services: list[AdditionalService]
 
 

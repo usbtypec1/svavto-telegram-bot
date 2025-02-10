@@ -43,10 +43,13 @@ class CarToWashRepository:
             self,
             car_additional_services: CarAdditionalServices,
     ) -> None:
+        data = car_additional_services.model_dump()
         response = await self.__connection.update_additional_services(
             car_id=car_additional_services.id,
-            additional_services=car_additional_services.model_dump()[
-                'additional_services'],
+            additional_services=data['additional_services'],
+            windshield_washer_refilled_bottle_percentage=(
+                data['windshield_washer_refilled_bottle_percentage']
+            ),
         )
         handle_errors(response)
 
