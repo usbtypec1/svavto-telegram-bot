@@ -42,7 +42,7 @@ async def on_choose_staff_for_penalty(
 
 
 @router.message(
-    F.text == ButtonText.PENALTY_CREATE_MENU,
+    F.text == ButtonText.PENALTY_CREATE_CAR_TRANSPORTER,
     admins_filter,
     StateFilter('*'),
 )

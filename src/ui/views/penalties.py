@@ -3,7 +3,7 @@ from typing import Final
 
 from aiogram.types import (
     ForceReply, InlineKeyboardButton,
-    InlineKeyboardMarkup,
+    InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, WebAppInfo,
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -16,6 +16,7 @@ from callback_data.prefixes import CallbackDataPrefix
 from enums import PenaltyConsequence, PenaltyReason
 from models import Penalty, Staff
 from ui.markups import create_confirm_reject_markup
+from ui.views import ButtonText
 from ui.views.base import PhotoView, TextView
 
 __all__ = (
@@ -29,6 +30,7 @@ __all__ = (
     'PenaltyCreateNotificationView',
     'PhotoCreateWithPhotoNotificationView',
     'format_penalty_create_notification_text',
+    'PenaltyCreateMenuView',
 )
 
 penalty_reason_to_name: Final[dict[PenaltyReason: str]] = {
@@ -192,3 +194,38 @@ class PhotoCreateWithPhotoNotificationView(PhotoView):
 
     def get_photo(self) -> str:
         return self.__photo_file_id
+
+
+class PenaltyCreateMenuView(TextView):
+    text = '🛑 Меню штрафов'
+
+    def __init__(self, *, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        car_wash_penalty_create_web_app_url = (
+            f'{self.__web_app_base_url}/penalties/car-wash'
+        )
+        return ReplyKeyboardMarkup(
+            resize_keyboard=True,
+            keyboard=[
+                [
+                    KeyboardButton(
+                        text=ButtonText.PENALTY_CREATE_CAR_TRANSPORTER,
+                    ),
+                ],
+                [
+                    KeyboardButton(
+                        text=ButtonText.PENALTY_CREATE_CAR_WASH,
+                        web_app=WebAppInfo(
+                            url=car_wash_penalty_create_web_app_url,
+                        )
+                    ),
+                ],
+                [
+                    KeyboardButton(
+                        text=ButtonText.MAIN_MENU,
+                    ),
+                ],
+            ],
+        )

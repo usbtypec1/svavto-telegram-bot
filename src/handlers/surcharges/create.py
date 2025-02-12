@@ -23,7 +23,8 @@ from ui.views import (
     edit_as_rejected, edit_message_by_view, send_view, SpecificShiftPickerView,
     SurchargeCreateChooseStaffView, SurchargeCreateConfirmView,
     SurchargeCreateInputAmountView, SurchargeCreateInputReasonView,
-    SurchargeCreateSuccessView, SurchargeNotificationView,
+    SurchargeCreateMenuView, SurchargeCreateSuccessView,
+    SurchargeNotificationView,
 )
 
 __all__ = ('router',)
@@ -168,7 +169,7 @@ async def on_choose_staff_for_surcharge(
 
 
 @router.message(
-    F.text == ButtonText.SURCHARGE_CREATE_MENU,
+    F.text == ButtonText.SURCHARGE_CREATE_CAR_TRANSPORTER,
     admins_filter,
     StateFilter('*'),
 )
@@ -186,4 +187,17 @@ async def on_start_surcharge_create_flow(
     )
     view = SurchargeCreateChooseStaffView(staff_list.staff)
     await state.set_state(SurchargeCreateStates.staff)
+    await answer_text_view(message, view)
+
+
+@router.message(
+    F.text == ButtonText.SURCHARGE_CREATE_MENU,
+    admins_filter,
+    StateFilter('*'),
+)
+async def on_show_surcharge_create_menu(
+        message: Message,
+        config: Config,
+) -> None:
+    view = SurchargeCreateMenuView(web_app_base_url=config.web_app_base_url)
     await answer_text_view(message, view)

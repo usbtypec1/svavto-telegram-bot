@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from . import amount, confirm, photo, reason, staff, shift
+from . import amount, confirm, photo, reason, staff, shift, menu
 
 __all__ = ('router',)
 
@@ -12,4 +12,5 @@ router.include_routers(
     reason.router,
     confirm.router,
     shift.router,
+    menu.router,
 )
