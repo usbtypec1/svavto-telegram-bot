@@ -189,7 +189,7 @@ class StaffScheduleCreatedShiftView(TextView):
     def get_text(self) -> str:
         lines: list[str] = ['<b>📆 Даты последнего заполненного графика</b>']
 
-        for i, shift_date in enumerate(self.__shift_dates, start=1):
+        for i, shift_date in enumerate(sorted(self.__shift_dates), start=1):
             lines.append(f'{i}. {shift_date:%d.%m.%Y}')
 
         return '\n'.join(lines)
