@@ -20,6 +20,7 @@ class ButtonText(StrEnum):
     SUPERVISION_MENU = '🔍 Контроль'
     SUPERVISION_CAR_TRANSFERS = '🚗 Добавленные авто'
     SUPERVISION_SHIFT_CONFIRMATIONS = '📝 Подтверждения смен'
+    SUPERVISION_STAFF_WITHOUT_SHIFTS = '😶‍🌫️ Мертвые души'
     SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER = '💧 Недоливы'
     MAILING = '📩 Рассылка'
     SHIFT_START = '🚀 Начать смену'

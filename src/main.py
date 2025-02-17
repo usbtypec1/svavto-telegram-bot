@@ -34,6 +34,7 @@ def include_handlers(dispatcher: Dispatcher) -> None:
         handlers.car_washes.router,
         handlers.shifts.router,
         handlers.staff.router,
+        handlers.supervision.router,
         handlers.schedules.router,
         handlers.penalties.router,
         handlers.surcharges.router,

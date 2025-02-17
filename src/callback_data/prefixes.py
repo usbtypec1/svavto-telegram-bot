@@ -49,3 +49,4 @@ class CallbackDataPrefix(StrEnum):
     SKIP = auto()
     SCHEDULED_SHIFT_START_ACCEPT = auto()
     SCHEDULED_SHIFT_START_REJECT = auto()
+    SUPERVISION_STAFF_WITHOUT_SHIFTS_MONTH = auto()

@@ -1,4 +1,5 @@
 from .admins import *
+from .available_months import *
 from .base import *
 from .button_texts import *
 from .car_washes import *
@@ -13,3 +14,7 @@ from .schedules import *
 from .shifts import *
 from .staff import *
 from .surcharges import *
+from .supervision import (
+    StaffWithoutShiftsMonthChooseView,
+    StaffWithoutShiftsView,
+)

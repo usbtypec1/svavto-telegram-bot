@@ -7,6 +7,7 @@ from connections import ShiftConnection
 from models import (
     CarWash, Shift, ShiftExtraCreateResult, ShiftFinishResult, ShiftListPage,
     ShiftRegularCreateResult, ShiftTestCreateResult, ShiftWithCarWashAndStaff,
+    StaffWithoutShifts,
 )
 from repositories.errors import handle_errors
 
@@ -175,3 +176,16 @@ class ShiftRepository:
     async def reject(self, shift_id: int) -> None:
         response = await self.__connection.reject(shift_id=shift_id)
         handle_errors(response)
+
+    async def get_staff_without_shifts(
+            self,
+            *,
+            month: int,
+            year: int,
+    ) -> StaffWithoutShifts:
+        response = await self.__connection.get_staff_without_shifts(
+            month=month,
+            year=year,
+        )
+        handle_errors(response)
+        return StaffWithoutShifts.model_validate_json(response.text)

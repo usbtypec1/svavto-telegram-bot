@@ -20,6 +20,7 @@ __all__ = (
     'ShiftExtraCreateResult',
     'ShiftTestCreateResult',
     'ShiftIdAndDate',
+    'StaffWithoutShifts',
 )
 
 
@@ -124,3 +125,9 @@ class DirectShiftWebAppData(BaseModel):
 class SpecificShiftPickResult(BaseModel):
     staff_id: int
     shift_id: int
+
+
+class StaffWithoutShifts(BaseModel):
+    month: int
+    year: int
+    staff_list: list[StaffIdAndName]

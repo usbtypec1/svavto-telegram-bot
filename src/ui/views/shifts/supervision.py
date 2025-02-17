@@ -20,10 +20,16 @@ class SupervisionMenuView(TextView):
                 KeyboardButton(text=ButtonText.SUPERVISION_SHIFT_CONFIRMATIONS),
             ],
             [
+                KeyboardButton(
+                    text=ButtonText.SUPERVISION_STAFF_WITHOUT_SHIFTS,
+                ),
+            ],
+            [
                 KeyboardButton(text=ButtonText.MAIN_MENU)
             ],
         ],
     )
+
 
 class SupervisionShiftConfirmationsView(TextView):
 

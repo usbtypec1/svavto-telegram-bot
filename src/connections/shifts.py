@@ -263,3 +263,26 @@ class ShiftConnection(ApiConnection):
             response.status_code,
         )
         return response
+
+    async def get_staff_without_shifts(
+            self,
+            *,
+            month: int,
+            year: int,
+    ) -> httpx.Response:
+        url = '/shifts/staff-without-shifts/'
+        logger.debug(
+            'Retrieving staff without shifts for month %d, year %d',
+            month,
+            year,
+        )
+        query_params = {'month': month, 'year': year}
+        response = await self._http_client.get(url, params=query_params)
+        logger.debug(
+            'Received staff without shifts for month %d, year %d.'
+            ' Status code: %d',
+            month,
+            year,
+            response.status_code,
+        )
+        return response

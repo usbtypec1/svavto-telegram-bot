@@ -39,6 +39,7 @@ __all__ = (
     'EconomicsRepositoryDependency',
     'StaffRepositoryDependency',
     'CarToWashRepositoryDependency',
+    'AvailableDateRepositoryDependency',
 )
 
 
@@ -103,4 +104,9 @@ StaffRepositoryDependency = Annotated[
 CarToWashRepositoryDependency = Annotated[
     CarToWashRepository,
     Depends(get_car_to_wash_repository),
+]
+
+AvailableDateRepositoryDependency = Annotated[
+    AvailableDateRepository,
+    Depends(get_available_date_repository),
 ]

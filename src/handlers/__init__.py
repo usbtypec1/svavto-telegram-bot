@@ -7,6 +7,7 @@ from . import (
     schedules,
     penalties,
     surcharges,
+    supervision,
     mailing,
     cars,
     reports,
