@@ -49,7 +49,7 @@ async def on_car_wash_choose(
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
     state_data: dict = await state.get_data()
-    shift_date = datetime.date.fromisoformat(state_data['shift_id'])
+    shift_date = datetime.date.fromisoformat(state_data['shift_date'])
     car_wash_id = callback_data.car_wash_id
 
     shift_create_result = await shift_repository.create_extra(
