@@ -9,6 +9,7 @@ from callback_data import (
 )
 from ui.views.base import TextView
 
+
 __all__ = (
     'TestShiftStartRequestView',
     'ShiftExtraStartRequestConfirmedView',
@@ -16,7 +17,29 @@ __all__ = (
     'ShiftExtraStartRequestRejectedView',
     'ShiftExtraStartRequestSentView',
     'ShiftTodayStartInvalidTimeView',
+    'ExtraShiftStartRequestView',
 )
+
+
+class ExtraShiftStartRequestView(TextView):
+    """
+    Admin sends this view to staff to ask them to start an extra shift.
+    """
+
+    def __init__(self, *, date: datetime.date):
+        self.__date = date
+
+    def get_text(self) -> str:
+        return f'📆 Начните доп.смену на дату {self.__date:%d.%m.%Y}'
+
+    def get_reply_markup(self) -> InlineKeyboardMarkup:
+        button = InlineKeyboardButton(
+            text='🚀 Начать доп.смену',
+            callback_data=ExtraShiftStartCallbackData(
+                date=self.__date.isoformat(),
+            ).pack()
+        )
+        return InlineKeyboardMarkup(inline_keyboard=[[button]])
 
 
 class TestShiftStartRequestView(TextView):
@@ -94,9 +117,11 @@ class ShiftRegularStartRequestView(TextView):
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         accept_callback_data = ShiftRegularStartCallbackData(
-            shift_id=self.__shift_id)
+            shift_id=self.__shift_id
+        )
         reject_callback_data = ShiftRegularRejectCallbackData(
-            shift_id=self.__shift_id)
+            shift_id=self.__shift_id
+        )
         return ui.markups.create_confirm_reject_markup(
             confirm_callback_data=accept_callback_data,
             reject_callback_data=reject_callback_data,
@@ -105,7 +130,8 @@ class ShiftRegularStartRequestView(TextView):
 
 class ShiftExtraStartRequestRejectedView(TextView):
     """
-    Staff receives this view after their request for an extra shift is rejected.
+    Staff receives this view after their request for an extra shift is
+    rejected.
     """
 
     def __init__(self, shift_date: datetime.date):

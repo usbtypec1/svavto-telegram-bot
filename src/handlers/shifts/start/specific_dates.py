@@ -16,14 +16,16 @@ from dependencies.repositories import (
 )
 from enums import ShiftType
 from filters import admins_filter, staff_filter
+from interactors import ShiftsOfStaffForPeriodReadInteractor
 from models import ShiftsConfirmation
 from states import ShiftRegularStartStates
 from ui.views import (
-    ButtonText, ShiftMenuView, ShiftRegularStartRequestView,
-    ShiftStartCarWashChooseView, ShiftStartForSpecificDateRequestSentView,
-    TestShiftStartRequestView,
-    answer_text_view, edit_as_rejected, edit_message_by_view, send_text_view,
+    answer_text_view, ButtonText, edit_as_rejected, edit_message_by_view,
+    ExtraShiftStartRequestView, send_text_view, ShiftMenuView,
+    ShiftRegularStartRequestView, ShiftStartCarWashChooseView,
+    ShiftStartForSpecificDateRequestSentView, TestShiftStartRequestView,
 )
+
 
 __all__ = ('router',)
 
@@ -117,30 +119,34 @@ async def on_send_shift_start_request_for_specific_date(
         json_data=message.web_app_data.data,
     )
     staff_ids = [staff.id for staff in shifts_confirmation.staff_list]
-    shifts_page = await shift_repository.get_list(
-        staff_ids=staff_ids,
+
+    interactor = ShiftsOfStaffForPeriodReadInteractor(
+        shift_repository=shift_repository,
         from_date=shifts_confirmation.date,
         to_date=shifts_confirmation.date,
-        limit=1000,
-        shift_types=(ShiftType.REGULAR,),
+        staff_ids=staff_ids,
+        shift_types=(ShiftType.REGULAR, ShiftType.EXTRA),
     )
-    shifts = shifts_page.shifts
+    shifts = await interactor.execute()
 
     staff_id_to_shift = {shift.staff_id: shift for shift in shifts}
 
     sent_message = await message.answer('Отправляю запросы на начало смены')
 
     for staff in shifts_confirmation.staff_list:
-        try:
-            shift = staff_id_to_shift[staff.id]
-        except KeyError:
+        shift = staff_id_to_shift.get(staff.id)
+        if shift is None:
             view = TestShiftStartRequestView(date=shifts_confirmation.date)
-        else:
+        elif shift.type == ShiftType.EXTRA:
+            view = ExtraShiftStartRequestView(date=shifts_confirmation.date)
+        elif shift.type == ShiftType.REGULAR:
             view = ShiftRegularStartRequestView(
                 shift_id=shift.id,
                 shift_date=shift.date,
                 staff_full_name=shift.staff_full_name,
             )
+        else:
+            continue
         await send_text_view(bot, view, staff.id)
         await asyncio.sleep(0.1)
 

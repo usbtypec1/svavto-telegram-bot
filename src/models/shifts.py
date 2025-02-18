@@ -103,8 +103,8 @@ class ShiftListItem(BaseModel):
     date: datetime.date
     car_wash_id: int | None
     car_wash_name: str | None
-    staff_id: int | None
-    staff_full_name: str | None
+    staff_id: int
+    staff_full_name: str
     started_at: datetime.datetime | None
     finished_at: datetime.datetime | None
     rejected_at: datetime.datetime | None
