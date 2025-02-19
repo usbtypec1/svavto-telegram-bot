@@ -20,7 +20,7 @@ __all__ = (
     'ShiftExtraCreateResult',
     'ShiftTestCreateResult',
     'ShiftIdAndDate',
-    'StaffWithoutShifts',
+    'DeadSoulsForMonth',
 )
 
 
@@ -127,7 +127,7 @@ class SpecificShiftPickResult(BaseModel):
     shift_id: int
 
 
-class StaffWithoutShifts(BaseModel):
+class DeadSoulsForMonth(BaseModel):
     month: int
     year: int
     staff_list: list[StaffIdAndName]

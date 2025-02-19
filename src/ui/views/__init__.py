@@ -15,6 +15,6 @@ from .shifts import *
 from .staff import *
 from .surcharges import *
 from .supervision import (
-    StaffWithoutShiftsMonthChooseView,
-    StaffWithoutShiftsView,
+    DeadSoulsMonthChooseView,
+    DeadSoulsView,
 )

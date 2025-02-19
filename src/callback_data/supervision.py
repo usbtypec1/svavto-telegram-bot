@@ -2,12 +2,12 @@ from aiogram.filters.callback_data import CallbackData
 
 from callback_data.prefixes import CallbackDataPrefix
 
-__all__ = ('StaffWithoutShiftsMonthChooseCallbackData',)
+__all__ = ('DeadSoulsMonthChooseCallbackData',)
 
 
-class StaffWithoutShiftsMonthChooseCallbackData(
+class DeadSoulsMonthChooseCallbackData(
     CallbackData,
-    prefix=CallbackDataPrefix.SUPERVISION_STAFF_WITHOUT_SHIFTS_MONTH,
+    prefix=CallbackDataPrefix.SUPERVISION_DEAD_SOULS,
 ):
     month: int
     year: int

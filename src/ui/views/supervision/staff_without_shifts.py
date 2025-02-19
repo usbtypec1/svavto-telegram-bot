@@ -1,15 +1,15 @@
 from collections.abc import Iterable
 from zoneinfo import ZoneInfo
 
-from callback_data import StaffWithoutShiftsMonthChooseCallbackData
-from models import AvailableDate, StaffWithoutShifts
+from callback_data import DeadSoulsMonthChooseCallbackData
+from models import AvailableDate, DeadSoulsForMonth
 from ui.views.available_months import AvailableMonthsListView, MONTH_NAMES
 from ui.views.base import TextView
 
-__all__ = ('StaffWithoutShiftsMonthChooseView', 'StaffWithoutShiftsView')
+__all__ = ('DeadSoulsMonthChooseView', 'DeadSoulsView')
 
 
-class StaffWithoutShiftsMonthChooseView(AvailableMonthsListView):
+class DeadSoulsMonthChooseView(AvailableMonthsListView):
 
     def __init__(
             self,
@@ -20,13 +20,13 @@ class StaffWithoutShiftsMonthChooseView(AvailableMonthsListView):
         super().__init__(
             available_months=available_months,
             timezone=timezone,
-            callback_data_factory=StaffWithoutShiftsMonthChooseCallbackData,
+            callback_data_factory=DeadSoulsMonthChooseCallbackData,
         )
 
 
-class StaffWithoutShiftsView(TextView):
+class DeadSoulsView(TextView):
 
-    def __init__(self, staff_without_shifts: StaffWithoutShifts):
+    def __init__(self, staff_without_shifts: DeadSoulsForMonth):
         self.__staff_without_shifts = staff_without_shifts
 
     def get_text(self) -> str:
