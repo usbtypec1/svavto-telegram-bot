@@ -17,7 +17,7 @@ class MainMenuView(TextView):
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
-        report_web_app_url = f'{self.__web_app_base_url}/reports'
+        report_web_app_url = f'{self.__web_app_base_url}/reports/{self.__staff_id}'
         penalty_web_app_url = (
             f'{self.__web_app_base_url}/penalties/{self.__staff_id}'
         )
