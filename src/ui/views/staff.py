@@ -120,12 +120,14 @@ class StaffDetailView(TextView):
             include_banned: bool,
             limit: int,
             offset: int,
+            username: str | None = None,
     ):
         self.__staff = staff
         self.__web_app_base_url = web_app_base_url
         self.__include_banned = include_banned
         self.__limit = limit
         self.__offset = offset
+        self.__username = username
 
     def get_text(self) -> str:
         if self.__staff.is_banned:
@@ -133,9 +135,15 @@ class StaffDetailView(TextView):
         else:
             banned_status_line = ''
 
+        if self.__username is not None:
+            username_line = f'👤 <b>Никнейм:</b> @{self.__username}\n'
+        else:
+            username_line = ''
+
         return (
             f'📱 <b>ID:</b> {self.__staff.id}\n'
             f'👤 <b>ФИО:</b> {self.__staff.full_name}\n'
+            f'{username_line}'
             '📞 <b>Номер телефона в каршеринге:</b>'
             f' {self.__staff.car_sharing_phone_number}\n'
             '📞 <b>Номер телефона в Консоли:</b>'

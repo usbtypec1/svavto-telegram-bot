@@ -15,6 +15,7 @@ from models import ShiftFinishCarWashSummary, ShiftFinishResult
 from ui.views.base import MediaGroupView, TextView, PhotoView
 from ui.views.button_texts import ButtonText
 
+
 __all__ = (
     'ShiftFinishConfirmView',
     'StaffShiftFinishedView',
@@ -32,7 +33,8 @@ __all__ = (
 class ShiftFinishConfirmView(TextView):
     text = 'Подтверждаете завершение смены?'
     reply_markup = ui.markups.create_confirm_reject_markup(
-        confirm_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
+        confirm_callback_data=CallbackDataPrefix
+        .SHIFT_FINISH_FLOW_START_ACCEPT,
         reject_callback_data=CallbackDataPrefix.SHIFT_FINISH_FLOW_START_REJECT,
     )
 
@@ -107,8 +109,16 @@ def format_shift_car_wash_finish_summary(
     )
 
 
-def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
-    lines: list[str] = [f'Перегонщик: {shift_summary.staff_full_name}']
+def format_shift_finish_text(
+        shift_summary: ShiftFinishResult, username: str
+) -> str:
+    lines: list[str] = []
+    if username is None:
+        lines.append(f'Перегонщик: {shift_summary.staff_full_name}')
+    else:
+        lines.append(
+            f'Перегонщик: {shift_summary.staff_full_name} (@{username})'
+        )
     for car_wash_summary in shift_summary.car_washes:
         lines.append(format_shift_car_wash_finish_summary(car_wash_summary))
     if not shift_summary.car_washes:
@@ -118,17 +128,29 @@ def format_shift_finish_text(shift_summary: ShiftFinishResult) -> str:
 
 class ShiftFinishedWithoutPhotosView(TextView):
 
-    def __init__(self, shift_finish_result: ShiftFinishResult):
+    def __init__(
+            self,
+            *,
+            shift_finish_result: ShiftFinishResult,
+            username: str | None,
+    ):
         self.__shift_summary = shift_finish_result
+        self.__username = username
 
     def get_text(self) -> str:
-        return format_shift_finish_text(self.__shift_summary)
+        return format_shift_finish_text(self.__shift_summary, self.__username)
 
 
 class ShiftFinishedWithPhotosView(MediaGroupView):
 
-    def __init__(self, shift_finish_result: ShiftFinishResult):
+    def __init__(
+            self,
+            *,
+            shift_finish_result: ShiftFinishResult,
+            username: str | None,
+    ):
         self.__shift_summary = shift_finish_result
+        self.__username = username
 
     def get_medias(self) -> list[MediaType] | None:
         return [
@@ -137,7 +159,7 @@ class ShiftFinishedWithPhotosView(MediaGroupView):
         ]
 
     def get_caption(self) -> str:
-        return format_shift_finish_text(self.__shift_summary)
+        return format_shift_finish_text(self.__shift_summary, self.__username)
 
 
 class StaffFirstShiftFinishedView(TextView):

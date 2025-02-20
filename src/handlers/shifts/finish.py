@@ -121,12 +121,18 @@ async def on_shift_finish_accept(
         await answer_text_view(callback_query.message, view)
     await edit_as_accepted(callback_query.message)
     if shift_finish_result.finish_photo_file_ids:
-        view = ShiftFinishedWithPhotosView(shift_finish_result)
+        view = ShiftFinishedWithPhotosView(
+            shift_finish_result=shift_finish_result,
+            username=callback_query.from_user.username,
+        )
         await main_chat_notification_service.send_media_group(
             view.as_media_group(),
         )
     else:
-        view = ShiftFinishedWithoutPhotosView(shift_finish_result)
+        view = ShiftFinishedWithoutPhotosView(
+            shift_finish_result=shift_finish_result,
+            username=callback_query.from_user.username
+        )
         await main_chat_notification_service.send_view(view)
 
 
