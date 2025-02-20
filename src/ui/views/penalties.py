@@ -19,6 +19,7 @@ from ui.markups import create_confirm_reject_markup
 from ui.views import ButtonText
 from ui.views.base import PhotoView, TextView
 
+
 __all__ = (
     'PenaltyCreateChooseStaffView',
     'PenaltyCreateChooseReasonView',
@@ -203,7 +204,10 @@ class PenaltyCreateMenuView(TextView):
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
-        car_wash_penalty_create_web_app_url = (
+        car_transporter_penalties_web_app_url = (
+            f'{self.__web_app_base_url}/penalties/car-transporters'
+        )
+        car_wash_penalties_web_app_url = (
             f'{self.__web_app_base_url}/penalties/car-wash'
         )
         return ReplyKeyboardMarkup(
@@ -212,13 +216,16 @@ class PenaltyCreateMenuView(TextView):
                 [
                     KeyboardButton(
                         text=ButtonText.PENALTY_CREATE_CAR_TRANSPORTER,
+                        web_app=WebAppInfo(
+                            url=car_transporter_penalties_web_app_url,
+                        )
                     ),
                 ],
                 [
                     KeyboardButton(
                         text=ButtonText.PENALTY_CREATE_CAR_WASH,
                         web_app=WebAppInfo(
-                            url=car_wash_penalty_create_web_app_url,
+                            url=car_wash_penalties_web_app_url,
                         )
                     ),
                 ],
