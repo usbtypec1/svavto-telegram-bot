@@ -42,23 +42,19 @@ async def on_send_shift_start_request_for_specific_date(
     shifts_confirmation = ShiftsConfirmation.model_validate_json(
         json_data=message.web_app_data.data,
     )
-    staff_ids = [staff.id for staff in shifts_confirmation.staff_list]
+    all_staff_ids = {staff.id for staff in shifts_confirmation.staff_list}
 
     interactor = ShiftsOfStaffForPeriodReadInteractor(
         shift_repository=shift_repository,
         from_date=shifts_confirmation.date,
         to_date=shifts_confirmation.date,
-        staff_ids=staff_ids,
+        staff_ids=all_staff_ids,
         shift_types=(ShiftType.REGULAR, ShiftType.EXTRA),
     )
     shifts = await interactor.execute()
 
-    staff_ids = {staff.id for staff in shifts_confirmation.staff_list}
-
-    staff_without_shifts = [
-        staff for staff in shifts_confirmation.staff_list
-        if staff.id not in staff_ids
-    ]
+    staff_ids_with_shifts = {shift.staff_id for shift in shifts}
+    staff_ids_without_shifts = all_staff_ids - staff_ids_with_shifts
 
     for shift in shifts:
         view = ShiftConfirmRequestView(shift)
@@ -66,16 +62,19 @@ async def on_send_shift_start_request_for_specific_date(
         await asyncio.sleep(0.1)
 
     shifts_to_create = [
-        StaffIdAndDate(staff_id=staff.id, date=shifts_confirmation.date)
-        for staff in staff_without_shifts
+        StaffIdAndDate(staff_id=staff_id, date=shifts_confirmation.date)
+        for staff_id in staff_ids_without_shifts
     ]
-    created_extra_shifts_result = await shift_repository.create_extra(
-        shifts_to_create
+    if shifts_to_create:
+        created_extra_shifts_result = await shift_repository.create_extra(
+            shifts_to_create
         )
-    for shift in created_extra_shifts_result.created_shifts:
-        view = ShiftConfirmRequestView(shift)
-        await send_text_view(bot, view, shift.staff_id)
-        await asyncio.sleep(0.1)
+        for shift in created_extra_shifts_result.created_shifts:
+            view = ShiftConfirmRequestView(shift)
+            await send_text_view(bot, view, shift.staff_id)
+            await asyncio.sleep(0.1)
+    else:
+        created_extra_shifts_result = None
 
     view = ShiftStartForSpecificDateRequestSentView(
         staff_list=shifts_confirmation.staff_list,

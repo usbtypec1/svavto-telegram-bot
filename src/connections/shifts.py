@@ -261,9 +261,11 @@ class ShiftConnection(ApiConnection):
         return response
 
     async def reject(self, shift_id: int) -> httpx.Response:
-        url = f'/shifts/{shift_id}/reject/'
+        url = f'/shifts/reject/'
         logger.debug('Sending reject shift request. Shift ID: %d', shift_id)
-        response = await self._http_client.post(url)
+        response = await self._http_client.post(url, json={
+            'shift_id': shift_id,
+        })
         logger.debug(
             'Received reject shift response. Shift ID: %d, status code: %d',
             shift_id,

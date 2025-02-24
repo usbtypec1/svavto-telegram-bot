@@ -11,9 +11,13 @@ from callback_data import (
 )
 from config import Config
 from dependencies.repositories import (
+    ShiftRepositoryDependency,
     StaffRepositoryDependency,
 )
+from exceptions import ShiftAlreadyExistsError, StaffNotFoundError
 from filters import admins_filter, staff_filter
+from interactors import ExtraShiftCreateInteractor
+from models import StaffIdAndDate
 from services.notifications import SpecificChatsNotificationService
 from ui.views import (
     ButtonText, edit_as_rejected, ExtraShiftScheduleNotificationView,
@@ -21,11 +25,9 @@ from ui.views import (
     MainMenuView, send_text_view, ShiftExtraStartRequestConfirmedView,
     ShiftExtraStartRequestSentView,
 )
-from ui.views.base import answer_view, edit_as_accepted
+from ui.views.base import answer_view, edit_as_accepted, send_view
 from ui.views.shifts.start import ShiftExtraStartRequestRejectedView
 
-
-__all__ = ('router',)
 
 router = Router(name=__name__)
 
@@ -41,19 +43,32 @@ async def on_extra_shift_create_accept(
         callback_data: ExtraShiftCreateAcceptCallbackData,
         bot: Bot,
         staff_repository: StaffRepositoryDependency,
+        shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    staff = await staff_repository.get_by_id(callback_data.staff_id)
-    view = ShiftExtraStartRequestConfirmedView(
-        staff_full_name=staff.full_name,
-        shift_date=datetime.date.fromisoformat(callback_data.date),
-    )
-    sent_messages = await send_text_view(bot, view, callback_data.staff_id)
-    if sent_messages[0] is None:
+    shift_date = datetime.date.fromisoformat(callback_data.date)
+    try:
+        shift = await ExtraShiftCreateInteractor(
+            shift_repository=shift_repository,
+            staff_id=callback_data.staff_id,
+            date=shift_date,
+        ).execute()
+    except StaffNotFoundError:
         await callback_query.answer(
-            text='❌ Не удалось отправить сообщение сотруднику',
+            text='❌ Сотрудник не найден в системе',
+            show_alert=True,
+        )
+    except ShiftAlreadyExistsError:
+        await callback_query.answer(
+            text='❌ У сотрудника уже есть смена на эту дату',
             show_alert=True,
         )
     else:
+        staff = await staff_repository.get_by_id(callback_data.staff_id)
+        view = ShiftExtraStartRequestConfirmedView(
+            staff_full_name=staff.full_name,
+            shift_date=shift_date,
+        )
+        await send_view(bot, view, shift.staff_id)
         await edit_as_accepted(callback_query.message)
 
 

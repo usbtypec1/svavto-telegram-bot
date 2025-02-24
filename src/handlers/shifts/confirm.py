@@ -24,4 +24,8 @@ async def on_confirm_shift(
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
     await shift_repository.confirm(shift_id=callback_data.shift_id)
+    await callback_query.answer(
+        '✅ Вы подтвердили выход смену',
+        show_alert=True,
+    )
     await edit_as_confirmed(callback_query.message)
