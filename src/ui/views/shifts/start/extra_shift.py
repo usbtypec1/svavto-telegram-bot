@@ -28,7 +28,7 @@ class ShiftExtraStartRequestConfirmedView(TextView):
         return (
             f'✅ {self.__staff_full_name}, ваш запрос на доп.смену на дату'
             f' {self.__shift_date:%d.%m.%Y} подтвержден.\n'
-            'Вы сможете начать смену в разделе "начать смену'
+            'Вы сможете начать смену в разделе "начать смену"'
         )
 
 

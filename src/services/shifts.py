@@ -36,7 +36,7 @@ def get_current_shift_date(timezone: ZoneInfo) -> datetime.date:
         The date of the shift.
     """
     now = datetime.datetime.now(timezone)
-    if now.hour <= SHIFT_END_HOUR:
+    if now.hour < SHIFT_END_HOUR:
         previous_day = now - datetime.timedelta(days=1)
         return previous_day.date()
     return now.date()
