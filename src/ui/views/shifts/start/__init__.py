@@ -1,4 +1,4 @@
-from .common import ShiftTodayStartInvalidTimeView
+from .common import ShiftNotConfirmedView
 from .extra_shift import (
     ShiftExtraStartRequestSentView,
     ShiftExtraStartRequestConfirmedView,
@@ -12,7 +12,7 @@ __all__ = (
     'ShiftExtraStartRequestSentView',
     'ShiftExtraStartRequestConfirmedView',
     'ShiftExtraStartRequestRejectedView',
-    'ShiftTodayStartInvalidTimeView',
+    'ShiftNotConfirmedView',
     'ShiftRegularStartRequestView',
     'TestShiftStartRequestView',
 )

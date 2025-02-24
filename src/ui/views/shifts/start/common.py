@@ -1,10 +1,10 @@
 from ui.views.base import TextView
 
 
-__all__ = ('ShiftTodayStartInvalidTimeView',)
+__all__ = ('ShiftNotConfirmedView',)
 
 
-class ShiftTodayStartInvalidTimeView(TextView):
+class ShiftNotConfirmedView(TextView):
     text = (
         'До 21:30 Вам придет уведомление в этот бот с запросом'
         ' <b>подтвердить или отклонить</b> выход на смену.'

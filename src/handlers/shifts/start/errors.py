@@ -12,7 +12,7 @@ from exceptions import (
     ShiftNotConfirmedError, StaffHasActiveShiftError,
 )
 from services.telegram_events import answer_appropriate_event
-from ui.views import answer_view, ShiftTodayStartInvalidTimeView
+from ui.views import answer_view, ShiftNotConfirmedView
 
 
 __all__ = ('router',)
@@ -29,18 +29,25 @@ async def on_shift_already_finished_error(event: ErrorEvent) -> None:
 
 @router.error(
     ExceptionTypeFilter(
-        InvalidTimeToStartShiftError,
         ShiftNotConfirmedError,
     ),
 )
-async def on_shift_invalid_time_or_not_confirmed_error(
-        event: ErrorEvent,
-) -> None:
-    view = ShiftTodayStartInvalidTimeView()
+async def on_shift_not_confirmed_error(event: ErrorEvent) -> None:
+    view = ShiftNotConfirmedView()
     if event.update.callback_query is not None:
         await answer_view(
             event.update.callback_query.message,
             view,
+        )
+
+
+@router.error(ExceptionTypeFilter(InvalidTimeToStartShiftError))
+async def on_invalid_time_to_start_shift_error(event: ErrorEvent) -> None:
+    text = '❗️ Вы можете начать смену после 21:30'
+    if event.update.callback_query is not None:
+        await event.update.callback_query.answer(
+            text=text,
+            show_alert=True,
         )
 
 
