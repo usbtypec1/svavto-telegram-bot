@@ -7,7 +7,8 @@ from enums import ServerApiErrorCode
 from exceptions import (
     AdditionalServicesCouldNotBeProvidedError, CarAlreadyWashedOnShiftError,
     CarWashNotFoundError,
-    CarWashSameAsCurrentError, ServerApiError, ShiftAlreadyConfirmedError,
+    CarWashSameAsCurrentError, InvalidTimeToStartShiftError, ServerApiError,
+    ShiftAlreadyConfirmedError,
     ShiftAlreadyExistsError, ShiftAlreadyFinishedError, ShiftNotConfirmedError,
     ShiftNotFoundError, StaffAlreadyExistsError, StaffHasActiveShiftError,
     StaffHasNoActiveShiftError, StaffHasNoAnyShiftError, StaffNotFoundError,
@@ -20,6 +21,9 @@ __all__ = (
     'raise_appropriate_error',
     'code_to_exception_class',
 )
+
+from ui.views import ShiftTodayStartInvalidTimeView
+
 
 logger = create_logger('errors')
 
@@ -44,6 +48,9 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ),
     ServerApiErrorCode.STAFF_REGISTER_REQUEST_ALREADY_EXISTS: (
         StaffRegisterRequestAlreadyExistsError
+    ),
+    ServerApiErrorCode.INVALID_TIME_TO_START_SHIFT:  (
+        InvalidTimeToStartShiftError
     ),
 }
 

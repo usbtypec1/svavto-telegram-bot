@@ -13,19 +13,18 @@ from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
 from enums import ShiftType, ShiftWorkType
-from exceptions import ShiftNotConfirmedError
+from exceptions import ShiftNotFoundError
 from filters import staff_filter
+from interactors import CarWashesReadInteractor, ShiftForTodayReadInteractor
 from logger import create_logger
 from models import Staff
 from services.shifts import (
     get_current_shift_date,
-    is_time_to_start_shift,
 )
 from states import ShiftTodayStartStates
 from ui.views import (
-    answer_text_view, ButtonText, edit_message_by_view, ShiftMenuView,
-    ShiftStartCarWashChooseView, ShiftTodayStartInvalidTimeView,
-    ShiftWorkTypeChoiceView,
+    answer_text_view, ButtonText, edit_message_by_view, ShiftCarWashUpdateView,
+    ShiftMenuView, ShiftWorkTypeChoiceView,
 )
 
 
@@ -76,56 +75,32 @@ async def on_car_wash_choose(
 async def on_move_to_wash_shift_work_type_choice(
         callback_query: CallbackQuery,
         config: Config,
-        staff: Staff,
         state: FSMContext,
         shift_repository: ShiftRepositoryDependency,
         car_wash_repository: CarWashRepositoryDependency,
 ) -> None:
-    shift_date = get_current_shift_date(config.timezone)
-    logger.debug(
-        'Trying to start car transporter shift for date %s',
-        shift_date,
+    interactor = ShiftForTodayReadInteractor(
+        shift_repository=shift_repository,
+        staff_id=callback_query.from_user.id,
+        timezone=config.timezone,
     )
-    shifts_page = await shift_repository.get_list(
-        from_date=shift_date,
-        to_date=shift_date,
-        staff_ids=(staff.id,),
-        shift_types=(ShiftType.REGULAR, ShiftType.EXTRA),
-    )
-    logger.info('Shifts for date %s: %s', shift_date, shifts_page.shifts)
-    if not shifts_page.shifts:
+    try:
+        shift = await interactor.execute()
+    except ShiftNotFoundError:
         await callback_query.answer(
-            text=f'❌У вас нет на сегодня смены ({shift_date:%d.%m.%Y})',
+            text='❌У вас нет на сегодня смены',
             show_alert=True
         )
         return
 
-    if not is_time_to_start_shift(config.timezone):
-        view = ShiftTodayStartInvalidTimeView()
-        await answer_text_view(callback_query.message, view)
-        return
+    car_washes = await CarWashesReadInteractor(
+        car_wash_repository=car_wash_repository
+    ).execute()
 
-    shift = shifts_page.shifts[0]
-
-    car_washes = await car_wash_repository.get_all()
-    if not car_washes:
-        await callback_query.answer(
-            text='❌ Нет доступных моек',
-            show_alert=True,
-        )
-        return
-
-    try:
-        await shift_repository.start(shift_id=shift.id)
-    except ShiftNotConfirmedError:
-        await callback_query.answer(
-            text='❌ Вы не подтвердили выход сегодня на смену',
-            show_alert=True,
-        )
-        return
+    await shift_repository.start(shift_id=shift.id)
 
     await state.set_state(ShiftTodayStartStates.car_wash)
-    view = ShiftStartCarWashChooseView(car_washes)
+    view = ShiftCarWashUpdateView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
 

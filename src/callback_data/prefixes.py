@@ -25,6 +25,8 @@ class CallbackDataPrefix(StrEnum):
     SURCHARGE_CREATE_REJECT = auto()
     SHIFT_WORK_TYPE = auto()
     SHIFT_CAR_WASH_UPDATE = auto()
+    SHIFT_CONFIRM = auto()
+    SHIFT_REJECT = auto()
     SHIFT_FINISH_FLOW_START_ACCEPT = auto()
     SHIFT_FINISH_FLOW_START_REJECT = auto()
     SHIFT_FINISH_ACCEPT = auto()

@@ -182,3 +182,7 @@ class ShiftRepository:
         )
         handle_errors(response)
         return DeadSoulsForMonth.model_validate_json(response.text)
+
+    async def confirm(self, *, shift_id: int) -> None:
+        response = await self.__connection.confirm(shift_id=shift_id)
+        handle_errors(response)

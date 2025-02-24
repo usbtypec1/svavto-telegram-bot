@@ -10,7 +10,6 @@ from exceptions import ShiftFinishPhotosCountExceededError
 __all__ = (
     'get_current_shift_date',
     'ShiftFinishPhotosState',
-    'is_time_to_start_shift',
 )
 
 
@@ -71,16 +70,3 @@ class ShiftFinishPhotosState:
 
     async def get_photo_file_ids_count(self) -> int:
         return await self.__redis.scard(self.key)
-
-
-def is_time_to_start_shift(timezone: ZoneInfo) -> bool:
-    now = datetime.datetime.now(timezone)
-    start_time = now.replace(hour=21, minute=30, second=0, microsecond=0)
-    next_day = now + datetime.timedelta(days=1)
-    next_day_noon = next_day.replace(
-        hour=12,
-        minute=0,
-        second=0,
-        microsecond=0,
-    )
-    return start_time <= now <= next_day_noon

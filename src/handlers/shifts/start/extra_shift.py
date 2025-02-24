@@ -17,6 +17,7 @@ from dependencies.repositories import (
     ShiftRepositoryDependency,
 )
 from filters import admins_filter, staff_filter
+from interactors import CarWashesReadInteractor
 from repositories import StaffRepository
 from services.notifications import SpecificChatsNotificationService
 from services.validators import validate_shift_date
@@ -24,11 +25,13 @@ from states import ShiftExtraStartStates
 from ui.views import (
     answer_text_view, ButtonText, edit_as_rejected, edit_message_by_view,
     ExtraShiftScheduleNotificationView, ExtraShiftScheduleWebAppView,
-    MainMenuView, send_text_view, ShiftExtraStartRequestConfirmedView,
-    ShiftExtraStartRequestSentView, ShiftMenuView, ShiftStartCarWashChooseView,
+    MainMenuView, send_text_view, ShiftCarWashUpdateView,
+    ShiftExtraStartRequestConfirmedView,
+    ShiftExtraStartRequestSentView, ShiftMenuView,
 )
 from ui.views.base import answer_view, edit_as_accepted
 from ui.views.shifts.start import ShiftExtraStartRequestRejectedView
+
 
 __all__ = ('router',)
 
@@ -84,19 +87,18 @@ async def on_extra_shift_start(
         state: FSMContext,
         car_wash_repository: CarWashRepositoryDependency,
 ) -> None:
-    validate_shift_date(shift_date=callback_data.date, timezone=config.timezone)
+    validate_shift_date(
+        shift_date=callback_data.date,
+        timezone=config.timezone,
+    )
 
-    car_washes = await car_wash_repository.get_all()
-    if not car_washes:
-        await callback_query.answer(
-            text='❌ Нет доступных моек',
-            show_alert=True,
-        )
-        return
+    car_washes = await CarWashesReadInteractor(
+        car_wash_repository=car_wash_repository
+    ).execute()
 
     await state.set_state(ShiftExtraStartStates.car_wash)
     await state.update_data(shift_date=callback_data.date)
-    view = ShiftStartCarWashChooseView(car_washes)
+    view = ShiftCarWashUpdateView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
 

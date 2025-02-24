@@ -293,3 +293,17 @@ class ShiftConnection(ApiConnection):
             response.status_code,
         )
         return response
+
+    async def confirm(self, *, shift_id: int) -> httpx.Response:
+        url = '/shifts/confirm/'
+        logger.debug('Sending confirm shift request. Shift ID: %d', shift_id)
+        response = await self._http_client.post(
+            url,
+            json={'shift_id': shift_id},
+        )
+        logger.debug(
+            'Received confirm shift response. Shift ID: %d, status code: %d',
+            shift_id,
+            response.status_code,
+        )
+        return response

@@ -59,3 +59,7 @@ class ShiftDateHasNotComeError(Exception):
     def __init__(self, shift_date: datetime.date) -> None:
         super().__init__()
         self.shift_date = shift_date
+
+
+class InvalidTimeToStartShiftError(Exception):
+    pass

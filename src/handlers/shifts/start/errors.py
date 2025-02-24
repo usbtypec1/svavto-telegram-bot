@@ -3,14 +3,33 @@ from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
 
 from exceptions import (
-    ShiftDateExpiredError, ShiftDateHasNotComeError,
-    StaffHasActiveShiftError,
+    InvalidTimeToStartShiftError, ShiftDateExpiredError,
+    ShiftDateHasNotComeError,
+    ShiftNotConfirmedError, StaffHasActiveShiftError,
 )
+from services.telegram_events import answer_appropriate_event
+from ui.views import ShiftTodayStartInvalidTimeView
 
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.error(ExceptionTypeFilter(InvalidTimeToStartShiftError))
+async def on_invalid_time_to_start_shift_error(event: ErrorEvent) -> None:
+    view = ShiftTodayStartInvalidTimeView()
+    await answer_appropriate_event(event, view.get_text())
+
+
+@router.error(ExceptionTypeFilter(ShiftNotConfirmedError))
+async def on_shift_not_confirmed_error(event: ErrorEvent) -> None:
+    text = '❌ Вы не подтвердили выход на смену'
+    if event.update.callback_query is not None:
+        await event.update.callback_query.answer(
+            text=text,
+            show_alert=True,
+        )
 
 
 @router.error(ExceptionTypeFilter(StaffHasActiveShiftError))

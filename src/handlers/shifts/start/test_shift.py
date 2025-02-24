@@ -21,7 +21,7 @@ from services.notifications import SpecificChatsNotificationService
 from services.validators import validate_shift_date
 from states import ShiftTestStartStates
 from ui.views import (
-    ButtonText, ShiftMenuView, ShiftStartCarWashChooseView,
+    ButtonText, ShiftMenuView,
     TestShiftStartRequestView, answer_text_view, edit_message_by_view,
 )
 

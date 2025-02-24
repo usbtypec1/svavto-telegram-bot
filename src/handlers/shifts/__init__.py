@@ -9,6 +9,8 @@ from . import (
     finish,
     apply,
     schedule_self,
+    confirm,
+    reject,
 )
 
 __all__ = ('router',)
@@ -23,4 +25,6 @@ router.include_routers(
     change_car_wash.router,
     finish.router,
     schedule_self.router,
+    confirm.router,
+    reject.router,
 )

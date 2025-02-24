@@ -10,6 +10,7 @@ from aiogram.utils.media_group import MediaGroupBuilder, MediaType
 
 from ui.texts import format_accept_text, format_reject_text
 
+
 __all__ = (
     'ReplyMarkup',
     'TextView',
@@ -27,6 +28,7 @@ __all__ = (
     'send_view',
     'edit_as_rejected',
     'edit_as_accepted',
+    'edit_as_confirmed',
 )
 
 ReplyMarkup: TypeAlias = (
@@ -151,7 +153,9 @@ async def send_text_view(
     for chat_id in chat_ids:
         try:
             result.append(
-                await bot.send_message(chat_id, text, reply_markup=reply_markup)
+                await bot.send_message(
+                    chat_id, text, reply_markup=reply_markup
+                    )
             )
         except TelegramAPIError:
             result.append(None)
@@ -210,3 +214,14 @@ async def edit_as_rejected(
 async def edit_as_accepted(message: Message) -> None:
     if message.text is not None:
         await message.edit_text(text=format_accept_text(message.text))
+
+
+async def edit_as_confirmed(
+        message: Message,
+        detail: str | None = None,
+) -> None:
+    if message.text is not None:
+        text = format_accept_text(message.text)
+        if detail is not None:
+            text += f'\n{detail}'
+        await message.edit_text(text=text)

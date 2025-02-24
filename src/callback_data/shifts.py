@@ -3,6 +3,7 @@ from aiogram.filters.callback_data import CallbackData
 from callback_data.prefixes import CallbackDataPrefix
 from enums import ShiftWorkType
 
+
 __all__ = (
     'ShiftWorkTypeChoiceCallbackData',
     'ShiftCarWashUpdateCallbackData',
@@ -14,6 +15,8 @@ __all__ = (
     'ExtraShiftCreateRejectCallbackData',
     'ExtraShiftStartCallbackData',
     'TestShiftStartCallbackData',
+    'ShiftConfirmCallbackData',
+    'ShiftRejectCallbackData',
 )
 
 
@@ -88,3 +91,17 @@ class TestShiftStartCallbackData(
     prefix=CallbackDataPrefix.TEST_SHIFT_START,
 ):
     date: str
+
+
+class ShiftConfirmCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_CONFIRM,
+):
+    shift_id: int
+
+
+class ShiftRejectCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_REJECT,
+):
+    shift_id: int

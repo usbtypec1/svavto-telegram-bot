@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
 
 from callback_data import (
-    ShiftRegularRejectCallbackData, ShiftRegularStartCallbackData,
+    ShiftRegularStartCallbackData,
     ShiftStartCarWashCallbackData,
 )
 from config import Config
@@ -20,9 +20,9 @@ from interactors import ShiftsOfStaffForPeriodReadInteractor
 from models import ShiftsConfirmation
 from states import ShiftRegularStartStates
 from ui.views import (
-    answer_text_view, ButtonText, edit_as_rejected, edit_message_by_view,
+    answer_text_view, ButtonText, edit_message_by_view,
     ExtraShiftStartRequestView, send_text_view, ShiftMenuView,
-    ShiftRegularStartRequestView, ShiftStartCarWashChooseView,
+    ShiftRegularStartRequestView,
     ShiftStartForSpecificDateRequestSentView, TestShiftStartRequestView,
 )
 
@@ -30,21 +30,6 @@ from ui.views import (
 __all__ = ('router',)
 
 router = Router(name=__name__)
-
-
-@router.callback_query(
-    ShiftRegularRejectCallbackData.filter(),
-    staff_filter,
-)
-@inject
-async def on_shift_regular_start_reject(
-        callback_query: CallbackQuery,
-        callback_data: ShiftRegularRejectCallbackData,
-        shift_repository: ShiftRepositoryDependency,
-) -> None:
-    await callback_query.answer('❌ Выход на смену отклонен', show_alert=True)
-    await edit_as_rejected(callback_query.message)
-    await shift_repository.reject(callback_data.shift_id)
 
 
 @router.callback_query(
