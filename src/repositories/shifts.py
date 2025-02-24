@@ -7,9 +7,10 @@ from connections import ShiftConnection
 from models import (
     CarWash, Shift, ShiftExtraCreateResult, ShiftFinishResult, ShiftListPage,
     ShiftRegularCreateResult, ShiftTestCreateResult, ShiftWithCarWashAndStaff,
-    DeadSoulsForMonth,
+    DeadSoulsForMonth, StaffIdAndDate,
 )
 from repositories.errors import handle_errors
+
 
 __all__ = ('ShiftRepository',)
 
@@ -68,11 +69,9 @@ class ShiftRepository:
             self,
             *,
             shift_id: int,
-            car_wash_id: int,
     ) -> None:
         response = await self.__connection.start(
             shift_id=shift_id,
-            car_wash_id=car_wash_id,
         )
         handle_errors(response)
 
@@ -133,17 +132,11 @@ class ShiftRepository:
 
     async def create_extra(
             self,
-            *,
-            staff_id: int,
-            shift_date: datetime.date,
+            shifts: Iterable[StaffIdAndDate],
     ) -> ShiftExtraCreateResult:
-        response = await self.__connection.create_extra(
-            staff_id=staff_id,
-            shift_date=shift_date,
-        )
+        response = await self.__connection.create_extra(shifts)
         handle_errors(response)
-        response_data = response.json()
-        return ShiftExtraCreateResult.model_validate(response_data)
+        return ShiftExtraCreateResult.model_validate_json(response.text)
 
     async def create_test(
             self,
@@ -189,3 +182,7 @@ class ShiftRepository:
         )
         handle_errors(response)
         return DeadSoulsForMonth.model_validate_json(response.text)
+
+    async def confirm(self, *, shift_id: int) -> None:
+        response = await self.__connection.confirm(shift_id=shift_id)
+        handle_errors(response)

@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from . import list, create, detail, update, delete
+from . import list, create, detail, update, delete, errors
 
 __all__ = ('router',)
 
@@ -11,4 +11,5 @@ router.include_routers(
     detail.router,
     update.router,
     delete.router,
+    errors.router,
 )

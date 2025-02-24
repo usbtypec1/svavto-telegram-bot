@@ -1,14 +1,12 @@
 from .car_washes import *
+from .confirm import ShiftConfirmRequestView
 from .finish import *
 from .schedules import *
 from .specific import *
 from .start import (
-    ShiftExtraStartRequestSentView,
     ShiftExtraStartRequestConfirmedView,
-    ShiftExtraStartRequestRejectedView,
-    ExtraShiftStartRequestView,
-    ShiftTodayStartInvalidTimeView,
-    ShiftRegularStartRequestView,
+    ShiftExtraStartRequestRejectedView, ShiftExtraStartRequestSentView,
+    ShiftRegularStartRequestView, ShiftTodayStartInvalidTimeView,
     TestShiftStartRequestView,
 )
 from .statistics import *

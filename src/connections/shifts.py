@@ -1,5 +1,6 @@
 import datetime
 from collections.abc import Iterable
+from typing import Protocol
 
 import httpx
 
@@ -7,9 +8,15 @@ from connections.base import ApiConnection
 from enums import ShiftType
 from logger import create_logger
 
+
 __all__ = ('ShiftConnection',)
 
 logger = create_logger('connections')
+
+
+class StaffIdAndDate(Protocol):
+    staff_id: int
+    date: datetime.date
 
 
 class ShiftConnection(ApiConnection):
@@ -92,7 +99,6 @@ class ShiftConnection(ApiConnection):
             self,
             *,
             shift_id: int,
-            car_wash_id: int,
     ) -> httpx.Response:
         url = '/shifts/start/'
         logger.debug(
@@ -100,10 +106,7 @@ class ShiftConnection(ApiConnection):
         )
         response = await self._http_client.post(
             url,
-            json={
-                'shift_id': shift_id,
-                'car_wash_id': car_wash_id,
-            },
+            json={'shift_id': shift_id},
         )
         logger.debug(
             f'Started shift {shift_id}',
@@ -180,30 +183,34 @@ class ShiftConnection(ApiConnection):
 
     async def create_extra(
             self,
-            *,
-            staff_id: int,
-            shift_date: datetime.date,
+            shifts: Iterable[StaffIdAndDate]
     ) -> httpx.Response:
         """
-        Create extra shift for staff.
+        Create extra shifts.
 
-        Keyword Args:
-            staff_id: Staff Telegram ID.
-            shift_date: Date of the shift.
+        Args:
+            shifts: objects that contain staff ID and shift's date.
 
         Returns:
             Response from the API.
         """
         url = '/shifts/create/extra/'
-        logger.debug(f'Creating extra shift for staff %d', staff_id)
         request_data = {
-            'staff_id': staff_id,
-            'date': f'{shift_date:%Y-%m-%d}',
+            'shifts': [
+                {
+                    'staff_id': shift.staff_id,
+                    'date': f'{shift.date:%Y-%m-%d}',
+                }
+                for shift in shifts
+            ],
         }
+        logger.debug(
+            'Sending create extra shifts request. Request data: %s',
+            request_data,
+        )
         response = await self._http_client.post(url, json=request_data)
         logger.debug(
-            f'Created extra shift for staff %d. Status code: %d',
-            staff_id,
+            f'Received create extra shifts response. Status code: %d',
             response.status_code,
         )
         return response
@@ -254,9 +261,11 @@ class ShiftConnection(ApiConnection):
         return response
 
     async def reject(self, shift_id: int) -> httpx.Response:
-        url = f'/shifts/{shift_id}/reject/'
+        url = f'/shifts/reject/'
         logger.debug('Sending reject shift request. Shift ID: %d', shift_id)
-        response = await self._http_client.post(url)
+        response = await self._http_client.post(url, json={
+            'shift_id': shift_id,
+        })
         logger.debug(
             'Received reject shift response. Shift ID: %d, status code: %d',
             shift_id,
@@ -283,6 +292,20 @@ class ShiftConnection(ApiConnection):
             ' Status code: %d',
             month,
             year,
+            response.status_code,
+        )
+        return response
+
+    async def confirm(self, *, shift_id: int) -> httpx.Response:
+        url = '/shifts/confirm/'
+        logger.debug('Sending confirm shift request. Shift ID: %d', shift_id)
+        response = await self._http_client.post(
+            url,
+            json={'shift_id': shift_id},
+        )
+        logger.debug(
+            'Received confirm shift response. Shift ID: %d, status code: %d',
+            shift_id,
             response.status_code,
         )
         return response

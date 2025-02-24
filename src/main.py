@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramAPIError
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.types import (
     BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat,
 )
@@ -103,15 +103,15 @@ async def main(
         chat_ids=(config.main_chat_id,),
     )
 
-    storage = MemoryStorage()
+    redis_client = redis.from_url(config.redis_url, decode_responses=True)
+    await redis_client.ping()
+
+    storage = RedisStorage(redis_client)
     dispatcher = Dispatcher(storage=storage)
 
     admin_user_ids_middleware = AdminUserIdsMiddleware(
         ttl_in_seconds=config.admin_user_ids_ttl_in_seconds,
     )
-
-    redis_client = redis.from_url(config.redis_url, decode_responses=True)
-    await redis_client.ping()
 
     dispatcher.update.outer_middleware(admin_user_ids_middleware)
     dispatcher.update.middleware(banned_staff_middleware)

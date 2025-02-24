@@ -52,9 +52,9 @@ class SupervisionShiftConfirmationsView(TextView):
         for shift in self.__shifts:
 
             is_rejected = shift.rejected_at is not None
-            is_started = shift.started_at is not None
+            is_confirmed = shift.confirmed_at is not None
 
-            if is_started:
+            if is_confirmed:
                 emoji = '✅'
             elif is_rejected:
                 emoji = '❌'

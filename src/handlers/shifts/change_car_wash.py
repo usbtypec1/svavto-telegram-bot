@@ -10,12 +10,13 @@ from dependencies.repositories import (
     get_shift_repository,
 )
 from exceptions import CarWashSameAsCurrentError
-from filters import admins_filter
+from filters import admins_filter, staff_filter
 from repositories import CarWashRepository, ShiftRepository
 from ui.views import answer_text_view
 from ui.views import ButtonText
 from ui.views import ShiftMenuView
 from ui.views import ShiftCarWashUpdateView
+
 
 __all__ = ('router',)
 
@@ -24,7 +25,7 @@ router = Router(name=__name__)
 
 @router.callback_query(
     ShiftCarWashUpdateCallbackData.filter(),
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
@@ -48,9 +49,8 @@ async def on_shift_car_wash_update(
             show_alert=True,
         )
         return
-    await callback_query.answer(
-        text=f'✅ Вы успешно поменяли мойку на {car_wash.name}',
-        show_alert=True,
+    await callback_query.message.edit_text(
+        text=f'✅ Вы начали работу на мойке {car_wash.name}',
     )
     view = ShiftMenuView(
         staff_id=callback_query.from_user.id,
@@ -61,7 +61,7 @@ async def on_shift_car_wash_update(
 
 @router.message(
     F.text == ButtonText.SHIFT_CHANGE_CAR_WASH,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
