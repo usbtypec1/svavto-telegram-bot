@@ -13,6 +13,7 @@ from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
 from enums import ShiftType, ShiftWorkType
+from exceptions import ShiftNotConfirmedError
 from filters import staff_filter
 from logger import create_logger
 from models import Staff
@@ -22,10 +23,11 @@ from services.shifts import (
 )
 from states import ShiftTodayStartStates
 from ui.views import (
-    ButtonText, ShiftMenuView, ShiftStartCarWashChooseView,
-    ShiftTodayStartInvalidTimeView, ShiftWorkTypeChoiceView, answer_text_view,
-    edit_message_by_view,
+    answer_text_view, ButtonText, edit_message_by_view, ShiftMenuView,
+    ShiftStartCarWashChooseView, ShiftTodayStartInvalidTimeView,
+    ShiftWorkTypeChoiceView,
 )
+
 
 __all__ = ('router',)
 
@@ -47,13 +49,10 @@ async def on_car_wash_choose(
         config: Config,
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    state_data: dict = await state.get_data()
-    shift_id: int = state_data['shift_id']
-    car_wash_id = callback_data.car_wash_id
-
-    await shift_repository.start(
-        shift_id=shift_id,
-        car_wash_id=car_wash_id,
+    await state.clear()
+    await shift_repository.update_current_shift_car_wash(
+        car_wash_id=callback_data.car_wash_id,
+        staff_id=callback_query.from_user.id,
     )
     await callback_query.message.edit_text(
         text='✅ Вы начали смену водителя перегонщика на мойку',
@@ -90,8 +89,8 @@ async def on_move_to_wash_shift_work_type_choice(
     shifts_page = await shift_repository.get_list(
         from_date=shift_date,
         to_date=shift_date,
-        staff_ids=[staff.id],
-        shift_types=(ShiftType.REGULAR,),
+        staff_ids=(staff.id,),
+        shift_types=(ShiftType.REGULAR, ShiftType.EXTRA),
     )
     logger.info('Shifts for date %s: %s', shift_date, shifts_page.shifts)
     if not shifts_page.shifts:
@@ -115,7 +114,16 @@ async def on_move_to_wash_shift_work_type_choice(
             show_alert=True,
         )
         return
-    await state.update_data(shift_id=shift.id)
+
+    try:
+        await shift_repository.start(shift_id=shift.id)
+    except ShiftNotConfirmedError:
+        await callback_query.answer(
+            text='❌ Вы не подтвердили выход сегодня на смену',
+            show_alert=True,
+        )
+        return
+
     await state.set_state(ShiftTodayStartStates.car_wash)
     view = ShiftStartCarWashChooseView(car_washes)
     await edit_message_by_view(callback_query.message, view)

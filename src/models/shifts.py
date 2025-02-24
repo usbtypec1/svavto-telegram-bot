@@ -6,6 +6,7 @@ from enums import ShiftType
 from models.car_washes import CarWash
 from models.staff import Staff, StaffIdAndName
 
+
 __all__ = (
     'ShiftFinishResult',
     'ShiftsConfirmation',
@@ -21,6 +22,8 @@ __all__ = (
     'ShiftTestCreateResult',
     'ShiftIdAndDate',
     'DeadSoulsForMonth',
+    'ShiftItem',
+    'StaffIdAndDate',
 )
 
 
@@ -84,11 +87,22 @@ class ShiftRegularCreateResult(BaseModel):
     shifts: list[ShiftIdAndDate]
 
 
-class ShiftExtraCreateResult(BaseModel):
+class ShiftItem(BaseModel):
+    id: int
+    date: datetime.date
     staff_id: int
-    staff_full_name: str
-    shift_id: int
-    shift_date: datetime.date
+    created_at: datetime.datetime
+
+
+class StaffIdAndDate(BaseModel):
+    staff_id: int
+    date: datetime.date
+
+
+class ShiftExtraCreateResult(BaseModel):
+    created_shifts: tuple[ShiftItem, ...]
+    missing_staff_ids: tuple[int, ...]
+    conflict_shifts: tuple[StaffIdAndDate, ...]
 
 
 class ShiftTestCreateResult(BaseModel):

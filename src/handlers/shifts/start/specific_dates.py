@@ -60,13 +60,12 @@ async def on_car_wash_choose(
         config: Config,
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    state_data: dict = await state.get_data()
-    shift_id: int = state_data['shift_id']
+    await state.clear()
     car_wash_id = callback_data.car_wash_id
 
-    await shift_repository.start(
-        shift_id=shift_id,
-        car_wash_id=car_wash_id,
+    await shift_repository.update_current_shift_car_wash(
+        staff_id=callback_query.from_user.id,
+        car_wash_id=car_wash_id
     )
     await callback_query.message.edit_text(
         text='✅ Вы начали смену водителя перегонщика на мойку',
@@ -89,8 +88,10 @@ async def on_shift_regular_start_accept(
         callback_query: CallbackQuery,
         callback_data: ShiftRegularStartCallbackData,
         car_wash_repository: CarWashRepositoryDependency,
+        shift_repository: ShiftRepositoryDependency,
         state: FSMContext,
 ) -> None:
+    await shift_repository.start(shift_id=callback_data.shift_id)
     car_washes = await car_wash_repository.get_all()
     if not car_washes:
         await callback_query.answer(
@@ -98,7 +99,6 @@ async def on_shift_regular_start_accept(
             show_alert=True,
         )
         return
-    await state.update_data(shift_id=callback_data.shift_id)
     await state.set_state(ShiftRegularStartStates.car_wash)
     view = ShiftStartCarWashChooseView(car_washes)
     await edit_message_by_view(callback_query.message, view)
