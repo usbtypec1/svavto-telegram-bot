@@ -2,51 +2,28 @@ import asyncio
 
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import Message
 from fast_depends import inject
 
-from callback_data import (
-    ShiftRegularStartCallbackData,
-)
 from dependencies.repositories import (
-    CarWashRepositoryDependency, ShiftRepositoryDependency,
+    ShiftRepositoryDependency,
 )
 from enums import ShiftType
-from filters import admins_filter, staff_filter
+from filters import admins_filter
 from interactors import (
-    CarWashesReadInteractor,
     ShiftsOfStaffForPeriodReadInteractor,
 )
-from models import ShiftsConfirmation
+from models import ShiftsConfirmation, StaffIdAndDate
 from ui.views import (
     ButtonText, edit_message_by_view,
-    ExtraShiftStartRequestView, send_text_view, ShiftCarWashUpdateView,
-    ShiftRegularStartRequestView,
-    ShiftStartForSpecificDateRequestSentView, TestShiftStartRequestView,
+    send_text_view, ShiftConfirmRequestView,
+    ShiftStartForSpecificDateRequestSentView,
 )
 
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
-
-
-@router.callback_query(
-    ShiftRegularStartCallbackData.filter(),
-    staff_filter,
-    StateFilter('*'),
-)
-@inject
-async def on_shift_regular_start_accept(
-        callback_query: CallbackQuery,
-        callback_data: ShiftRegularStartCallbackData,
-        car_wash_repository: CarWashRepositoryDependency,
-        shift_repository: ShiftRepositoryDependency,
-) -> None:
-    await shift_repository.start(shift_id=callback_data.shift_id)
-    car_washes = await CarWashesReadInteractor(car_wash_repository).execute()
-    view = ShiftCarWashUpdateView(car_washes)
-    await edit_message_by_view(callback_query.message, view)
 
 
 @router.message(
@@ -60,6 +37,8 @@ async def on_send_shift_start_request_for_specific_date(
         bot: Bot,
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
+    sent_message = await message.answer('Отправляю запросы на начало смены')
+
     shifts_confirmation = ShiftsConfirmation.model_validate_json(
         json_data=message.web_app_data.data,
     )
@@ -74,28 +53,33 @@ async def on_send_shift_start_request_for_specific_date(
     )
     shifts = await interactor.execute()
 
-    staff_id_to_shift = {shift.staff_id: shift for shift in shifts}
+    staff_ids = {staff.id for staff in shifts_confirmation.staff_list}
 
-    sent_message = await message.answer('Отправляю запросы на начало смены')
+    staff_without_shifts = [
+        staff for staff in shifts_confirmation.staff_list
+        if staff.id not in staff_ids
+    ]
 
-    for staff in shifts_confirmation.staff_list:
-        shift = staff_id_to_shift.get(staff.id)
-        if shift is None:
-            view = TestShiftStartRequestView(date=shifts_confirmation.date)
-        elif shift.type == ShiftType.EXTRA:
-            view = ExtraShiftStartRequestView(date=shifts_confirmation.date)
-        elif shift.type == ShiftType.REGULAR:
-            view = ShiftRegularStartRequestView(
-                shift_id=shift.id,
-                shift_date=shift.date,
-                staff_full_name=shift.staff_full_name,
-            )
-        else:
-            continue
-        await send_text_view(bot, view, staff.id)
+    for shift in shifts:
+        view = ShiftConfirmRequestView(shift)
+        await send_text_view(bot, view, shift.staff_id)
+        await asyncio.sleep(0.1)
+
+    shifts_to_create = [
+        StaffIdAndDate(staff_id=staff.id, date=shifts_confirmation.date)
+        for staff in staff_without_shifts
+    ]
+    created_extra_shifts_result = await shift_repository.create_extra(
+        shifts_to_create
+        )
+    for shift in created_extra_shifts_result.created_shifts:
+        view = ShiftConfirmRequestView(shift)
+        await send_text_view(bot, view, shift.staff_id)
         await asyncio.sleep(0.1)
 
     view = ShiftStartForSpecificDateRequestSentView(
         staff_list=shifts_confirmation.staff_list,
+        existing_shifts=shifts,
+        created_extra_shifts_result=created_extra_shifts_result,
     )
     await edit_message_by_view(sent_message, view)

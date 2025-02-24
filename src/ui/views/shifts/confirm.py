@@ -1,3 +1,6 @@
+import datetime
+from typing import Protocol
+
 from aiogram.types import InlineKeyboardMarkup
 
 from callback_data import (
@@ -5,14 +8,19 @@ from callback_data import (
     ShiftRejectCallbackData,
 )
 from enums import ShiftType
-from models import ShiftListItem
 from ui.markups import create_confirm_reject_markup
 from ui.views import TextView
 
 
+class HasIdAndDateAndType(Protocol):
+    id: int
+    date: datetime.date
+    type: ShiftType
+
+
 class ShiftConfirmRequestView(TextView):
 
-    def __init__(self, shift: ShiftListItem):
+    def __init__(self, shift: HasIdAndDateAndType):
         self.__shift = shift
 
     def get_text(self) -> str:

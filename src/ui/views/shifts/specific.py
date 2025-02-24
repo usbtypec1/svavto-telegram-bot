@@ -2,9 +2,10 @@ from collections.abc import Iterable
 
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
 
-from models import StaffIdAndName
+from models import ShiftExtraCreateResult, ShiftListItem, StaffIdAndName
 from ui.views.base import TextView
 from ui.views.button_texts import ButtonText
+
 
 __all__ = (
     'SpecificShiftPickerView',
@@ -40,15 +41,52 @@ class SpecificShiftPickerView(TextView):
 
 class ShiftStartForSpecificDateRequestSentView(TextView):
 
-    def __init__(self, staff_list: Iterable[StaffIdAndName]):
+    def __init__(
+            self,
+            *,
+            staff_list: Iterable[StaffIdAndName],
+            existing_shifts: Iterable[ShiftListItem],
+            created_extra_shifts_result: ShiftExtraCreateResult,
+    ):
         self.__staff_list = tuple(staff_list)
+        self.__existing_shifts = existing_shifts
+        self.__created_extra_shifts_result = created_extra_shifts_result
 
     def get_text(self) -> str:
+        staff_id_to_name = {
+            staff.id: staff.full_name
+            for staff in self.__staff_list
+        }
         if not self.__staff_list:
             return '❗️ Нет сотрудников для отправки запроса на начало смены'
         lines = [
             f'✅ Запросы на начало смены отправлены сотрудникам:',
         ]
-        for i, staff in enumerate(self.__staff_list, start=1):
-            lines.append(f'{i}. {staff.full_name}')
+        for i, shift in enumerate(self.__existing_shifts, start=1):
+            lines.append(f'{i}. {shift.staff_full_name}')
+
+        if self.__created_extra_shifts_result.created_shifts:
+            lines.append('\n✅ Доп.смены созданы для:')
+            for i, shift in enumerate(
+                    self.__created_extra_shifts_result.created_shifts,
+                    start=1,
+            ):
+                lines.append(f'{i}. {staff_id_to_name[shift.staff_id]}')
+
+        if self.__created_extra_shifts_result.missing_staff_ids:
+            lines.append('\n❗️ Незарегистрированные в системе сотрудники:')
+            for i, staff_id in enumerate(
+                    self.__created_extra_shifts_result.missing_staff_ids,
+                    start=1,
+            ):
+                lines.append(f'{i}. {staff_id_to_name[staff_id]}')
+
+        if self.__created_extra_shifts_result.conflict_shifts:
+            lines.append('\n❗️ Неудачная попытка создать доп.смену для:')
+            for i, shift in enumerate(
+                    self.__created_extra_shifts_result.conflict_shifts,
+                    start=1,
+            ):
+                lines.append(f'{i}. {staff_id_to_name[shift.staff_id]}')
+
         return '\n'.join(lines)

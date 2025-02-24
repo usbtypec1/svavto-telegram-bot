@@ -22,7 +22,7 @@ __all__ = (
     'ShiftTestCreateResult',
     'ShiftIdAndDate',
     'DeadSoulsForMonth',
-    'ShiftItem',
+    'ExtraShiftItem',
     'StaffIdAndDate',
 )
 
@@ -87,11 +87,12 @@ class ShiftRegularCreateResult(BaseModel):
     shifts: list[ShiftIdAndDate]
 
 
-class ShiftItem(BaseModel):
+class ExtraShiftItem(BaseModel):
     id: int
     date: datetime.date
     staff_id: int
     created_at: datetime.datetime
+    type: ShiftType = ShiftType.EXTRA
 
 
 class StaffIdAndDate(BaseModel):
@@ -100,7 +101,7 @@ class StaffIdAndDate(BaseModel):
 
 
 class ShiftExtraCreateResult(BaseModel):
-    created_shifts: tuple[ShiftItem, ...]
+    created_shifts: tuple[ExtraShiftItem, ...]
     missing_staff_ids: tuple[int, ...]
     conflict_shifts: tuple[StaffIdAndDate, ...]
 

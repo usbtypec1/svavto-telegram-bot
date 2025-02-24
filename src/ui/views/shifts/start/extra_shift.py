@@ -1,38 +1,13 @@
 import datetime
 
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
-from callback_data import ExtraShiftStartCallbackData
 from ui.views.base import TextView
 
 
 __all__ = (
-    'ExtraShiftStartRequestView',
     'ShiftExtraStartRequestRejectedView',
     'ShiftExtraStartRequestConfirmedView',
     'ShiftExtraStartRequestSentView',
 )
-
-
-class ExtraShiftStartRequestView(TextView):
-    """
-    Admin sends this view to staff to ask them to start an extra shift.
-    """
-
-    def __init__(self, *, date: datetime.date):
-        self.__date = date
-
-    def get_text(self) -> str:
-        return f'📆 Начните доп.смену на дату {self.__date:%d.%m.%Y}'
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        button = InlineKeyboardButton(
-            text='🚀 Начать доп.смену',
-            callback_data=ExtraShiftStartCallbackData(
-                date=self.__date.isoformat(),
-            ).pack()
-        )
-        return InlineKeyboardMarkup(inline_keyboard=[[button]])
 
 
 class ShiftExtraStartRequestConfirmedView(TextView):
@@ -52,17 +27,9 @@ class ShiftExtraStartRequestConfirmedView(TextView):
     def get_text(self) -> str:
         return (
             f'✅ {self.__staff_full_name}, ваш запрос на доп.смену на дату'
-            f' {self.__shift_date:%d.%m.%Y} подтвержден'
+            f' {self.__shift_date:%d.%m.%Y} подтвержден.\n'
+            'Вы сможете начать смену в разделе "начать смену'
         )
-
-    def get_reply_markup(self) -> InlineKeyboardMarkup:
-        button = InlineKeyboardButton(
-            text='🚀 Начать доп.смену',
-            callback_data=ExtraShiftStartCallbackData(
-                date=self.__shift_date.isoformat(),
-            ).pack(),
-        )
-        return InlineKeyboardMarkup(inline_keyboard=[[button]])
 
 
 class ShiftExtraStartRequestRejectedView(TextView):

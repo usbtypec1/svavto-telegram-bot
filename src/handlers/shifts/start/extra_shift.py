@@ -2,28 +2,23 @@ import datetime
 
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
-from fast_depends import Depends, inject
+from fast_depends import inject
 
 from callback_data import (
     ExtraShiftCreateAcceptCallbackData,
-    ExtraShiftCreateRejectCallbackData, ExtraShiftStartCallbackData,
+    ExtraShiftCreateRejectCallbackData,
 )
 from config import Config
 from dependencies.repositories import (
-    CarWashRepositoryDependency, get_staff_repository,
+    StaffRepositoryDependency,
 )
 from filters import admins_filter, staff_filter
-from interactors import CarWashesReadInteractor
-from repositories import StaffRepository
 from services.notifications import SpecificChatsNotificationService
-from services.validators import validate_shift_date
 from ui.views import (
-    ButtonText, edit_as_rejected, edit_message_by_view,
-    ExtraShiftScheduleNotificationView, ExtraShiftScheduleWebAppView,
-    MainMenuView, send_text_view, ShiftCarWashUpdateView,
-    ShiftExtraStartRequestConfirmedView,
+    ButtonText, edit_as_rejected, ExtraShiftScheduleNotificationView,
+    ExtraShiftScheduleWebAppView,
+    MainMenuView, send_text_view, ShiftExtraStartRequestConfirmedView,
     ShiftExtraStartRequestSentView,
 )
 from ui.views.base import answer_view, edit_as_accepted
@@ -36,33 +31,6 @@ router = Router(name=__name__)
 
 
 @router.callback_query(
-    ExtraShiftStartCallbackData.filter(),
-    staff_filter,
-    StateFilter('*'),
-)
-@inject
-async def on_extra_shift_start(
-        callback_query: CallbackQuery,
-        callback_data: ExtraShiftStartCallbackData,
-        config: Config,
-        state: FSMContext,
-        car_wash_repository: CarWashRepositoryDependency,
-) -> None:
-    validate_shift_date(
-        shift_date=callback_data.date,
-        timezone=config.timezone,
-    )
-
-    car_washes = await CarWashesReadInteractor(
-        car_wash_repository=car_wash_repository
-    ).execute()
-
-    await state.update_data(shift_date=callback_data.date)
-    view = ShiftCarWashUpdateView(car_washes)
-    await edit_message_by_view(callback_query.message, view)
-
-
-@router.callback_query(
     ExtraShiftCreateAcceptCallbackData.filter(),
     admins_filter,
     StateFilter('*'),
@@ -72,10 +40,7 @@ async def on_extra_shift_create_accept(
         callback_query: CallbackQuery,
         callback_data: ExtraShiftCreateAcceptCallbackData,
         bot: Bot,
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
-            use_cache=False,
-        ),
+        staff_repository: StaffRepositoryDependency,
 ) -> None:
     staff = await staff_repository.get_by_id(callback_data.staff_id)
     view = ShiftExtraStartRequestConfirmedView(
@@ -119,10 +84,7 @@ async def on_extra_shift_calendar(
         config: Config,
         admin_user_ids: set[int],
         bot: Bot,
-        staff_repository: StaffRepository = Depends(
-            dependency=get_staff_repository,
-            use_cache=False,
-        ),
+        staff_repository: StaffRepositoryDependency,
 ) -> None:
     admins_notification_service = SpecificChatsNotificationService(
         bot=bot,

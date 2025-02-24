@@ -7,7 +7,7 @@ from connections import ShiftConnection
 from models import (
     CarWash, Shift, ShiftExtraCreateResult, ShiftFinishResult, ShiftListPage,
     ShiftRegularCreateResult, ShiftTestCreateResult, ShiftWithCarWashAndStaff,
-    DeadSoulsForMonth,
+    DeadSoulsForMonth, StaffIdAndDate,
 )
 from repositories.errors import handle_errors
 
@@ -132,7 +132,7 @@ class ShiftRepository:
 
     async def create_extra(
             self,
-            shifts,
+            shifts: Iterable[StaffIdAndDate],
     ) -> ShiftExtraCreateResult:
         response = await self.__connection.create_extra(shifts)
         handle_errors(response)
