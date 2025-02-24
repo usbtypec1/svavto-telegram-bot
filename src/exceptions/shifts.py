@@ -14,7 +14,10 @@ class StaffHasActiveShiftError(Exception):
 
 
 class ShiftAlreadyFinishedError(Exception):
-    pass
+
+    def __init__(self, message: str, shift_date: datetime.date):
+        super().__init__(message)
+        self.shift_date = shift_date
 
 
 class ShiftAlreadyConfirmedError(Exception):

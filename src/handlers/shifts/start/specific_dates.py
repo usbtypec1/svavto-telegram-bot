@@ -2,26 +2,25 @@ import asyncio
 
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
 
 from callback_data import (
     ShiftRegularStartCallbackData,
-    ShiftStartCarWashCallbackData,
 )
-from config import Config
 from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
 from enums import ShiftType
 from filters import admins_filter, staff_filter
-from interactors import ShiftsOfStaffForPeriodReadInteractor
+from interactors import (
+    CarWashesReadInteractor,
+    ShiftsOfStaffForPeriodReadInteractor,
+)
 from models import ShiftsConfirmation
-from states import ShiftRegularStartStates
 from ui.views import (
-    answer_text_view, ButtonText, edit_message_by_view,
-    ExtraShiftStartRequestView, send_text_view, ShiftMenuView,
+    ButtonText, edit_message_by_view,
+    ExtraShiftStartRequestView, send_text_view, ShiftCarWashUpdateView,
     ShiftRegularStartRequestView,
     ShiftStartForSpecificDateRequestSentView, TestShiftStartRequestView,
 )
@@ -30,37 +29,6 @@ from ui.views import (
 __all__ = ('router',)
 
 router = Router(name=__name__)
-
-
-@router.callback_query(
-    ShiftStartCarWashCallbackData.filter(),
-    staff_filter,
-    StateFilter(ShiftRegularStartStates.car_wash),
-)
-@inject
-async def on_car_wash_choose(
-        callback_query: CallbackQuery,
-        callback_data: ShiftStartCarWashCallbackData,
-        state: FSMContext,
-        config: Config,
-        shift_repository: ShiftRepositoryDependency,
-) -> None:
-    await state.clear()
-    car_wash_id = callback_data.car_wash_id
-
-    await shift_repository.update_current_shift_car_wash(
-        staff_id=callback_query.from_user.id,
-        car_wash_id=car_wash_id
-    )
-    await callback_query.message.edit_text(
-        text='✅ Вы начали смену водителя перегонщика на мойку',
-    )
-    view = ShiftMenuView(
-        staff_id=callback_query.from_user.id,
-        web_app_base_url=config.web_app_base_url,
-    )
-    await answer_text_view(callback_query.message, view)
-    await callback_query.answer()
 
 
 @router.callback_query(
@@ -74,18 +42,10 @@ async def on_shift_regular_start_accept(
         callback_data: ShiftRegularStartCallbackData,
         car_wash_repository: CarWashRepositoryDependency,
         shift_repository: ShiftRepositoryDependency,
-        state: FSMContext,
 ) -> None:
     await shift_repository.start(shift_id=callback_data.shift_id)
-    car_washes = await car_wash_repository.get_all()
-    if not car_washes:
-        await callback_query.answer(
-            text='❌ Нет доступных моек',
-            show_alert=True,
-        )
-        return
-    await state.set_state(ShiftRegularStartStates.car_wash)
-    view = ShiftStartCarWashChooseView(car_washes)
+    car_washes = await CarWashesReadInteractor(car_wash_repository).execute()
+    view = ShiftCarWashUpdateView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
 

@@ -1,9 +1,13 @@
+import datetime
+
 from aiogram import Router
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
 
 from exceptions import (
-    InvalidTimeToStartShiftError, ShiftDateExpiredError,
+    InvalidTimeToStartShiftError,
+    ShiftAlreadyFinishedError,
+    ShiftDateExpiredError,
     ShiftDateHasNotComeError,
     ShiftNotConfirmedError, StaffHasActiveShiftError,
 )
@@ -14,6 +18,13 @@ from ui.views import ShiftTodayStartInvalidTimeView
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.error(ExceptionTypeFilter(ShiftAlreadyFinishedError))
+async def on_shift_already_finished_error(event: ErrorEvent) -> None:
+    shift_date = datetime.date.fromisoformat(event.exception.shift_date)
+    text = f'❌ Смена на {shift_date:%d.%m.%Y} уже завершена'
+    await answer_appropriate_event(event, text)
 
 
 @router.error(ExceptionTypeFilter(InvalidTimeToStartShiftError))

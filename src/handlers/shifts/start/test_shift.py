@@ -15,15 +15,16 @@ from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
 from filters import admins_filter, staff_filter
+from interactors import CarWashesReadInteractor
 from logger import create_logger
 from models import DirectShiftWebAppData
 from services.notifications import SpecificChatsNotificationService
 from services.validators import validate_shift_date
-from states import ShiftTestStartStates
 from ui.views import (
-    ButtonText, ShiftMenuView,
-    TestShiftStartRequestView, answer_text_view, edit_message_by_view,
+    answer_text_view, ButtonText, edit_message_by_view, ShiftCarWashUpdateView,
+    ShiftMenuView, TestShiftStartRequestView,
 )
+
 
 __all__ = ('router',)
 
@@ -35,7 +36,7 @@ router = Router(name=__name__)
 @router.callback_query(
     ShiftStartCarWashCallbackData.filter(),
     staff_filter,
-    StateFilter(ShiftTestStartStates.car_wash),
+    StateFilter('*'),
 )
 @inject
 async def on_car_wash_choose(
@@ -90,17 +91,10 @@ async def on_extra_shift_start(
 ) -> None:
     validate_shift_date(shift_date=callback_data.date, timezone=config.timezone)
 
-    car_washes = await car_wash_repository.get_all()
-    if not car_washes:
-        await callback_query.answer(
-            text='❌ Нет доступных моек',
-            show_alert=True,
-        )
-        return
+    car_washes = await CarWashesReadInteractor(car_wash_repository).execute()
 
-    await state.set_state(ShiftTestStartStates.car_wash)
     await state.update_data(shift_date=callback_data.date)
-    view = ShiftStartCarWashChooseView(car_washes)
+    view = ShiftCarWashUpdateView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 
 

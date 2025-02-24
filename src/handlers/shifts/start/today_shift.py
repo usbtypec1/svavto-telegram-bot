@@ -1,67 +1,29 @@
 from aiogram import F, Router
 from aiogram.filters import StateFilter
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
 
 from callback_data import (
-    ShiftStartCarWashCallbackData,
     ShiftWorkTypeChoiceCallbackData,
 )
 from config import Config
 from dependencies.repositories import (
     CarWashRepositoryDependency, ShiftRepositoryDependency,
 )
-from enums import ShiftType, ShiftWorkType
+from enums import ShiftWorkType
 from exceptions import ShiftNotFoundError
 from filters import staff_filter
 from interactors import CarWashesReadInteractor, ShiftForTodayReadInteractor
 from logger import create_logger
-from models import Staff
-from services.shifts import (
-    get_current_shift_date,
-)
-from states import ShiftTodayStartStates
 from ui.views import (
     answer_text_view, ButtonText, edit_message_by_view, ShiftCarWashUpdateView,
-    ShiftMenuView, ShiftWorkTypeChoiceView,
+    ShiftWorkTypeChoiceView,
 )
 
-
-__all__ = ('router',)
 
 logger = create_logger(__name__)
 
 router = Router(name=__name__)
-
-
-@router.callback_query(
-    ShiftStartCarWashCallbackData.filter(),
-    staff_filter,
-    StateFilter(ShiftTodayStartStates.car_wash),
-)
-@inject
-async def on_car_wash_choose(
-        callback_query: CallbackQuery,
-        callback_data: ShiftStartCarWashCallbackData,
-        state: FSMContext,
-        config: Config,
-        shift_repository: ShiftRepositoryDependency,
-) -> None:
-    await state.clear()
-    await shift_repository.update_current_shift_car_wash(
-        car_wash_id=callback_data.car_wash_id,
-        staff_id=callback_query.from_user.id,
-    )
-    await callback_query.message.edit_text(
-        text='✅ Вы начали смену водителя перегонщика на мойку',
-    )
-    view = ShiftMenuView(
-        staff_id=callback_query.from_user.id,
-        web_app_base_url=config.web_app_base_url,
-    )
-    await answer_text_view(callback_query.message, view)
-    await callback_query.answer()
 
 
 @router.callback_query(
@@ -75,7 +37,6 @@ async def on_car_wash_choose(
 async def on_move_to_wash_shift_work_type_choice(
         callback_query: CallbackQuery,
         config: Config,
-        state: FSMContext,
         shift_repository: ShiftRepositoryDependency,
         car_wash_repository: CarWashRepositoryDependency,
 ) -> None:
@@ -99,7 +60,6 @@ async def on_move_to_wash_shift_work_type_choice(
 
     await shift_repository.start(shift_id=shift.id)
 
-    await state.set_state(ShiftTodayStartStates.car_wash)
     view = ShiftCarWashUpdateView(car_washes)
     await edit_message_by_view(callback_query.message, view)
 

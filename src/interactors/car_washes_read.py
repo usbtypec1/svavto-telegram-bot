@@ -5,7 +5,7 @@ from models import CarWash
 from repositories import CarWashRepository
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
+@dataclass(frozen=True, slots=True)
 class CarWashesReadInteractor:
     car_wash_repository: CarWashRepository
 

@@ -9,12 +9,14 @@ from exceptions import (
     CarWashNotFoundError,
     CarWashSameAsCurrentError, InvalidTimeToStartShiftError, ServerApiError,
     ShiftAlreadyConfirmedError,
-    ShiftAlreadyExistsError, ShiftAlreadyFinishedError, ShiftNotConfirmedError,
+    ShiftAlreadyExistsError, ShiftAlreadyFinishedError,
+    ShiftNotConfirmedError,
     ShiftNotFoundError, StaffAlreadyExistsError, StaffHasActiveShiftError,
     StaffHasNoActiveShiftError, StaffHasNoAnyShiftError, StaffNotFoundError,
     StaffRegisterRequestAlreadyExistsError,
 )
 from logger import create_logger
+
 
 __all__ = (
     'handle_errors',
@@ -49,7 +51,7 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_REGISTER_REQUEST_ALREADY_EXISTS: (
         StaffRegisterRequestAlreadyExistsError
     ),
-    ServerApiErrorCode.INVALID_TIME_TO_START_SHIFT:  (
+    ServerApiErrorCode.INVALID_TIME_TO_START_SHIFT: (
         InvalidTimeToStartShiftError
     ),
 }
