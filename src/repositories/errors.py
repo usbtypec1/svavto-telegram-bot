@@ -24,7 +24,7 @@ __all__ = (
     'code_to_exception_class',
 )
 
-from ui.views import ShiftTodayStartInvalidTimeView
+from ui.views import ShiftNotConfirmedView
 
 
 logger = create_logger('errors')

@@ -6,7 +6,7 @@ from .specific import *
 from .start import (
     ShiftExtraStartRequestConfirmedView,
     ShiftExtraStartRequestRejectedView, ShiftExtraStartRequestSentView,
-    ShiftRegularStartRequestView, ShiftTodayStartInvalidTimeView,
+    ShiftRegularStartRequestView, ShiftNotConfirmedView,
     TestShiftStartRequestView,
 )
 from .statistics import *
