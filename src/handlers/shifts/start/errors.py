@@ -2,11 +2,25 @@ from aiogram import Router
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
 
-from exceptions import ShiftDateExpiredError, ShiftDateHasNotComeError
+from exceptions import (
+    ShiftDateExpiredError, ShiftDateHasNotComeError,
+    StaffHasActiveShiftError,
+)
+
 
 __all__ = ('router',)
 
 router = Router(name=__name__)
+
+
+@router.error(ExceptionTypeFilter(StaffHasActiveShiftError))
+async def on_staff_has_active_shift_error(event: ErrorEvent) -> None:
+    text = '❌ У вас уже есть активная смена'
+    if event.update.callback_query is not None:
+        await event.update.callback_query.answer(
+            text=text,
+            show_alert=True,
+        )
 
 
 @router.error(ExceptionTypeFilter(ShiftDateExpiredError))
