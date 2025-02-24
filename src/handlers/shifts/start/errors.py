@@ -27,23 +27,20 @@ async def on_shift_already_finished_error(event: ErrorEvent) -> None:
     await answer_appropriate_event(event, text)
 
 
-@router.error(ExceptionTypeFilter(InvalidTimeToStartShiftError))
-async def on_invalid_time_to_start_shift_error(event: ErrorEvent) -> None:
+@router.error(
+    ExceptionTypeFilter(
+        InvalidTimeToStartShiftError,
+        ShiftNotConfirmedError,
+    ),
+)
+async def on_shift_invalid_time_or_not_confirmed_error(
+        event: ErrorEvent,
+) -> None:
     view = ShiftTodayStartInvalidTimeView()
     if event.update.callback_query is not None:
         await answer_view(
             event.update.callback_query.message,
             view,
-        )
-
-
-@router.error(ExceptionTypeFilter(ShiftNotConfirmedError))
-async def on_shift_not_confirmed_error(event: ErrorEvent) -> None:
-    text = '❌ Вы не подтвердили выход на смену'
-    if event.update.callback_query is not None:
-        await event.update.callback_query.answer(
-            text=text,
-            show_alert=True,
         )
 
 
