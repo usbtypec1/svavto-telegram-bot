@@ -83,7 +83,7 @@ class AdminShiftsMenuView(TextView):
         shifts_edit_button = InlineKeyboardButton(
             text='✏️ Редактировать смены',
             web_app=WebAppInfo(
-                url=f'{self.__web_app_base_url}/shifts/schedules',
+                url=f'{self.__web_app_base_url}/shifts/edit',
             ),
         )
         shifts_table_url = InlineKeyboardButton(
