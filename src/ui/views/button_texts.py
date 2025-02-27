@@ -24,7 +24,7 @@ class ButtonText(StrEnum):
     SHIFT_CARS_WITHOUT_WINDSHIELD_WASHER = '💧 Недоливы'
     MAILING = '📩 Рассылка'
     SHIFT_START = '🚀 Начать смену'
-    SHIFT_START_EXTRA = '🚀 Начать доп.смену'
+    SHIFT_START_EXTRA = '🚀 Запросить доп.смену'
     SHIFT_SCHEDULE = '📅 График работы'
     REPORT_FOR_PERIOD = '📊 Отчет за период'
     SHIFT_ADD_CAR = '🚗 Добавить автомобиль'
