@@ -17,7 +17,7 @@ class StaffScheduleMenu(TextView):
             resize_keyboard=True,
             keyboard=[
                 [
-                    KeyboardButton(text=ButtonText.SCHEDULE_SELF),
+                    KeyboardButton(text=ButtonText.SHIFT_MONTH_LIST),
                     KeyboardButton(text=ButtonText.SHIFT_APPLY),
                 ],
                 [

@@ -21,7 +21,7 @@ router = Router(name=__name__)
 
 
 @router.message(
-    F.text == ButtonText.SCHEDULE_SELF,
+    F.text == ButtonText.SHIFT_MONTH_LIST,
     invert_f(admins_filter),
     StateFilter('*'),
 )

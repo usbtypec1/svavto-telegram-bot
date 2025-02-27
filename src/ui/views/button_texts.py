@@ -37,7 +37,7 @@ class ButtonText(StrEnum):
     MAILING_STAFF = '👥 Выбрать сотрудников'
     REGISTER = '🚀 Зарегистрироваться'
     MAIN_MENU = '📲 Главное меню'
-    SCHEDULE_SELF = '📆 Мой график'
+    SHIFT_MONTH_LIST = '📆 Мой график'
     CAR_ADDITIONAL_SERVICES = '🔧 Отметить доп.услуги авто'
     LATER = '➡ Сделаю это позже'
     SHIFT_APPLY = '✏️ Записаться на смены'
