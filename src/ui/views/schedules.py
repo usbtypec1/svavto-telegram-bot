@@ -3,10 +3,10 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from ui.views.base import TextView
 from ui.views.button_texts import ButtonText
 
-__all__ = ('StaffScheduleMenu',)
+__all__ = ('StaffShiftsScheduleMenuView',)
 
 
-class StaffScheduleMenu(TextView):
+class StaffShiftsScheduleMenuView(TextView):
     text = 'График работы'
 
     def __init__(self, web_app_base_url: str):

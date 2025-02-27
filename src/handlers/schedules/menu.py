@@ -5,7 +5,7 @@ from aiogram.types import Message
 from config import Config
 from ui.views import answer_text_view
 from ui.views import ButtonText
-from ui.views import StaffScheduleMenu
+from ui.views import StaffShiftsScheduleMenuView
 
 __all__ = ('router',)
 
@@ -20,4 +20,4 @@ async def on_show_shift_schedule_menu(
         message: Message,
         config: Config,
 ) -> None:
-    await answer_text_view(message, StaffScheduleMenu(config.web_app_base_url))
+    await answer_text_view(message, StaffShiftsScheduleMenuView(config.web_app_base_url))
