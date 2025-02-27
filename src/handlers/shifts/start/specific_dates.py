@@ -69,10 +69,6 @@ async def on_send_shift_start_request_for_specific_date(
         created_extra_shifts_result = await shift_repository.create_extra(
             shifts_to_create
         )
-        for shift in created_extra_shifts_result.created_shifts:
-            view = ShiftConfirmRequestView(shift)
-            await send_text_view(bot, view, shift.staff_id)
-            await asyncio.sleep(0.1)
     else:
         created_extra_shifts_result = None
 

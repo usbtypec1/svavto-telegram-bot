@@ -25,8 +25,6 @@ class ShiftConfirmRequestView(TextView):
 
     def get_text(self) -> str:
         shift_date = self.__shift.date.strftime('%d.%m.%Y')
-        if self.__shift.type == ShiftType.EXTRA:
-            return f'❗️ Подтвердите выход на доп.смену на {shift_date}'
         return f'❗️ Подтвердите выход на смену на {shift_date}'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
