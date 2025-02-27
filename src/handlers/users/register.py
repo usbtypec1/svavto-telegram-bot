@@ -1,6 +1,6 @@
 from aiogram import Bot, F, Router
-from aiogram.filters import ExceptionTypeFilter, StateFilter
-from aiogram.types import ErrorEvent, Message, ReplyKeyboardRemove
+from aiogram.filters import StateFilter
+from aiogram.types import Message, ReplyKeyboardRemove
 from fast_depends import inject
 
 from config import Config
@@ -11,8 +11,8 @@ from exceptions import (
 )
 from models import StaffRegisterRequestData
 from services.notifications import SpecificChatsNotificationService
-from services.telegram_events import answer_appropriate_event
 from ui.views import ButtonText, StaffRegisterRequestNotificationView
+
 
 __all__ = ('router',)
 

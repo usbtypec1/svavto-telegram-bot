@@ -6,8 +6,6 @@ from models import AvailableDate, DeadSoulsForMonth
 from ui.views.available_months import AvailableMonthsListView, MONTH_NAMES
 from ui.views.base import TextView
 
-__all__ = ('DeadSoulsMonthChooseView', 'DeadSoulsView')
-
 
 class DeadSoulsMonthChooseView(AvailableMonthsListView):
 

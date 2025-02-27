@@ -8,8 +8,10 @@ from dependencies.repositories import CarToWashRepositoryDependency
 from filters import admins_filter
 from services.shifts import get_current_shift_date
 from ui.views import (
-    answer_text_view, ButtonText, ShiftCarsCountByStaffView,
+    answer_text_view, ButtonText,
 )
+from ui.views.supervision import SupervisionTransferredCarsView
+
 
 __all__ = ('router',)
 
@@ -29,5 +31,5 @@ async def on_show_shift_cars_count_by_staff(
 ) -> None:
     shift_date = get_current_shift_date(config.timezone)
     shift_cars = await car_to_wash_repository.get_count_by_staff(shift_date)
-    view = ShiftCarsCountByStaffView(shift_cars)
+    view = SupervisionTransferredCarsView(shift_cars)
     await answer_text_view(message, view)

@@ -1,5 +1,4 @@
 from aiogram import Bot, Router
-from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import StateFilter
 from aiogram.types import CallbackQuery
 from fast_depends import Depends, inject
@@ -12,6 +11,7 @@ from interactors import ChatUsernameReadInteractor
 from repositories import StaffRepository
 from ui.views import edit_message_by_view
 from ui.views.staff import StaffDetailView
+
 
 __all__ = ('router',)
 

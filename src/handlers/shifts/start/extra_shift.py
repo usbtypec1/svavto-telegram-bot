@@ -17,7 +17,6 @@ from dependencies.repositories import (
 from exceptions import ShiftAlreadyExistsError, StaffNotFoundError
 from filters import admins_filter, staff_filter
 from interactors import ExtraShiftCreateInteractor
-from models import StaffIdAndDate
 from services.notifications import SpecificChatsNotificationService
 from ui.views import (
     ButtonText, edit_as_rejected, ExtraShiftScheduleNotificationView,

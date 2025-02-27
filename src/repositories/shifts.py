@@ -7,7 +7,7 @@ from connections import ShiftConnection
 from models import (
     CarWash, Shift, ShiftExtraCreateResult, ShiftFinishResult, ShiftListPage,
     ShiftRegularCreateResult, ShiftTestCreateResult, ShiftWithCarWashAndStaff,
-    DeadSoulsForMonth, StaffIdAndDate,
+    DeadSoulsForMonth, StaffIdAndDate, StaffShiftMonths,
 )
 from repositories.errors import handle_errors
 
@@ -152,19 +152,10 @@ class ShiftRepository:
         response_data = response.json()
         return ShiftTestCreateResult.model_validate(response_data)
 
-    async def get_last_created_shift_dates(
-            self,
-            staff_id: int,
-    ) -> list[datetime.date]:
-        response = await self.__connection.get_last_created_shift_dates(
-            staff_id=staff_id,
-        )
+    async def get_months(self, staff_id: int) -> StaffShiftMonths:
+        response = await self.__connection.get_months(staff_id=staff_id)
         handle_errors(response)
-        response_data = response.json()
-        return [
-            datetime.date.fromisoformat(date)
-            for date in response_data['shift_dates']
-        ]
+        return StaffShiftMonths.model_validate_json(response.text)
 
     async def reject(self, shift_id: int) -> None:
         response = await self.__connection.reject(shift_id=shift_id)

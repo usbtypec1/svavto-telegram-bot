@@ -1,7 +1,7 @@
-from aiogram import Router, F
-from aiogram.filters import StateFilter, invert_f
-from aiogram.types import Message, CallbackQuery
-from fast_depends import inject, Depends
+from aiogram import F, Router
+from aiogram.filters import StateFilter
+from aiogram.types import CallbackQuery, Message
+from fast_depends import Depends, inject
 
 from callback_data import ShiftCarWashUpdateCallbackData
 from config import Config
@@ -10,12 +10,12 @@ from dependencies.repositories import (
     get_shift_repository,
 )
 from exceptions import CarWashSameAsCurrentError
-from filters import admins_filter, staff_filter
+from filters import staff_filter
 from repositories import CarWashRepository, ShiftRepository
-from ui.views import answer_text_view
-from ui.views import ButtonText
-from ui.views import ShiftMenuView
-from ui.views import ShiftCarWashUpdateView
+from ui.views import (
+    answer_text_view, ButtonText, ShiftCarWashUpdateView,
+    ShiftMenuView,
+)
 
 
 __all__ = ('router',)

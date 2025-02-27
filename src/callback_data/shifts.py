@@ -16,6 +16,7 @@ __all__ = (
     'TestShiftStartCallbackData',
     'ShiftConfirmCallbackData',
     'ShiftRejectCallbackData',
+    'ShiftMonthChoiceCallbackData',
 )
 
 
@@ -97,3 +98,11 @@ class ShiftRejectCallbackData(
     prefix=CallbackDataPrefix.SHIFT_REJECT,
 ):
     shift_id: int
+
+
+class ShiftMonthChoiceCallbackData(
+    CallbackData,
+    prefix=CallbackDataPrefix.SHIFT_MONTH_CHOOSE,
+):
+    month: int
+    year: int

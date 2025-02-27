@@ -39,6 +39,7 @@ class CallbackDataPrefix(StrEnum):
     SHIFT_APPLY = auto()
     SHIFT_EXTRA_CREATE_ACCEPT = auto()
     SHIFT_EXTRA_CREATE_REJECT = auto()
+    SHIFT_MONTH_CHOOSE = auto()
     MAILING = auto()
     MAILING_CREATE_ACCEPT = auto()
     MAILING_CREATE_REJECT = auto()

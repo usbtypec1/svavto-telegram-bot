@@ -24,6 +24,8 @@ __all__ = (
     'DeadSoulsForMonth',
     'ExtraShiftItem',
     'StaffIdAndDate',
+    'MonthAndYear',
+    'StaffShiftMonths',
 )
 
 
@@ -147,3 +149,13 @@ class DeadSoulsForMonth(BaseModel):
     month: int
     year: int
     staff_list: list[StaffIdAndName]
+
+
+class MonthAndYear(BaseModel):
+    month: int
+    year: int
+
+
+class StaffShiftMonths(BaseModel):
+    staff_id: int
+    months: list[MonthAndYear]

@@ -24,10 +24,6 @@ class ShiftAlreadyConfirmedError(Exception):
     pass
 
 
-class StaffHasNoAnyShiftError(Exception):
-    pass
-
-
 class ShiftNotFoundError(Exception):
     pass
 

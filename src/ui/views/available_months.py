@@ -1,14 +1,14 @@
 import datetime
 from collections.abc import Iterable
-from typing import Final
+from typing import Final, Protocol
 from zoneinfo import ZoneInfo
 
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from models import AvailableDate
 from ui.views.base import TextView
+
 
 __all__ = ('MONTH_NAMES', 'AvailableMonthsListView')
 
@@ -28,12 +28,17 @@ MONTH_NAMES: Final[tuple[str, ...]] = (
 )
 
 
+class MonthAndYear(Protocol):
+    month: int
+    year: int
+
+
 class AvailableMonthsListView(TextView):
 
     def __init__(
             self,
             *,
-            available_months: Iterable[AvailableDate],
+            available_months: Iterable[MonthAndYear],
             timezone: ZoneInfo,
             callback_data_factory: type[CallbackData],
     ) -> None:
@@ -44,7 +49,7 @@ class AvailableMonthsListView(TextView):
     def get_text(self) -> str:
         if self.__available_months:
             return '📆 Выберите месяц'
-        return '❌ Нет доступных месяцев для записи на смену'
+        return '❌ Нет доступных месяцев'
 
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()

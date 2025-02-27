@@ -4,10 +4,7 @@ from .finish import *
 from .schedules import *
 from .specific import *
 from .start import (
-    ShiftExtraStartRequestConfirmedView,
-    ShiftExtraStartRequestRejectedView, ShiftExtraStartRequestSentView,
-    ShiftRegularStartRequestView, ShiftNotConfirmedView,
-    TestShiftStartRequestView,
+    ShiftExtraStartRequestConfirmedView, ShiftExtraStartRequestRejectedView,
+    ShiftExtraStartRequestSentView, ShiftNotConfirmedView,
+    ShiftRegularStartRequestView, TestShiftStartRequestView,
 )
-from .statistics import *
-from .supervision import *

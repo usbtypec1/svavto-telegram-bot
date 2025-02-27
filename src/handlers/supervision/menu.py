@@ -10,9 +10,12 @@ from dependencies.repositories import (
 from filters import admins_filter
 from services.shifts import get_current_shift_date
 from ui.views import (
-    answer_text_view, ButtonText, ShiftCarsWithoutWindshieldWasherView,
-    SupervisionMenuView,
+    answer_text_view, ButtonText,
 )
+from ui.views.supervision.windshield_washer import \
+    SupervisionWindshieldWasherView
+from ui.views.supervision.menu import SupervisionMenuView
+
 
 __all__ = ('router',)
 
@@ -43,5 +46,5 @@ async def on_show_shift_cars_without_windshield_washer(
     shift_cars = await car_to_wash_repository.get_without_windshield_washer(
         shift_date,
     )
-    view = ShiftCarsWithoutWindshieldWasherView(shift_cars)
+    view = SupervisionWindshieldWasherView(shift_cars)
     await answer_text_view(message, view)

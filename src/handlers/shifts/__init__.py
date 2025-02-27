@@ -8,7 +8,7 @@ from . import (
     change_car_wash,
     finish,
     apply,
-    schedule_self,
+    months,
     confirm,
     reject,
 )
@@ -24,7 +24,7 @@ router.include_routers(
     errors.router,
     change_car_wash.router,
     finish.router,
-    schedule_self.router,
+    months.router,
     confirm.router,
     reject.router,
 )

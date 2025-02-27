@@ -245,27 +245,30 @@ class ShiftConnection(ApiConnection):
         )
         return response
 
-    async def get_last_created_shift_dates(
+    async def get_months(
             self,
             staff_id: int,
     ) -> httpx.Response:
-        url = f'/shifts/staff/{staff_id}/last-created/'
+        url = f'/shifts/staff/{staff_id}/months/'
         logger.debug(
-            f'Retrieving last created shift dates for staff {staff_id}',
+            'Requesting shifts months of staff ID %d', staff_id,
         )
         response = await self._http_client.get(url)
         logger.debug(
-            f'Retrieved last created shift dates for staff {staff_id}',
-            extra={'status_code': response.status_code},
+            'Received shifts months of staff ID %d. Status code: %d',
+            staff_id,
+            response.status_code,
         )
         return response
 
     async def reject(self, shift_id: int) -> httpx.Response:
         url = f'/shifts/reject/'
         logger.debug('Sending reject shift request. Shift ID: %d', shift_id)
-        response = await self._http_client.post(url, json={
-            'shift_id': shift_id,
-        })
+        response = await self._http_client.post(
+            url, json={
+                'shift_id': shift_id,
+            }
+        )
         logger.debug(
             'Received reject shift response. Shift ID: %d, status code: %d',
             shift_id,

@@ -10,8 +10,10 @@ from interactors import ShiftsForSpecificDateReadInteractor
 from services.shifts import get_current_shift_date
 from ui.views import (
     answer_text_view, ButtonText,
-    SupervisionShiftConfirmationsView,
 )
+from ui.views.supervision.shift_confirmations import \
+    SupervisionShiftConfirmationsView
+
 
 __all__ = ('router',)
 

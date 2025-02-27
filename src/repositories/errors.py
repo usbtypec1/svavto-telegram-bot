@@ -12,7 +12,7 @@ from exceptions import (
     ShiftAlreadyExistsError, ShiftAlreadyFinishedError,
     ShiftNotConfirmedError,
     ShiftNotFoundError, StaffAlreadyExistsError, StaffHasActiveShiftError,
-    StaffHasNoActiveShiftError, StaffHasNoAnyShiftError, StaffNotFoundError,
+    StaffHasNoActiveShiftError, StaffNotFoundError,
     StaffRegisterRequestAlreadyExistsError,
 )
 from logger import create_logger
@@ -23,9 +23,6 @@ __all__ = (
     'raise_appropriate_error',
     'code_to_exception_class',
 )
-
-from ui.views import ShiftNotConfirmedView
-
 
 logger = create_logger('errors')
 
@@ -39,7 +36,6 @@ code_to_exception_class: dict[ServerApiErrorCode, type[Exception]] = {
     ServerApiErrorCode.STAFF_HAS_ACTIVE_SHIFT: StaffHasActiveShiftError,
     ServerApiErrorCode.SHIFT_ALREADY_FINISHED: ShiftAlreadyFinishedError,
     ServerApiErrorCode.SHIFT_ALREADY_CONFIRMED: ShiftAlreadyConfirmedError,
-    ServerApiErrorCode.STAFF_HAS_NO_ANY_SHIFT: StaffHasNoAnyShiftError,
     ServerApiErrorCode.SHIFT_NOT_FOUND: ShiftNotFoundError,
     ServerApiErrorCode.CAR_ALREADY_WASHED_ON_SHIFT: (
         CarAlreadyWashedOnShiftError

@@ -11,7 +11,7 @@ from dependencies.repositories import (
 )
 from filters import admins_filter
 from ui.views import answer_view, ButtonText, DeadSoulsMonthChooseView
-from ui.views.supervision.staff_without_shifts import DeadSoulsView
+from ui.views.supervision import DeadSoulsView
 
 __all__ = ('router',)
 

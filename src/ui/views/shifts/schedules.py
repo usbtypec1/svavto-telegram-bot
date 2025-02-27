@@ -16,12 +16,13 @@ from callback_data import (
     ShiftApplyCallbackData,
     ShiftWorkTypeChoiceCallbackData,
 )
-from enums import ShiftWorkType
+from enums import ShiftType, ShiftWorkType
 from models import (
-    AvailableDate,
+    AvailableDate, ShiftListItem,
 )
 from ui.views.base import TextView
 from ui.views.button_texts import ButtonText
+
 
 __all__ = (
     'ShiftWorkTypeChoiceView',
@@ -30,7 +31,7 @@ __all__ = (
     'ShiftApplyScheduleMonthCalendarWebAppView',
     'StaffShiftScheduleCreatedNotificationView',
     'StaffHasNoAnyCreatedShiftView',
-    'StaffScheduleCreatedShiftView',
+    'ShiftsForMonthListView',
     'ExtraShiftScheduleWebAppView',
     'ExtraShiftScheduleNotificationView',
 )
@@ -181,16 +182,38 @@ class StaffHasNoAnyCreatedShiftView(TextView):
     )
 
 
-class StaffScheduleCreatedShiftView(TextView):
+class ShiftsForMonthListView(TextView):
 
-    def __init__(self, shift_dates: Iterable[datetime.date]):
-        self.__shift_dates = tuple(shift_dates)
+    def __init__(
+            self,
+            *,
+            month: int,
+            year: int,
+            shifts: Iterable[ShiftListItem],
+    ):
+        self.__month = month
+        self.__year = year
+        self.__shifts = tuple(shifts)
 
     def get_text(self) -> str:
-        lines: list[str] = ['<b>📆 Даты последнего заполненного графика</b>']
+        month = month_names[self.__month - 1]
+        lines: list[str] = [f'<b>📆 График за {month}</b>']
 
-        for i, shift_date in enumerate(sorted(self.__shift_dates), start=1):
-            lines.append(f'{i}. {shift_date:%d.%m.%Y}')
+        if not self.__shifts:
+            lines.append('❌ Нет смен')
+
+        shifts_sorted_by_date = sorted(
+            self.__shifts,
+            key=lambda shift: shift.date,
+        )
+        for i, shift in enumerate(shifts_sorted_by_date, start=1):
+            if shift.type == ShiftType.EXTRA:
+                shift_type = '(доп)'
+            elif shift.type == ShiftType.TEST:
+                shift_type = '(тест)'
+            else:
+                shift_type = ''
+            lines.append(f'{i}. {shift.date:%d.%m.%Y} {shift_type}'.strip())
 
         return '\n'.join(lines)
 
