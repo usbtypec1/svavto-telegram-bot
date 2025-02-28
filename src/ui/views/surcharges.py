@@ -15,7 +15,7 @@ class SurchargeCreateMenuView(TextView):
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         transporter_surcharge_create_web_app_url = (
-            f'{self.__web_app_base_url}/surcharges/car-transporter'
+            f'{self.__web_app_base_url}/surcharges/car-transporters'
         )
         car_wash_surcharge_create_web_app_url = (
             f'{self.__web_app_base_url}/surcharges/car-wash'
