@@ -2,7 +2,7 @@ from redis.asyncio import Redis
 from aiogram import F, Router
 from aiogram.filters import StateFilter, invert_f
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
 from fast_depends import Depends, inject
 
 from callback_data.prefixes import CallbackDataPrefix
@@ -279,7 +279,10 @@ async def on_shift_finish_checked(
 ):
     await shift_repository.get_active(message.from_user.id)
     await state.set_state(ShiftFinishStates.statement_photo)
-    await message.answer('🖼️ Отправьте ведомость')
+    await message.answer(
+        text='🖼️ Отправьте ведомость',
+        reply_markup=ReplyKeyboardRemove(),
+    )
 
 
 @router.callback_query(
