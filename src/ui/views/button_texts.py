@@ -1,5 +1,6 @@
 from enum import StrEnum
 
+
 __all__ = ('ButtonText',)
 
 
@@ -47,3 +48,4 @@ class ButtonText(StrEnum):
     TEST_SHIFT_REQUEST = '📅 Выдать тестовый доступ'
     REPORTS = '📊 Отчеты'
     SPECIFIC_SHIFT = '📝 Открыть список смен'
+    SHIFT_FINISH_CHECK = '🔍 Проверить'

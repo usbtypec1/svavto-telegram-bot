@@ -7,7 +7,10 @@ from fast_depends import Depends, inject
 
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
-from dependencies.repositories import get_shift_repository
+from dependencies.repositories import (
+    get_shift_repository,
+    ShiftRepositoryDependency,
+)
 from exceptions import ShiftFinishPhotosCountExceededError
 from filters import admins_filter, staff_filter
 from repositories import ShiftRepository
@@ -16,7 +19,7 @@ from services.shifts import ShiftFinishPhotosState
 from states import ShiftFinishStates
 from ui.views import (
     answer_media_group_view, answer_photo_view,
-    answer_text_view, edit_as_rejected,
+    answer_text_view, edit_as_rejected, ShiftFinishCheckTransferredCarsView,
 )
 from ui.views import ButtonText
 from ui.views import MainMenuView, ShiftMenuView
@@ -30,9 +33,11 @@ from ui.views import (
     StaffShiftFinishedView,
 )
 
+
 __all__ = ('router',)
 
 from ui.views.base import edit_as_accepted
+
 
 router = Router(name=__name__)
 
@@ -246,21 +251,32 @@ async def on_photo_input(
 
 @router.callback_query(
     F.data == CallbackDataPrefix.SHIFT_FINISH_FLOW_START_ACCEPT,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
 async def on_shift_finish_accept(
         callback_query: CallbackQuery,
-        state: FSMContext,
-        shift_repository: ShiftRepository = Depends(
-            get_shift_repository,
-            use_cache=False,
-        ),
+        config: Config,
 ) -> None:
-    await shift_repository.get_active(callback_query.from_user.id)
+    view = ShiftFinishCheckTransferredCarsView(config.web_app_base_url)
+    await answer_text_view(callback_query.message, view)
+
+
+@router.message(
+    F.web_app_data.button_text == ButtonText.SHIFT_FINISH_CHECK,
+    staff_filter,
+    StateFilter('*'),
+)
+@inject
+async def on_shift_finish_checked(
+        message: Message,
+        state: FSMContext,
+        shift_repository: ShiftRepositoryDependency,
+):
+    await shift_repository.get_active(message.from_user.id)
     await state.set_state(ShiftFinishStates.statement_photo)
-    await callback_query.message.edit_text('🖼️ Отправьте ведомость')
+    await message.answer('🖼️ Отправьте ведомость')
 
 
 @router.callback_query(

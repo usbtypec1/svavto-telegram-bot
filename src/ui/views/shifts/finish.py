@@ -5,13 +5,14 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     InputMediaPhoto,
     KeyboardButton,
-    ReplyKeyboardMarkup,
+    ReplyKeyboardMarkup, WebAppInfo,
 )
 from aiogram.utils.media_group import MediaType
 
 import ui.markups
 from callback_data.prefixes import CallbackDataPrefix
 from models import ShiftFinishCarWashSummary, ShiftFinishResult
+from ui.views import ReplyMarkup
 from ui.views.base import MediaGroupView, TextView, PhotoView
 from ui.views.button_texts import ButtonText
 
@@ -27,6 +28,7 @@ __all__ = (
     'ShiftFinishedWithoutPhotosView',
     'format_shift_finish_text',
     'format_shift_car_wash_finish_summary',
+    'ShiftFinishCheckTransferredCarsView',
 )
 
 
@@ -184,3 +186,17 @@ class StaffShiftFinishedView(TextView):
         'Проверьте, что все отчеты заполнены верно!'
         ' Спасибо за работу и хорошего дня!'
     )
+
+
+class ShiftFinishCheckTransferredCarsView(TextView):
+    text = '🕵️‍♂️ Проверьте, правильно ли внесены данные'
+
+    def __init__(self, web_app_base_url: str):
+        self.__web_app_base_url = web_app_base_url
+
+    def get_reply_markup(self) -> ReplyKeyboardMarkup:
+        button = KeyboardButton(
+            text=ButtonText.SHIFT_FINISH_CHECK,
+            web_app=WebAppInfo(url=f'{self.__web_app_base_url}/shifts/finish'),
+        )
+        return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[button]])
