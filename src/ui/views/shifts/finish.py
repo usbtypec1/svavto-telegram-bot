@@ -191,12 +191,16 @@ class StaffShiftFinishedView(TextView):
 class ShiftFinishCheckTransferredCarsView(TextView):
     text = '🕵️‍♂️ Проверьте, правильно ли внесены данные'
 
-    def __init__(self, web_app_base_url: str):
+    def __init__(self, web_app_base_url: str, staff_id: int):
         self.__web_app_base_url = web_app_base_url
+        self.__staff_id = staff_id
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
         button = KeyboardButton(
             text=ButtonText.SHIFT_FINISH_CHECK,
-            web_app=WebAppInfo(url=f'{self.__web_app_base_url}/shifts/finish'),
+            web_app=WebAppInfo(
+                url=f'{self.__web_app_base_url}/shifts/finish/'
+                    f'{self.__staff_id}'
+                ),
         )
         return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[button]])

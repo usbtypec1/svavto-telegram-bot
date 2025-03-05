@@ -259,7 +259,10 @@ async def on_shift_finish_accept(
         callback_query: CallbackQuery,
         config: Config,
 ) -> None:
-    view = ShiftFinishCheckTransferredCarsView(config.web_app_base_url)
+    view = ShiftFinishCheckTransferredCarsView(
+        web_app_base_url=config.web_app_base_url,
+        staff_id=callback_query.from_user.id,
+    )
     await answer_text_view(callback_query.message, view)
 
 
