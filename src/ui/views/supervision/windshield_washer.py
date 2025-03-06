@@ -13,7 +13,7 @@ class SupervisionWindshieldWasherView(TextView):
         ]
         if not self.__shift_cars.cars:
             lines.append('Пока нет авто с недоливами')
-        for car_number in self.__shift_cars.cars:
-            lines.append(car_number)
+        for i, car_number in enumerate(self.__shift_cars.cars, start=1):
+            lines.append(f'{i}. {car_number}')
 
         return '\n'.join(lines)
