@@ -18,3 +18,4 @@ from .supervision import (
     DeadSoulsMonthChooseView,
     DeadSoulsView,
 )
+from .dry_cleaning import DryCleaningCarNumberView

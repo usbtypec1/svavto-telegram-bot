@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from enums import CarClass, WashType
 
+
 __all__ = (
     'CarToWashWebAppData',
     'AdditionalService',
@@ -15,6 +16,9 @@ __all__ = (
     'CarCountTransferredByStaff',
     'ShiftCarsWithoutWindshieldWasher',
     'CarToWashCreateResult',
+    'TransferredCarsListResponse',
+    'TransferredCarsListItem',
+    'TransferredCarAdditionalService',
 )
 
 
@@ -76,3 +80,28 @@ class CarToWashCreateResult(BaseModel):
     windshield_washer_refilled_bottle_percentage: int
     car_wash_id: int
     additional_services: list[AdditionalService]
+
+
+class TransferredCarAdditionalService(BaseModel):
+    id: UUID
+    name: str
+    count: int
+
+
+class TransferredCarsListItem(BaseModel):
+    id: int
+    number: str
+    class_type: CarClass
+    wash_type: WashType
+    car_wash_id: int
+    car_wash_name: str
+    windshield_washer_refilled_bottle_percentage: int
+    additional_services: list[TransferredCarAdditionalService]
+
+
+class TransferredCarsListResponse(BaseModel):
+    shift_id: int
+    shift_date: datetime.date
+    staff_id: int
+    staff_full_name: str
+    transferred_cars: list[TransferredCarsListItem]
