@@ -6,6 +6,7 @@ from aiogram.types import (
 from ui.views.base import TextView
 from ui.views.button_texts import ButtonText
 
+
 __all__ = ('MainMenuView', 'RegisterView', 'ShiftMenuView', 'StaffBannedView')
 
 
@@ -17,7 +18,8 @@ class MainMenuView(TextView):
         self.__web_app_base_url = web_app_base_url
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
-        report_web_app_url = f'{self.__web_app_base_url}/reports/{self.__staff_id}'
+        report_web_app_url = (f'{self.__web_app_base_url}/reports/'
+                              f'{self.__staff_id}')
         penalty_web_app_url = (
             f'{self.__web_app_base_url}/penalties/{self.__staff_id}'
         )
@@ -94,6 +96,9 @@ class ShiftMenuView(TextView):
                 ],
                 [
                     KeyboardButton(text=ButtonText.SHIFT_CHANGE_CAR_WASH),
+                    KeyboardButton(
+                        text=ButtonText.SHIFT_DRY_CLEANING_REQUEST,
+                    )
                 ],
                 [
                     KeyboardButton(text=ButtonText.SHIFT_END),
