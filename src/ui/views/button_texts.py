@@ -50,3 +50,5 @@ class ButtonText(StrEnum):
     REPORTS = '📊 Отчеты'
     SPECIFIC_SHIFT = '📝 Открыть список смен'
     SHIFT_FINISH_CHECK = '🔍 Проверить'
+    DRY_CLEANING_REQUEST_PHOTO_INPUT_FINISH = '🔜 Следующий шаг'
+    DRY_CLEANING_REQUEST_SERVICES = '🫧 Выбрать услуги'

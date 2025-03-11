@@ -5,11 +5,12 @@ from connections import (
     AvailableDateConnection,
     CarToWashConnection,
     CarWashConnection,
-    EconomicsConnection,
+    DryCleaningRequestConnection, EconomicsConnection,
     ShiftConnection,
     StaffConnection,
 )
 from dependencies.http_clients import get_http_client
+
 
 __all__ = (
     'get_available_date_connection',
@@ -18,6 +19,7 @@ __all__ = (
     'get_shift_connection',
     'get_economics_connection',
     'get_car_to_wash_connection',
+    'get_dry_cleaning_request_connection',
 )
 
 
@@ -73,3 +75,12 @@ def get_economics_connection(
         ),
 ) -> EconomicsConnection:
     return EconomicsConnection(http_client)
+
+
+def get_dry_cleaning_request_connection(
+        http_client: httpx.AsyncClient = Depends(
+            dependency=get_http_client,
+            use_cache=False,
+        ),
+) -> DryCleaningRequestConnection:
+    return DryCleaningRequestConnection(http_client)

@@ -1,5 +1,6 @@
 from .car_classes import *
 from .car_wash_update_actions import *
+from .dry_cleaning_request_statuses import DryCleaningRequestStatus
 from .mailing_types import *
 from .penalty_consequences import *
 from .penalty_reasons import *
