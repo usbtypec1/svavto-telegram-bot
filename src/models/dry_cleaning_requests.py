@@ -19,7 +19,7 @@ class DryCleaningRequest(BaseModel):
     id: int
     shift_id: int
     car_number: str
-    photo_file_ids: list[str]
+    photo_urls: list[str]
     services: list[DryCleaningRequestService]
     status: DryCleaningRequestStatus
     response_comment: str | None
