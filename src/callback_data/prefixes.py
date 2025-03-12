@@ -1,5 +1,6 @@
 from enum import StrEnum, auto
 
+
 __all__ = ('CallbackDataPrefix',)
 
 
@@ -45,3 +46,7 @@ class CallbackDataPrefix(StrEnum):
     SCHEDULED_SHIFT_START_ACCEPT = auto()
     SCHEDULED_SHIFT_START_REJECT = auto()
     SUPERVISION_DEAD_SOULS = auto()
+    CAR_NUMBER_INPUT = auto()
+    DRY_CLEANING_REQUEST_PHOTO_DELETE = auto()
+    DRY_CLEANING_REQUEST_CONFIRM = auto()
+    DRY_CLEANING_REQUEST_REJECT = auto()

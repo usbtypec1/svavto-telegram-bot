@@ -3,7 +3,7 @@ from typing import Annotated
 from fast_depends import Depends
 
 from connections import (
-    StaffConnection,
+    DryCleaningRequestConnection, StaffConnection,
     CarWashConnection,
     ShiftConnection,
     EconomicsConnection,
@@ -11,6 +11,7 @@ from connections import (
     AvailableDateConnection,
 )
 from dependencies.connections import (
+    get_dry_cleaning_request_connection,
     get_staff_connection,
     get_car_wash_connection,
     get_shift_connection,
@@ -25,7 +26,9 @@ from repositories import (
     EconomicsRepository,
     CarToWashRepository,
     AvailableDateRepository,
+    DryCleaningRequestRepository,
 )
+
 
 __all__ = (
     'get_staff_repository',
@@ -40,6 +43,8 @@ __all__ = (
     'StaffRepositoryDependency',
     'CarToWashRepositoryDependency',
     'AvailableDateRepositoryDependency',
+    'DryCleaningRequestRepositoryDependency',
+    'get_dry_cleaning_request_repository',
 )
 
 
@@ -81,6 +86,14 @@ def get_economics_repository(
     return EconomicsRepository(connection)
 
 
+def get_dry_cleaning_request_repository(
+        connection: DryCleaningRequestConnection = Depends(
+            get_dry_cleaning_request_connection,
+        ),
+) -> DryCleaningRequestRepository:
+    return DryCleaningRequestRepository(connection)
+
+
 ShiftRepositoryDependency = Annotated[
     ShiftRepository,
     Depends(get_shift_repository),
@@ -109,4 +122,9 @@ CarToWashRepositoryDependency = Annotated[
 AvailableDateRepositoryDependency = Annotated[
     AvailableDateRepository,
     Depends(get_available_date_repository),
+]
+
+DryCleaningRequestRepositoryDependency = Annotated[
+    DryCleaningRequestRepository,
+    Depends(get_dry_cleaning_request_repository),
 ]

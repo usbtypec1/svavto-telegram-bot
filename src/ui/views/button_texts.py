@@ -33,6 +33,7 @@ class ButtonText(StrEnum):
     SHIFT_ADDED_CARS = '🚗 Добавленные автомобили'
     SHIFT_CHANGE_CAR_WASH = '🫧 Поменять мойку'
     SHIFT_END = '🛑 Завершить смену'
+    SHIFT_DRY_CLEANING_REQUEST = 'Запросить химчистку'
     ATTACH_REPLY_MARKUP = '⌨ Привязать кнопки'
     SKIP = '➡ Пропустить'
     MAILING_STAFF = '👥 Выбрать сотрудников'
@@ -49,3 +50,5 @@ class ButtonText(StrEnum):
     REPORTS = '📊 Отчеты'
     SPECIFIC_SHIFT = '📝 Открыть список смен'
     SHIFT_FINISH_CHECK = '🔍 Проверить'
+    DRY_CLEANING_REQUEST_PHOTO_INPUT_FINISH = '🔜 Следующий шаг'
+    DRY_CLEANING_REQUEST_SERVICES = '🫧 Выбрать услуги'

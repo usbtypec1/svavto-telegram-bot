@@ -312,3 +312,18 @@ class ShiftConnection(ApiConnection):
             response.status_code,
         )
         return response
+
+    async def get_transferred_cars(self, *, shift_id: int) -> httpx.Response:
+        url = '/shifts/cars/'
+        logger.debug(
+            'Sending transferred cars retrieve request. Shift ID: %d',
+            shift_id,
+        )
+        query_params = {'shift_id': shift_id}
+        response = await self._http_client.get(url, params=query_params)
+        logger.debug(
+            'Received transferred cars. Shift ID: %d, status code: %d',
+            shift_id,
+            response.status_code,
+        )
+        return response

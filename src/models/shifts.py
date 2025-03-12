@@ -26,6 +26,7 @@ __all__ = (
     'StaffIdAndDate',
     'MonthAndYear',
     'StaffShiftMonths',
+    'CurrentShift',
 )
 
 
@@ -159,3 +160,9 @@ class MonthAndYear(BaseModel):
 class StaffShiftMonths(BaseModel):
     staff_id: int
     months: list[MonthAndYear]
+
+
+class CurrentShift(BaseModel):
+    id: int
+    date: datetime.date
+    car_wash: CarWash | None

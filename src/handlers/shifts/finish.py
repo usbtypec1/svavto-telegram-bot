@@ -218,7 +218,7 @@ async def on_statement_text_input(
 
 
 @router.message(
-    F.photo,
+    F.photos,
     invert_f(admins_filter),
     StateFilter(
         ShiftFinishStates.statement_photo,

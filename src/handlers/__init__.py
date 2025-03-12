@@ -12,4 +12,5 @@ from . import (
     cars,
     reports,
     validators_errors,
+    dry_cleaning,
 )

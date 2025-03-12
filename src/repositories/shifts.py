@@ -5,9 +5,11 @@ from pydantic import TypeAdapter
 
 from connections import ShiftConnection
 from models import (
-    CarWash, Shift, ShiftExtraCreateResult, ShiftFinishResult, ShiftListPage,
+    CarWash, CurrentShift, Shift, ShiftExtraCreateResult, ShiftFinishResult,
+    ShiftListPage,
     ShiftRegularCreateResult, ShiftTestCreateResult, ShiftWithCarWashAndStaff,
     DeadSoulsForMonth, StaffIdAndDate, StaffShiftMonths,
+    TransferredCarsListResponse,
 )
 from repositories.errors import handle_errors
 
@@ -47,9 +49,10 @@ class ShiftRepository:
         response_data = response.json()
         return ShiftListPage.model_validate(response_data)
 
-    async def get_active(self, staff_id: int):
+    async def get_active(self, staff_id: int) -> CurrentShift:
         response = await self.__connection.get_active(staff_id)
         handle_errors(response)
+        return CurrentShift.model_validate_json(response.text)
 
     async def update_current_shift_car_wash(
             self,
@@ -177,3 +180,14 @@ class ShiftRepository:
     async def confirm(self, *, shift_id: int) -> None:
         response = await self.__connection.confirm(shift_id=shift_id)
         handle_errors(response)
+
+    async def get_transferred_cars(
+            self,
+            *,
+            shift_id: int,
+    ) -> TransferredCarsListResponse:
+        response = await self.__connection.get_transferred_cars(
+            shift_id=shift_id,
+        )
+        handle_errors(response)
+        return TransferredCarsListResponse.model_validate_json(response.text)
