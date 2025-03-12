@@ -1,3 +1,5 @@
+import re
+
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
@@ -74,7 +76,13 @@ async def on_car_number_manual_input(callback_query: CallbackQuery) -> None:
     )
 
 
+def is_car_number_valid(car_number: str) -> bool:
+    pattern = r'^[А-Яа-я]\d{3}[А-Яа-я]{2}\d{3}$'
+    return bool(re.fullmatch(pattern, car_number))
+
+
 @router.message(
+    F.text,
     staff_filter,
     StateFilter(DryCleaningRequestStates.car_number),
 )
@@ -82,7 +90,15 @@ async def on_car_number_input(
         message: Message,
         state: FSMContext,
 ) -> None:
-    await state.update_data(car_number=message.text)
+    if not is_car_number_valid(message.text):
+        await message.reply(
+            text='❗️ Введите номер автомобиля в формате "а123бв123"',
+        )
+    else:
+        await state.update_data(car_number=message.text)
+        await state.set_state(DryCleaningRequestStates.photos)
+        view = DryCleaningRequestPhotoInputView()
+        await answer_view(message, view)
 
 
 @router.callback_query(
