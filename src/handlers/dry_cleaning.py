@@ -133,6 +133,17 @@ async def on_photo_input(
 
 @router.callback_query(
     staff_filter,
+    F.data == CallbackDataPrefix.DRY_CLEANING_REQUEST_PHOTO_ADD,
+    StateFilter(DryCleaningRequestStates.photos),
+)
+async def on_photo_add(callback_query: CallbackQuery) -> None:
+    view = DryCleaningRequestPhotoInputView()
+    await answer_view(callback_query.message, view)
+    await callback_query.answer()
+
+
+@router.callback_query(
+    staff_filter,
     F.data == CallbackDataPrefix.DRY_CLEANING_REQUEST_PHOTO_DELETE,
     StateFilter(DryCleaningRequestStates.photos),
 )
@@ -144,6 +155,32 @@ async def on_photo_delete(
     await photos_storage.delete_file_id(file_id)
     await callback_query.answer(text='❗️ Фотография удалена', show_alert=True)
     await callback_query.message.delete()
+
+
+@router.callback_query(
+    staff_filter,
+    F.data == CallbackDataPrefix.NEXT_STEP,
+)
+async def on_next_step(
+        callback_query: CallbackQuery,
+        state: FSMContext,
+        config: Config,
+        photos_storage: PhotosStorage,
+) -> None:
+    count = await photos_storage.count()
+    if count == 0:
+        view = DryCleaningRequestPhotoInputView()
+        await answer_view(callback_query.message, view)
+        return
+
+    await state.set_state(DryCleaningRequestStates.services)
+    state_data: dict = await state.get_data()
+    car_wash_id: int = state_data['car_wash_id']
+    view = DryCleaningRequestServicesView(
+        web_app_base_url=config.web_app_base_url,
+        car_wash_id=car_wash_id,
+    )
+    await answer_view(callback_query.message, view)
 
 
 @router.message(

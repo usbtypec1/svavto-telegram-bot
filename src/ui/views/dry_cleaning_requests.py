@@ -51,7 +51,21 @@ class DryCleaningRequestPhotoUploadView(PhotoView):
             text='❌ Удалить фото',
             callback_data=CallbackDataPrefix.DRY_CLEANING_REQUEST_PHOTO_DELETE,
         )
-        return InlineKeyboardMarkup(inline_keyboard=[[photo_delete_button]])
+        photo_add_button = InlineKeyboardButton(
+            text='📸 Добавить фото',
+            callback_data=CallbackDataPrefix.DRY_CLEANING_REQUEST_PHOTO_ADD,
+        )
+        next_step_button = InlineKeyboardButton(
+            text='🔜 Следующий шаг',
+            callback_data=CallbackDataPrefix.NEXT_STEP,
+        )
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [photo_delete_button],
+                [photo_add_button],
+                [next_step_button],
+            ],
+        )
 
 
 class DryCleaningRequestPhotoInputView(TextView):
