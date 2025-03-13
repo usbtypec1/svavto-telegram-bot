@@ -19,6 +19,7 @@ from dependencies.repositories import get_staff_repository
 from logger import setup_logging
 from middlewares import banned_staff_middleware
 from middlewares.admins import AdminUserIdsMiddleware
+from middlewares.photos_storage import photos_storage_middleware
 from repositories import StaffRepository
 from services.notifications import (
     MailingService, NotificationService,
@@ -131,6 +132,8 @@ async def main(
     dispatcher['mailing_service'] = mailing_service
 
     include_handlers(dispatcher)
+
+    dispatcher.update.middleware(photos_storage_middleware)
 
     await setup_commands(bot, admin_user_ids)
 

@@ -6,7 +6,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fast_depends import inject
 from pydantic import TypeAdapter
-from redis.asyncio import Redis
 
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
@@ -14,16 +13,13 @@ from dependencies.repositories import (
     DryCleaningRequestRepositoryDependency, ShiftRepositoryDependency,
 )
 from filters import staff_filter
-from models import DryCleaningRequestService
 from models.dry_cleaning_requests import DryCleaningRequestServiceWithName
-from repositories import DryCleaningRequestRepository
 from services.photos_storage import PhotosStorage
 from states import DryCleaningRequestStates
 from ui.views import (
     answer_view, ButtonText, DryCleaningCarNumberView,
-    DryCleaningRequestConfirmView, DryCleaningRequestPhotosView,
-    DryCleaningRequestPhotoUploadView,
-    DryCleaningRequestPhotoInputView,
+    DryCleaningRequestConfirmView, DryCleaningRequestPhotoInputView,
+    DryCleaningRequestPhotosView, DryCleaningRequestPhotoUploadView,
     DryCleaningRequestServicesView, edit_as_confirmed, edit_as_rejected,
     ShiftMenuView,
 )
@@ -41,11 +37,10 @@ router = Router(name=__name__)
 async def on_dry_cleaning_request_start_flow(
         message: Message,
         state: FSMContext,
-        redis: Redis,
+        photos_storage: PhotosStorage,
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    storage = PhotosStorage(redis=redis, user_id=message.from_user.id)
-    await storage.clear()
+    await photos_storage.clear()
 
     shift = await shift_repository.get_active(message.from_user.id)
     if shift.car_wash is None:
@@ -122,17 +117,16 @@ async def on_choose_car(
 )
 async def on_photo_input(
         message: Message,
-        redis: Redis,
+        photos_storage: PhotosStorage,
 ) -> None:
     file_id = message.photo[-1].file_id
-    storage = PhotosStorage(redis=redis, user_id=message.from_user.id)
-    count = await storage.count()
+    count = await photos_storage.count()
     if count > 10:
         await message.reply(
             text='❗️ Вы не можете загрузить больше 10 фотографий',
         )
         return
-    await storage.add_file_id(file_id)
+    await photos_storage.add_file_id(file_id)
     view = DryCleaningRequestPhotoUploadView(photo_file_id=file_id)
     await answer_view(message, view)
 
@@ -144,11 +138,10 @@ async def on_photo_input(
 )
 async def on_photo_delete(
         callback_query: CallbackQuery,
-        redis: Redis,
+        photos_storage: PhotosStorage,
 ) -> None:
     file_id = callback_query.message.photo[-1].file_id
-    storage = PhotosStorage(redis=redis, user_id=callback_query.from_user.id)
-    await storage.delete_file_id(file_id)
+    await photos_storage.delete_file_id(file_id)
     await callback_query.answer(text='❗️ Фотография удалена', show_alert=True)
     await callback_query.message.delete()
 
@@ -162,10 +155,9 @@ async def on_photo_input_finish(
         message: Message,
         state: FSMContext,
         config: Config,
-        redis: Redis,
+        photos_storage: PhotosStorage,
 ) -> None:
-    storage = PhotosStorage(redis=redis, user_id=message.from_user.id)
-    count = await storage.count()
+    count = await photos_storage.count()
     if count == 0:
         view = DryCleaningRequestPhotoInputView()
         await answer_view(message, view)
@@ -189,12 +181,11 @@ async def on_photo_input_finish(
 async def on_services_input(
         message: Message,
         state: FSMContext,
-        redis: Redis,
+        photos_storage: PhotosStorage,
 ) -> None:
     await state.update_data(services=message.web_app_data.data)
     await state.set_state(DryCleaningRequestStates.confirm)
-    storage = PhotosStorage(redis=redis, user_id=message.from_user.id)
-    photo_file_ids = await storage.get_file_ids()
+    photo_file_ids = await photos_storage.get_file_ids()
 
     type_adapter = TypeAdapter(tuple[DryCleaningRequestServiceWithName, ...])
     state_data: dict = await state.get_data()
@@ -221,11 +212,10 @@ async def on_services_input(
 async def on_dry_cleaning_request_reject(
         callback_query: CallbackQuery,
         state: FSMContext,
-        redis: Redis,
+        photos_storage: PhotosStorage,
         config: Config,
 ) -> None:
-    storage = PhotosStorage(redis=redis, user_id=callback_query.from_user.id)
-    await storage.clear()
+    await photos_storage.clear()
     await state.clear()
     await edit_as_rejected(callback_query.message)
     await callback_query.answer()
@@ -245,14 +235,13 @@ async def on_dry_cleaning_request_reject(
 async def on_dry_cleaning_request_confirm(
         callback_query: CallbackQuery,
         state: FSMContext,
-        redis: Redis,
+        photos_storage: PhotosStorage,
         config: Config,
         dry_cleaning_request_repository: (
                 DryCleaningRequestRepositoryDependency
         ),
 ) -> None:
-    storage = PhotosStorage(redis=redis, user_id=callback_query.from_user.id)
-    photo_file_ids = await storage.get_file_ids()
+    photo_file_ids = await photos_storage.get_file_ids()
 
     type_adapter = TypeAdapter(tuple[DryCleaningRequestServiceWithName, ...])
     state_data: dict = await state.get_data()

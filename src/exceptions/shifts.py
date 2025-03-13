@@ -42,10 +42,6 @@ class ShiftAlreadyExistsError(Exception):
         ]
 
 
-class ShiftFinishPhotosCountExceededError(Exception):
-    pass
-
-
 class ShiftDateExpiredError(Exception):
 
     def __init__(self, shift_date: datetime.date) -> None:
