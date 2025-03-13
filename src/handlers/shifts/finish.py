@@ -1,35 +1,23 @@
-from redis.asyncio import Redis
 from aiogram import F, Router
-from aiogram.filters import StateFilter, invert_f
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
-from fast_depends import Depends, inject
+from fast_depends import inject
 
 from callback_data.prefixes import CallbackDataPrefix
 from config import Config
-from dependencies.repositories import (
-    get_shift_repository,
-    ShiftRepositoryDependency,
-)
-from exceptions import ShiftFinishPhotosCountExceededError
-from filters import admins_filter, staff_filter
-from repositories import ShiftRepository
+from dependencies.repositories import ShiftRepositoryDependency
+from filters import staff_filter
 from services.notifications import SpecificChatsNotificationService
-from services.shifts import ShiftFinishPhotosState
+from services.photos_storage import PhotosStorage
 from states import ShiftFinishStates
 from ui.views import (
     answer_media_group_view, answer_photo_view,
-    answer_text_view, edit_as_rejected, ShiftFinishCheckTransferredCarsView,
-)
-from ui.views import ButtonText
-from ui.views import MainMenuView, ShiftMenuView
-from ui.views import (
-    ShiftFinishConfirmAllView,
-    ShiftFinishConfirmView,
-    ShiftFinishPhotoConfirmView,
-    ShiftFinishPhotosView,
-    ShiftFinishedWithoutPhotosView, StaffFirstShiftFinishedView,
-    ShiftFinishedWithPhotosView,
+    answer_text_view, ButtonText, edit_as_rejected, MainMenuView,
+    ShiftFinishCheckTransferredCarsView, ShiftFinishConfirmAllView,
+    ShiftFinishConfirmView, ShiftFinishedWithoutPhotosView,
+    ShiftFinishedWithPhotosView, ShiftFinishPhotoConfirmView,
+    ShiftFinishPhotosView, ShiftMenuView, StaffFirstShiftFinishedView,
     StaffShiftFinishedView,
 )
 
@@ -68,13 +56,9 @@ async def on_new_shift_later(
 async def on_shift_finish_reject(
         callback_query: CallbackQuery,
         state: FSMContext,
-        redis: Redis,
+        photos_storage: PhotosStorage,
 ) -> None:
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=callback_query.from_user.id,
-    )
-    await shift_finish_photos_state.clear()
+    await photos_storage.clear()
     await state.clear()
     await callback_query.answer(
         text='❗️ Вы отменили завершение смены',
@@ -92,19 +76,13 @@ async def on_shift_finish_reject(
 async def on_shift_finish_accept(
         callback_query: CallbackQuery,
         state: FSMContext,
-        redis: Redis,
+        photos_storage: PhotosStorage,
         config: Config,
         main_chat_notification_service: SpecificChatsNotificationService,
-        shift_repository: ShiftRepository = Depends(
-            dependency=get_shift_repository,
-            use_cache=False,
-        ),
+        shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=callback_query.from_user.id,
-    )
-    photo_file_ids = await shift_finish_photos_state.get_photo_file_ids()
+    photo_file_ids = await photos_storage.get_file_ids()
+    await photos_storage.clear()
 
     await state.clear()
 
@@ -151,14 +129,10 @@ async def on_shift_finish_accept(
 )
 async def on_shift_finish_photo_delete(
         callback_query: CallbackQuery,
-        redis: Redis,
+        photos_storage: PhotosStorage,
 ) -> None:
     file_id = callback_query.message.photo[-1].file_id
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=callback_query.from_user.id,
-    )
-    await shift_finish_photos_state.delete_photo_file_id(file_id)
+    await photos_storage.delete_file_id(file_id)
     await callback_query.message.delete()
     await callback_query.answer('❌ Фотография удалена', show_alert=True)
 
@@ -173,7 +147,7 @@ async def on_shift_finish_photo_delete(
 )
 async def on_next_step(
         callback_query: CallbackQuery,
-        redis: Redis,
+        photos_storage: PhotosStorage,
         state: FSMContext,
 ) -> None:
     state_string = await state.get_state()
@@ -188,11 +162,7 @@ async def on_next_step(
         return
 
     await state.set_state(ShiftFinishStates.confirm)
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=callback_query.from_user.id,
-    )
-    photo_file_ids = await shift_finish_photos_state.get_photo_file_ids()
+    photo_file_ids = await photos_storage.get_file_ids()
 
     view = ShiftFinishPhotosView(photo_file_ids)
     await answer_media_group_view(
@@ -211,9 +181,7 @@ async def on_next_step(
         ShiftFinishStates.service_app_photo,
     ),
 )
-async def on_statement_text_input(
-        message: Message,
-) -> None:
+async def on_statement_text_input(message: Message) -> None:
     await message.answer('❌ Отправьте фото')
 
 
@@ -228,22 +196,18 @@ async def on_statement_text_input(
 @inject
 async def on_photo_input(
         message: Message,
-        redis: Redis,
+        photos_storage: PhotosStorage,
         shift_repository: ShiftRepositoryDependency,
 ) -> None:
     file_id = message.photo[-1].file_id
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=message.from_user.id,
-    )
-    try:
-        await shift_finish_photos_state.add_photo_file_id(file_id)
-    except ShiftFinishPhotosCountExceededError:
+    count = await photos_storage.count()
+    if count >= 10:
         await message.answer('❌ Вы не можете загрузить больше 10 фотографий')
-    else:
-        await shift_repository.get_active(message.from_user.id)
-        view = ShiftFinishPhotoConfirmView(file_id)
-        await answer_photo_view(message, view)
+        return
+    await photos_storage.add_file_id(file_id)
+    await shift_repository.get_active(message.from_user.id)
+    view = ShiftFinishPhotoConfirmView(file_id)
+    await answer_photo_view(message, view)
 
 
 @router.callback_query(
@@ -291,10 +255,7 @@ async def on_shift_finish_checked(
 async def on_shift_finish_reject(
         callback_query: CallbackQuery,
         config: Config,
-        shift_repository: ShiftRepository = Depends(
-            get_shift_repository,
-            use_cache=False,
-        ),
+        shift_repository: ShiftRepositoryDependency,
 ) -> None:
     await shift_repository.get_active(callback_query.from_user.id)
     view = ShiftMenuView(
@@ -317,17 +278,10 @@ async def on_shift_finish_reject(
 @inject
 async def on_shift_finish_confirm(
         message: Message,
-        redis: Redis,
-        shift_repository: ShiftRepository = Depends(
-            get_shift_repository,
-            use_cache=False,
-        ),
+        photos_storage: PhotosStorage,
+        shift_repository: ShiftRepositoryDependency,
 ) -> None:
-    shift_finish_photos_state = ShiftFinishPhotosState(
-        redis=redis,
-        user_id=message.from_user.id,
-    )
-    await shift_finish_photos_state.clear()
+    await photos_storage.clear()
     await shift_repository.get_active(message.from_user.id)
     view = ShiftFinishConfirmView()
     await answer_text_view(message, view)
