@@ -221,11 +221,12 @@ class ShiftsForMonthListView(TextView):
 class ExtraShiftScheduleWebAppView(TextView):
     text = '📆 Выберите дату'
 
-    def __init__(self, web_app_base_url: str):
+    def __init__(self, web_app_base_url: str, user_id: int):
         self.__web_app_base_url = web_app_base_url
+        self.__user_id = user_id
 
     def get_reply_markup(self) -> ReplyKeyboardMarkup:
-        url = f'{self.__web_app_base_url}/shifts/extra'
+        url = f'{self.__web_app_base_url}/shifts/{self.__user_id}/extra'
         return ReplyKeyboardMarkup(
             resize_keyboard=True,
             keyboard=[

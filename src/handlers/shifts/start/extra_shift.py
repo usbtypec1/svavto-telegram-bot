@@ -127,5 +127,8 @@ async def on_extra_shift_calendar(
     StateFilter('*'),
 )
 async def on_start_extra_shift(message, config: Config):
-    view = ExtraShiftScheduleWebAppView(config.web_app_base_url)
+    view = ExtraShiftScheduleWebAppView(
+        web_app_base_url=config.web_app_base_url,
+        user_id=message.from_user.id,
+    )
     await answer_view(message, view)
