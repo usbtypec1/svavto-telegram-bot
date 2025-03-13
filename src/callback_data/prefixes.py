@@ -50,3 +50,5 @@ class CallbackDataPrefix(StrEnum):
     DRY_CLEANING_REQUEST_PHOTO_DELETE = auto()
     DRY_CLEANING_REQUEST_CONFIRM = auto()
     DRY_CLEANING_REQUEST_REJECT = auto()
+    DRY_CLEANING_REQUEST_PHOTO_ADD = auto()
+    NEXT_STEP = auto()
