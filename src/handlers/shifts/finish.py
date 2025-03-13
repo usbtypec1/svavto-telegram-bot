@@ -44,7 +44,7 @@ router = Router(name=__name__)
 
 @router.message(
     F.text == ButtonText.LATER,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 async def on_new_shift_later(
@@ -61,7 +61,7 @@ async def on_new_shift_later(
 
 @router.callback_query(
     F.data == CallbackDataPrefix.SHIFT_FINISH_REJECT,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter(ShiftFinishStates.confirm),
 )
 @inject
@@ -85,7 +85,7 @@ async def on_shift_finish_reject(
 
 @router.callback_query(
     F.data == CallbackDataPrefix.SHIFT_FINISH_ACCEPT,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter(ShiftFinishStates.confirm),
 )
 @inject
@@ -205,7 +205,7 @@ async def on_next_step(
 
 @router.message(
     F.text,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter(
         ShiftFinishStates.statement_photo,
         ShiftFinishStates.service_app_photo,
@@ -218,8 +218,8 @@ async def on_statement_text_input(
 
 
 @router.message(
-    F.photos,
-    invert_f(admins_filter),
+    F.photo,
+    staff_filter,
     StateFilter(
         ShiftFinishStates.statement_photo,
         ShiftFinishStates.service_app_photo,
@@ -229,10 +229,7 @@ async def on_statement_text_input(
 async def on_photo_input(
         message: Message,
         redis: Redis,
-        shift_repository: ShiftRepository = Depends(
-            get_shift_repository,
-            use_cache=False,
-        ),
+        shift_repository: ShiftRepositoryDependency,
 ) -> None:
     file_id = message.photo[-1].file_id
     shift_finish_photos_state = ShiftFinishPhotosState(
@@ -287,7 +284,7 @@ async def on_shift_finish_checked(
 
 @router.callback_query(
     F.data == CallbackDataPrefix.SHIFT_FINISH_FLOW_START_REJECT,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
@@ -314,7 +311,7 @@ async def on_shift_finish_reject(
 
 @router.message(
     F.text == ButtonText.SHIFT_END,
-    invert_f(admins_filter),
+    staff_filter,
     StateFilter('*'),
 )
 @inject
