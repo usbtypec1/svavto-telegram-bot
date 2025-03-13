@@ -57,7 +57,7 @@ async def on_mailing_photo_accept_finish(
 
 
 @router.message(
-    F.photos,
+    F.photo,
     admins_filter,
     StateFilter(MailingStates.photos)
 )
