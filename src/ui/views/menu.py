@@ -96,9 +96,9 @@ class ShiftMenuView(TextView):
                 ],
                 [
                     KeyboardButton(text=ButtonText.SHIFT_CHANGE_CAR_WASH),
-                    # KeyboardButton(
-                    #     text=ButtonText.SHIFT_DRY_CLEANING_REQUEST,
-                    # )
+                    KeyboardButton(
+                        text=ButtonText.SHIFT_DRY_CLEANING_REQUEST,
+                    ),
                 ],
                 [
                     KeyboardButton(text=ButtonText.SHIFT_END),
