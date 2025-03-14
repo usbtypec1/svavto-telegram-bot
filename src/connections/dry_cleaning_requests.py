@@ -15,7 +15,7 @@ class DryCleaningRequestConnection(ApiConnection):
             photo_file_ids: Iterable[str],
             services: Iterable[dict],
     ) -> httpx.Response:
-        url = '/shifts/dry-cleaning-requests/'
+        url = '/dry-cleaning/requests/'
         request_data = {
             'shift_id': shift_id,
             'car_number': car_number,
