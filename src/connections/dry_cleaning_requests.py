@@ -22,5 +22,9 @@ class DryCleaningRequestConnection(ApiConnection):
             'photo_file_ids': tuple(photo_file_ids),
             'services': tuple(services),
         }
-        response = await self._http_client.post(url, json=request_data)
+        response = await self._http_client.post(
+            url=url,
+            json=request_data,
+            timeout=30,
+        )
         return response
