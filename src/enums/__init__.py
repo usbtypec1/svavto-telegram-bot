@@ -10,3 +10,4 @@ from .shift_work_types import *
 from .staff_order_by import *
 from .staff_update_actions import *
 from .wash_types import *
+from .windshield_washer_types import WindshieldWasherType

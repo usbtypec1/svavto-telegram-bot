@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from enums import CarClass, WashType
+from enums import CarClass, WashType, WindshieldWasherType
 
 
 __all__ = (
@@ -31,6 +31,7 @@ class CarToWashWebAppData(BaseModel):
     number: str
     class_type: CarClass
     wash_type: WashType
+    windshield_washer_type: WindshieldWasherType
     windshield_washer_refilled_bottle_percentage: int
     additional_services: Annotated[
         list[AdditionalService],
