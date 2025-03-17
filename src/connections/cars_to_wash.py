@@ -25,6 +25,7 @@ class CarToWashConnection(ApiConnection):
             'number': car_to_wash.number,
             'car_class': car_to_wash.class_type,
             'wash_type': car_to_wash.wash_type,
+            'windshield_washer_type': car_to_wash.windshield_washer_type,
             'windshield_washer_refilled_bottle_percentage': (
                 car_to_wash.windshield_washer_refilled_bottle_percentage
             ),
