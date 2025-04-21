@@ -52,6 +52,7 @@ class ShiftFinishResult(BaseModel):
     staff_full_name: str
     car_washes: list[ShiftFinishCarWashSummary]
     finish_photo_file_ids: list[str]
+    bonus_amount: int
 
 
 class ShiftsConfirmation(BaseModel):
