@@ -1,4 +1,4 @@
-from aiogram import F, Router
+from aiogram import F, Router, Bot
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
@@ -8,7 +8,10 @@ from callback_data.prefixes import CallbackDataPrefix
 from config import Config
 from dependencies.repositories import ShiftRepositoryDependency
 from filters import staff_filter
-from services.notifications import SpecificChatsNotificationService
+from services.notifications import (
+    MailingService,
+    SpecificChatsNotificationService,
+)
 from services.photos_storage import PhotosStorage
 from states import ShiftFinishStates
 from ui.views import (
@@ -77,6 +80,7 @@ async def on_shift_finish_accept(
         callback_query: CallbackQuery,
         state: FSMContext,
         photos_storage: PhotosStorage,
+        bot: Bot,
         config: Config,
         main_chat_notification_service: SpecificChatsNotificationService,
         shift_repository: ShiftRepositoryDependency,
@@ -90,6 +94,16 @@ async def on_shift_finish_accept(
         staff_id=callback_query.from_user.id,
         photo_file_ids=photo_file_ids,
     )
+
+    if shift_finish_result.bonus_amount > 0:
+        await MailingService(bot).send_text(
+            chat_ids=(shift_finish_result.staff_id,),
+            text=(
+                f'💰 Вам начислено {shift_finish_result.bonus_amount}р'
+                ' за выход на смену в выходные дни'
+            ),
+            reply_markup=None,
+        )
 
     if shift_finish_result.is_first_shift:
         view = StaffFirstShiftFinishedView()
