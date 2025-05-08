@@ -90,6 +90,7 @@ class StaffConnection(ApiConnection):
             full_name: str,
             car_sharing_phone_number: str,
             console_phone_number: str,
+            staff_type: int,
     ) -> httpx.Response:
         url = '/staff/register-requests/'
         request_data = {
@@ -97,6 +98,7 @@ class StaffConnection(ApiConnection):
             'full_name': full_name,
             'car_sharing_phone_number': car_sharing_phone_number,
             'console_phone_number': console_phone_number,
+            'staff_type': staff_type,
         }
         logger.debug(
             'Sending staff register request for staff ID: %d',

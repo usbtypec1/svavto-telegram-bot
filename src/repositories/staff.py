@@ -69,12 +69,14 @@ class StaffRepository:
             full_name: str,
             car_sharing_phone_number: str,
             console_phone_number: str,
+            staff_type: int,
     ) -> StaffRegisterRequest:
         response = await self.__connection.create_register_request(
             staff_id=staff_id,
             full_name=full_name,
             car_sharing_phone_number=car_sharing_phone_number,
             console_phone_number=console_phone_number,
+            staff_type=staff_type,
         )
         handle_errors(response)
         return StaffRegisterRequest.model_validate_json(response.text)

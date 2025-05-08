@@ -44,6 +44,7 @@ async def on_register_form_filled(
             full_name=request_data.full_name,
             car_sharing_phone_number=request_data.car_sharing_phone_number,
             console_phone_number=request_data.console_phone_number,
+            staff_type=request_data.staff_type,
         )
     except StaffAlreadyExistsError:
         await message.answer('❗️ Вы уже зарегистрированы')

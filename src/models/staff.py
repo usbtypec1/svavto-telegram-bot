@@ -21,6 +21,7 @@ class StaffRegisterRequestData(BaseModel):
     full_name: str
     car_sharing_phone_number: str
     console_phone_number: str
+    staff_type: int
 
 
 class Staff(BaseModel):
