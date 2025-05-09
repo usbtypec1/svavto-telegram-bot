@@ -41,9 +41,9 @@ async def on_staff_type_change(
         ),
 ) -> None:
     if callback_data.action == StaffUpdateAction.TO_CAR_TRANSPORTER:
-        staff_type = StaffType.CAR_TRANSPORTER_AND_WASHER
-    else:
         staff_type = StaffType.CAR_TRANSPORTER
+    else:
+        staff_type = StaffType.CAR_TRANSPORTER_AND_WASHER
 
     staff = await staff_repository.get_by_id(callback_data.staff_id)
     await staff_repository.update_by_id(
