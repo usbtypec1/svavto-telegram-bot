@@ -1,7 +1,7 @@
 from connections import StaffConnection
-from enums import StaffOrderBy
+from enums import StaffOrderBy, StaffType
 from logger import create_logger
-from models import Staff, StaffListPage, StaffRegisterRequest
+from models import Staff, StaffDetail, StaffListPage, StaffRegisterRequest
 from repositories.errors import handle_errors
 
 __all__ = ('StaffRepository',)
@@ -14,7 +14,7 @@ class StaffRepository:
     def __init__(self, connection: StaffConnection):
         self.__connection = connection
 
-    async def get_by_id(self, staff_id: int) -> Staff:
+    async def get_by_id(self, staff_id: int) -> StaffDetail:
         response = await self.__connection.get_by_id(staff_id)
         response_data = response.json()
         logger.info(
@@ -22,7 +22,7 @@ class StaffRepository:
             extra={'response_data': response_data},
         )
         handle_errors(response)
-        return Staff.model_validate(response_data)
+        return StaffDetail.model_validate(response_data)
 
     async def get_all(
             self,
@@ -46,10 +46,12 @@ class StaffRepository:
             *,
             staff_id: int,
             is_banned: bool,
+            staff_type: StaffType,
     ) -> None:
         response = await self.__connection.update_by_id(
             staff_id=staff_id,
             is_banned=is_banned,
+            staff_type=staff_type,
         )
         handle_errors(response)
 

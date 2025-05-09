@@ -1,4 +1,7 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from aiogram.types import (
+    InlineKeyboardButton, InlineKeyboardMarkup,
+    WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from callback_data import (
@@ -7,10 +10,11 @@ from callback_data import (
     StaffUpdateCallbackData,
 )
 from callback_data.prefixes import CallbackDataPrefix
-from enums import StaffUpdateAction
-from models import Staff, StaffListPage
+from enums import StaffType, StaffUpdateAction
+from models import Staff, StaffDetail, StaffListPage
 from ui.buttons import create_back_button
 from ui.views.base import TextView
+
 
 __all__ = ('StaffListView', 'StaffDetailView', 'StaffMenuView')
 
@@ -115,7 +119,7 @@ class StaffDetailView(TextView):
 
     def __init__(
             self,
-            staff: Staff,
+            staff: StaffDetail,
             web_app_base_url: str,
             include_banned: bool,
             limit: int,
@@ -140,6 +144,11 @@ class StaffDetailView(TextView):
         else:
             username_line = ''
 
+        if self.__staff.type == StaffType.CAR_TRANSPORTER:
+            staff_type = 'Перегонщик'
+        else:
+            staff_type = 'Перегонщик-мойщик'
+
         return (
             f'📱 <b>ID:</b> {self.__staff.id}\n'
             f'👤 <b>ФИО:</b> {self.__staff.full_name}\n'
@@ -149,6 +158,7 @@ class StaffDetailView(TextView):
             '📞 <b>Номер телефона в Консоли:</b>'
             f' {self.__staff.console_phone_number}\n'
             f'{banned_status_line}'
+            f'Специализация: {staff_type}\n'
             f'📅 <b>Дата регистрации:</b>'
             f' {self.__staff.created_at:%d.%m.%Y %H:%M:%S}'
         )
@@ -156,6 +166,29 @@ class StaffDetailView(TextView):
     def get_reply_markup(self) -> InlineKeyboardMarkup:
         keyboard = InlineKeyboardBuilder()
         keyboard.max_width = 1
+
+        if self.__staff.type == StaffType.CAR_TRANSPORTER:
+            keyboard.button(
+                text='Сделать перегонщиком-мойщиком',
+                callback_data=StaffUpdateCallbackData(
+                    staff_id=self.__staff.id,
+                    action=StaffUpdateAction.TO_CAR_TRANSPORTER_AND_WASHER,
+                    include_banned=self.__include_banned,
+                    limit=self.__limit,
+                    offset=self.__offset,
+                ),
+            )
+        else:
+            keyboard.button(
+                text='Сделать перегонщиком',
+                callback_data=StaffUpdateCallbackData(
+                    staff_id=self.__staff.id,
+                    action=StaffUpdateAction.TO_CAR_TRANSPORTER,
+                    include_banned=self.__include_banned,
+                    limit=self.__limit,
+                    offset=self.__offset,
+                ),
+            )
 
         if self.__staff.is_banned:
             keyboard.button(
@@ -179,7 +212,8 @@ class StaffDetailView(TextView):
                     offset=self.__offset,
                 ),
             )
-        penalties_url = f'{self.__web_app_base_url}/penalties/{self.__staff.id}'
+        penalties_url = (f'{self.__web_app_base_url}/penalties/'
+                         f'{self.__staff.id}')
         keyboard.button(
             text='🛑 Штрафы',
             web_app=WebAppInfo(url=penalties_url),

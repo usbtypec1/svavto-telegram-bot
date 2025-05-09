@@ -1,6 +1,7 @@
 import httpx
 
 from connections.base import ApiConnection
+from enums import StaffType
 from logger import create_logger
 
 __all__ = ('StaffConnection',)
@@ -58,9 +59,10 @@ class StaffConnection(ApiConnection):
             *,
             staff_id: int,
             is_banned: bool,
+            staff_type: StaffType,
     ) -> httpx.Response:
         url = f'/staff/{staff_id}/'
-        request_data = {'is_banned': is_banned}
+        request_data = {'is_banned': is_banned, 'type': staff_type}
         logger.debug(
             'Updating staff with telegram id %d',
             staff_id,

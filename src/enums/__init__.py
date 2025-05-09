@@ -8,6 +8,7 @@ from .server_api_error_codes import *
 from .shift_types import *
 from .shift_work_types import *
 from .staff_order_by import *
+from .staff_types import StaffType
 from .staff_update_actions import *
 from .wash_types import *
 from .windshield_washer_types import WindshieldWasherType

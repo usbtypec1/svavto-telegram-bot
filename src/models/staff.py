@@ -2,6 +2,9 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from enums import StaffType
+
+
 __all__ = (
     'Staff',
     'StaffIdAndName',
@@ -9,6 +12,7 @@ __all__ = (
     'StaffListPage',
     'Pagination',
     'StaffRegisterRequest',
+    'StaffDetail',
 )
 
 
@@ -22,6 +26,21 @@ class StaffRegisterRequestData(BaseModel):
     car_sharing_phone_number: str
     console_phone_number: str
     staff_type: int
+
+
+class StaffDetail(BaseModel):
+    id: int
+    full_name: str
+    car_sharing_phone_number: str
+    console_phone_number: str
+    type: StaffType
+    created_at: datetime
+    last_activity_at: datetime | None
+    banned_at: datetime | None
+
+    @property
+    def is_banned(self) -> bool:
+        return self.banned_at is not None
 
 
 class Staff(BaseModel):
