@@ -13,7 +13,8 @@ class CarWashConnection(ApiConnection):
     async def get_all(self) -> httpx.Response:
         url = '/car-washes/'
         logger.debug('Retrieving all car washes')
-        response = await self._http_client.get(url)
+        query_params = {'include_hidden': False}
+        response = await self._http_client.get(url, params=query_params)
         logger.debug(
             'Retrieved all car washes',
             extra={'status_code': response.status_code},

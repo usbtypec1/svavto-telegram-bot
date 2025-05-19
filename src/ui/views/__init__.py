@@ -2,8 +2,6 @@ from .admins import *
 from .available_months import *
 from .base import *
 from .button_texts import *
-from .car_washes import *
-from .car_washes import *
 from .cars import *
 from .dry_cleaning_requests import (
     DryCleaningCarNumberView,
