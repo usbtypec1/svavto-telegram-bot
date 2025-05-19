@@ -3,7 +3,6 @@ from . import (
     users,
     staff,
     errors,
-    car_washes,
     schedules,
     penalties,
     surcharges,
